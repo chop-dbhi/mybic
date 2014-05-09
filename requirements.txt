@@ -1,0 +1,10 @@
+# Core requirements
+Django>=1.6,<1.7
+# South
+uWSGI
+# Fabric
+
+# Database Drivers, the Python stdlib has support for SQLite
+psycopg2
+# cx_oracle
+# mysql-python
