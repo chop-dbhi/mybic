@@ -1,163 +1,76 @@
-# Wicked Django Template
+mybic website
+=============
 
-## Prerequisites
-
-- Python 2.6 or 2.7
-
-## Setup & Install
-
-Install [virtualenv](http://pypi.python.org/pypi/virtualenv):
-
-```bash
-$ wget http://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.10.1.tar.gz
-$ tar zxf virtualenv-1.10.1.tar.gz
-$ cd virtualenv-1.10.1
-$ python setup.py install
+###Setup
 ```
-_You may need to do that last step as root. Just make sure you use the
-correct Python binary for OSes with multiple Python versions._
+#nginx
+emacs /etc/yum.repos.d/nginx.repo
+yum install nginx
 
-Create a virtual environment for the project:
+#python
+wget http://python.org/ftp/python/2.7.6/Python-2.7.6.tar.xz
+tar -xvf Python-2.7.6.tar.xz 
+cd Python-2.7.6
+yum install gcc
+./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
+yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel
+emacs /etc/ld.so.conf
+make && make altinstall
+wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
+/usr/local/bin/python2.7 ez_setup.py
+/usr/local/bin/easy_install-2.7 pip
 
-```bash
-$ virtualenv myproject-env
-$ cd myproject-env
-$ source bin/activate
-$ pip install django
+#postgres
+rpm -Uvh http://yum.postgresql.org/9.3/redhat/rhel-6-x86_64/pgdg-redhat93-9.3-1.noarch.rpm
+yum install postgresql93-server postgresql93
+/etc/init.d/postgresql-9.3 initdb
+service postgresql-9.3 start
+chkconfig postgresql-9.3 on
+yum install postgresql93-devel.x86_64
+yum install python-psycopg2.x86_64
+
+#user
+adduser -m devuser
+groupadd devuser
+adduser -m -g devuser devuser
+usermod -a -G devuser leipzigj
+usermod -a -G devuser apache
+usermod -a -G devuser nginx
+
+#sticky group SO IMPORTANT
+chmod -R g+s /home/devuser
+
+#nodejs
+yum -y update  
+yum -y install screen  
+cd /usr/local/src  
+wget http://nodejs.org/dist/node-latest.tar.gz  
+tar zxf node-*.tar.gz  
+cd node-v* 
+yum -y groupinstall "Development Tools"  
+./configure
+make
+make install  
+
+#bryon's wicked template
+virtualenv mybic-env
+cd mybic-env/
+. bin/activate
+django-admin.py startproject --template https://github.com/bruth/wicked-django-template/zipball/master -e py,ini,gitignore,in,conf,md,sample,json -n Gruntfile.coffee mybic
+PATH=$PATH:/usr/pgsql-9.3/bin/pg_config
+pip install -r requirements.txt 
+sudo npm install -g grunt-cli
+sudo gem install compass
+grunt
+
+#uwsgi
+sudo pip install uwsgi
+uwsgi --ini server/uwsgi/local.ini --protocol http --socket uwsgi.sock --check-static _site --static-safe /home/devuser/webapps/mybic-env/mybic/ --uid devuser --gid devuser
+
+#run wsgi through socket, needs nginx on
+uwsgi --ini server/uwsgi/development.ini
+
+#other
+scp leipzig@eps1.infosys.chop.edu:/Users/leipzig/Downloads/themeforest-5961888-avant-clean-and-responsive-bootstrap-31-admin.zip .
+unzip themeforest-5961888-avant-clean-and-responsive-bootstrap-31-admin.zip
 ```
-
-Now run the `startproject` command:
-
-```bash
-$ django-admin.py startproject --template https://github.com/bruth/wicked-django-template/zipball/master -e py,ini,gitignore,in,conf,md,sample,json -n Gruntfile.coffee myproject
-$ cd myproject
-```
-
-Install the base requirements:
-
-```bash
-$ pip install -r requirements.txt
-```
-
-Build your base javascript and css files:
-
-```base
-$ npm install
-$ grunt
-```
-Then either start the built-in Django server:
-
-```bash
-$ ./bin/manage.py runserver
-```
-
-or run a `uwsgi` process:
-
-```bash
-$ uwsgi --ini server/uwsgi/local.ini --protocol http --socket 127.0.0.1:8000 --check-static _site
-```
-
-## Features
-
-- clean project structure
-    - `_site` directory for web server document root
-        - copied static files and user uploaded media files
-        - works well with nginx's `try_files` directive
-        - `maintenance` directory for toggling maintenance mode's
-- server configurations for nginx, uWSGI, and Supervisor
-    - note: the paths will need to be updated to match your environment
-- tiered settings for easier cross-environment support
-    - `global_settings.py` for environment-independent settings
-    - `local_settings.py` for environment-specific settings (not versioned)
-    - `settings.py` for bringing them together and post-setup
-- `local_settings.py.sample` template
-- a clean static directory for large Web app development
-- wicked hot Gruntfile for watching static files pre-processors:
-    - `grunt watch`
-    - CoffeeScript (requires Node and CoffeeScript)
-    - SCSS (requires Ruby and Sass)
-    - compiles scss => css
-    - compiles coffee => javascript/src
-- integration with [r.js](https://github.com/jrburke/r.js/)
-    - `grunt requirejs`
-    - compiles javascript/src => javascript/min
-- context processor for including more direct static urls
-    - ``
-    - ``
-    - ``
-- full-featured fabfile.py for one-command deployment
-
-## Dependencies
-
-- Ruby
-- Node
-- Ruby Compass gem
-- Node CoffeeScript module
-
-## Gruntfile Commands
-
-- `build` - builds and initializes all submodules, compiles SCSS and
-    CoffeeScript and optimizes JavaScript
-- `watch` - watches the CoffeeScript and SCSS files in the background
-for changes and automatically recompiles the files
-- `compass` - one-time explicit recompilation of SCSS files
-- `coffee` - one-time explicit recompilation of CoffeeScript files
-
-## Fabfile Commands
-
-- `mm_on` - turns on maintenance mode
-- `mm_off` - turns off maintenance mode
-- `deploy` - deploy a specific Git tag on the host
-
-
-## Local Settings
-
-`local_settings.py` is intentionally not versioned (via .gitignore). It should
-contain any environment-specific settings and/or sensitive settings such as
-passwords, the `SECRET_KEY` and other information that should not be in version
-control. Defining `local_settings.py` is not mandatory but will warn if it does
-not exist.
-
-## CoffeeScript/JavaScript Development
-
-Ensure Node, NPM and CoffeeScript are installed:
-
-```bash
-$ npm install coffee-script -g
-```
-
-CoffeeScript is lovely. The flow is simple:
-
-- write some CoffeeScript which automatically gets compiled in JavaScript
-(by doing `make watch`)
-- when ready to test non-`DEBUG` mode, run `make optimize`
-
-The 'Gruntfile.coffee' file will need to be updated to define which modules
-should be compiled to single files. It is recommended to take a tiered
-approach to reduce overall file size across pages and increase cache potential
-for libraries that won't change for a while, for example jQuery.
-
-## SCSS Development
-
-Ensure Ruby and the Compass gem are installed:
-
-```bash
-$ gem install compass
-```
-
-[Sass](http://sass-lang.com/) is awesome. SCSS is a superset of CSS so you can
-use as much or as little SCSS syntax as you want. It is recommended to write
-all of your CSS rules as SCSS, since at the very least the Sass minifier can
-be taken advantage of.
-
-Execute the following commands to begin watching the static files and
-collect the files (using Django's collectstatic command):
-
-```bash
-$ grunt sass coffee watch collect
-```
-
-_Note, the `sass` and `coffee` targets are called first to ensure the compiled
-files exist before attempting to collect them. Just running `watch` spawns
-background processes and may result in a race condition with the `collect`
-command._
