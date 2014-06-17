@@ -28,6 +28,10 @@ service postgresql-9.3 start
 chkconfig postgresql-9.3 on
 yum install postgresql93-devel.x86_64
 yum install python-psycopg2.x86_64
+sudo /etc/init.d/postgresql-9.3 restart
+#as postgres
+emacs /var/lib/pgsql/9.3/data/pg_hba.conf
+
 
 #user
 adduser -m devuser
