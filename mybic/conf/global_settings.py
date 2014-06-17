@@ -26,14 +26,25 @@ TEMPLATE_DEBUG = True
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
+    #core awesome
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    #probably needed
+    'django.contrib.markup',
+    'django.contrib.sites',
+
+    #Project apps
     'simple_templates',
     'mybic',
+
+    'south',
+    'news',
+    'ldap',
 )
 
 
@@ -48,7 +59,9 @@ TEMPLATE_DEBUG = DEBUG
 #WSGI_APPLICATION = 'mybic.wsgi.application'
 
 # Admins receive any error messages by email if DEBUG is False
-ADMINS = ()
+ADMINS = (
+    ('Jeremy Leipzig', 'leipzigj@email.chop.edu'),
+)
 
 # Managers receive broken link emails if SEND_BROKEN_LINK_EMAILS is True
 MANAGERS = ADMINS
@@ -144,6 +157,25 @@ IGNORABLE_404_PATHS = (
     r'favicon.ico$',
 )
 
+LOGIN_URL = '/login/'
+LOGOUT_URL = '/logout/'
+
+SITEAUTH_ACCESS_ORDER = 'allow/deny'
+
+SITEAUTH_ALLOW_URLS = (
+    r'^$',
+    r'^favicon\.ico$',
+    r'^documentation/',
+    r'^(static|login|logout|denied|eula|support)/',
+    r'^concerns/$',
+    r'^password/reset/',
+    r'^(register|verify)/',
+)
+
+
+
+
+
 
 # Middleware
 
@@ -161,8 +193,8 @@ MIDDLEWARE_CLASSES = (
 
 # Email
 
-SUPPORT_EMAIL = 'support@example.com'
-DEFAULT_FROM_EMAIL = 'support@example.com'
+SUPPORT_EMAIL = 'leipzigj@email.chop.edu'
+DEFAULT_FROM_EMAIL = 'leipzigj@email.chop.edu'
 EMAIL_SUBJECT_PREFIX = '[mybic] '
 SEND_BROKEN_LINK_EMAILS = False
 
@@ -207,6 +239,39 @@ CACHES = {
 }
 
 
+
+#
+# AUTHENTICATION
+#
+
+# Two additional auth backends for email-based (rather than username)
+# and LDAP-based authentication. To use the LDAP authentication, the
+# rematining LDAP settings (see below) must be defined.
+AUTHENTICATION_BACKENDS = (
+    'pcgc.core.backends.EmailBackend',
+    'pcgc.core.backends.LdapBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# LDAP Authentication Backend -- LDAP['PREBINDPW'] and LDAP['SERVER_URI']
+# must be defined in local_settings.py since they are sensitive settings.
+LDAP = {
+    'DEBUG': False,
+    'PREBINDDN': 'cn=Version Control,ou=AdminUsers,ou=Res,dc=research,'
+                 'dc=chop,dc=edu',
+    'SEARCHDN': 'dc=chop,dc=edu',
+    'SEARCH_FILTER': 'sAMAccountName=%s',
+}
+
+# django-registration
+REGISTRATION_ACTIVATION_DAYS = 0
+REGISTRATION_MODERATION = True
+REGISTRATION_BACKENDS = {
+    'default': 'pcgc.accounts.backends.DefaultBackend',
+}
+
+
+
 # CSRF
 
 CSRF_COOKIE_NAME = 'mybic_csrftoken'
@@ -220,3 +285,5 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_COOKIE_NAME = 'mybic_sessionid'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = False
+
+
