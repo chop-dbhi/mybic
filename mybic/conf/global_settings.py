@@ -35,7 +35,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     
     #probably needed
-    'django.contrib.markup',
+    #deprecated
+    #'django.contrib.markup',
     'django.contrib.sites',
 
     #Project apps
@@ -73,12 +74,12 @@ INTERNAL_IPS = ('127.0.0.1', '::1')
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_PATH, 'mybic.db'),
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_PATH, 'mybic.db'),
+#    }
+#}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
@@ -173,7 +174,8 @@ SITEAUTH_ALLOW_URLS = (
 )
 
 
-
+# The primary key of the ``Site`` object for the Sites Framework
+SITE_ID = 1
 
 
 
@@ -247,11 +249,11 @@ CACHES = {
 # Two additional auth backends for email-based (rather than username)
 # and LDAP-based authentication. To use the LDAP authentication, the
 # rematining LDAP settings (see below) must be defined.
-AUTHENTICATION_BACKENDS = (
-    'pcgc.core.backends.EmailBackend',
-    'pcgc.core.backends.LdapBackend',
-    'django.contrib.auth.backends.ModelBackend',
-)
+#AUTHENTICATION_BACKENDS = (
+#    'pcgc.core.backends.EmailBackend',
+#    'pcgc.core.backends.LdapBackend',
+#    'django.contrib.auth.backends.ModelBackend',
+#)
 
 # LDAP Authentication Backend -- LDAP['PREBINDPW'] and LDAP['SERVER_URI']
 # must be defined in local_settings.py since they are sensitive settings.
