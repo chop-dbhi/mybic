@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
+from chopauth.settings import *
 
 PROJECT_PATH = BASE_PATH = os.path.join(os.path.dirname(__file__), '../..')
 
@@ -46,6 +47,9 @@ INSTALLED_APPS = (
     'south',
     'news',
     'ldap',
+
+    'chopauth',
+    'registration',
 )
 
 
@@ -257,10 +261,19 @@ CACHES = {
 
 # LDAP Authentication Backend -- LDAP['PREBINDPW'] and LDAP['SERVER_URI']
 # must be defined in local_settings.py since they are sensitive settings.
+
+AUTHENTICATION_BACKENDS = (
+    'chopauth.backends.LdapBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+REGISTRATION_BACKENDS = {
+    'default': 'chopauth.regbackends.DefaultBackend',
+}
+
 LDAP = {
-    'DEBUG': False,
-    'PREBINDDN': 'cn=Version Control,ou=AdminUsers,ou=Res,dc=research,'
-                 'dc=chop,dc=edu',
+    'DEBUG': True,
+    'PREBINDDN': 'cn=Version Control,ou=AdminUsers,ou=Res,dc=research,dc=chop,dc=edu',
     'SEARCHDN': 'dc=chop,dc=edu',
     'SEARCH_FILTER': 'sAMAccountName=%s',
 }

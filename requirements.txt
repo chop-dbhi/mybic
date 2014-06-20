@@ -22,3 +22,5 @@ git+git://github.com/cbmi/django-news.git#egg=django-news
 django-guardian==1.0.4
 
 django-simple-templates
+
+http://github.research.chop.edu/cbmi/django-chopauth/archive/master.zip

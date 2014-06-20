@@ -31,6 +31,10 @@ yum install python-psycopg2.x86_64
 sudo /etc/init.d/postgresql-9.3 restart
 #as postgres
 emacs /var/lib/pgsql/9.3/data/pg_hba.conf
+emacs /var/lib/pgsql/9.3/data/postgresql.conf
+port = 5432
+listen_addresses = '*'
+max_connections = 100
 
 
 #user
