@@ -41,17 +41,16 @@ INSTALLED_APPS = (
     'django.contrib.sites',
 
     #Project apps
-    'simple_templates',
+    #'simple_templates',
     'mybic',
-
+    'mybic.labs',
     'south',
     'news',
     'ldap',
 
     'chopauth',
-    'registration',
 )
-
+#    'registration',
 
 # Debug
 
@@ -144,7 +143,8 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join(PROJECT_PATH, 'templates')
+    os.path.join(PROJECT_PATH, 'templates'),
+    os.path.join(PROJECT_PATH, 'labs', 'wallace')
 )
 
 # URLs
@@ -164,6 +164,8 @@ IGNORABLE_404_PATHS = (
 
 LOGIN_URL = '/login/'
 LOGOUT_URL = '/logout/'
+#django sets this to /accounts/profile
+LOGIN_REDIRECT_URL = '/dashboard/'
 
 SITEAUTH_ACCESS_ORDER = 'allow/deny'
 
@@ -282,7 +284,7 @@ LDAP = {
 REGISTRATION_ACTIVATION_DAYS = 0
 REGISTRATION_MODERATION = True
 REGISTRATION_BACKENDS = {
-    'default': 'pcgc.accounts.backends.DefaultBackend',
+    'default': 'chopauth.regbackends.DefaultBackend',
 }
 
 

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Hello {{request.user.first_name}} {{request.user.last_name}}</h1>
+
+    Your groups:
+     <ul>
+    {% for my_group in my_groups %}
+    <li>{{ my_group }}</li>
+    {% endfor %}
+    </ul>
+
+    Your labs:
+    <ul>
+    {% for my_lab in my_labs %}
+    <li><a href="{% url 'myprojects' my_lab %}">{{ my_lab }}</a></li>
+    {% endfor %}
+    </ul>
+{% endblock %}
+
