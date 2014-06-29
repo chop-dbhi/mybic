@@ -66,10 +66,19 @@ cd mybic-env/
 . bin/activate
 django-admin.py startproject --template https://github.com/bruth/wicked-django-template/zipball/master -e py,ini,gitignore,in,conf,md,sample,json -n Gruntfile.coffee mybic
 PATH=$PATH:/usr/pgsql-9.3/bin/pg_config
-pip install -r requirements.txt 
+#fix requirements
+#django-siteauth
+#django-registration2
+pip install -r requirements.txt
+#chopauth needs updating http://github.research.chop.edu/cbmi/django-chopauth/issues/6
+#your node might be out of date
 sudo npm install -g grunt-cli
 sudo gem install compass
+#this installs the grunt dependencies:
+npm install
 grunt
+
+
 
 #uwsgi
 sudo pip install uwsgi

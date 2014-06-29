@@ -12,8 +12,8 @@ psycopg2
 python-ldap>=2.3.12,<2.4
 
 markdown==2.1.1
-django-siteauth==0.9b1
-django-registration2==0.9b2
+django-siteauth
+django-registration2
 
 # News
 git+git://github.com/cbmi/django-news.git#egg=django-news

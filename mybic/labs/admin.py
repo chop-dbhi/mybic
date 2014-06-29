@@ -9,8 +9,9 @@ from django.contrib import admin
 admin.site.unregister(Group)
 #admin.site.register(User)
 
-class ProjectAdmin:
-    list_display =
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = ('name','directory','lab')
+
 admin.site.register(models.Project,ProjectAdmin)
 
 #admin.site.register(models.Project,LabAdmin)

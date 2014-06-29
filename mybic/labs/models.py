@@ -17,6 +17,10 @@ class Project(models.Model):
     """
     name = models.CharField(max_length=100, unique=True, db_index=True)
     directory = models.CharField(max_length=100, unique=True, db_index=True)
-    lab = models.ForeignKey('lab')
+    lab = models.ForeignKey('Lab')
     created = models.DateTimeField(default=datetime.now)
 
+class staff(User):
+    """ cbmi staff
+    """
+    projects = models.ManyToManyField(Project)
