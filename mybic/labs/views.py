@@ -58,9 +58,14 @@ def projectview(request,lab_name,project_name):
         return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
 
     project = Project.objects.get(name=project_name)
+    my_projects = Project.objects.filter(
+            lab__name = lab_name
+        ).values_list('name',flat=True)
+    context = {'my_lab':lab_name,'my_project':project_name,'my_projects':my_projects}
+
     #lab_name = project.lab.name
     if project.public or project.lab.group in request.user.groups.all():
         proj_dir = os.path.join(lab_name,project.directory,project.index_page)
-        return render_to_response(proj_dir,context_instance=RequestContext(request))
+        return render_to_response(proj_dir,context,context_instance=RequestContext(request))
     else:
         return render_to_response('error.html',context_instance=RequestContext(request))

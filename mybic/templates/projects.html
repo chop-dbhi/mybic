@@ -2,32 +2,42 @@
 
 {% block styles %}
     {{ block.super }}
-    <link rel=stylesheet href="{{ CSS_URL }}news.css">
+
 {% endblock %}
 
 
 {% block content %}
-    <h1>Hello {{request.user.last_name}}</h1>
+    <h3>Hello {{request.user.last_name}}</h3>
+
+    <div id="news" class="landing-target">
+            <div class="landing-target-title">
+                <h3><img src="/static/images/rss.png"> News</h3>
+            </div>
+
+
     {% for entry in entries %}
         <article class="entry">
             {% spaceless %}
+             <p>
             <header id="{{ entry.slug }}">
                 <span class="date-block">
                     <span class="month">{{ entry.created|date:"j" }}</span>
                     {{ entry.created|date:"M Y" }}
                 </span>
-                <h1>{{ entry.title }}</h1>
+                <h3>{{ entry.title }}</h3>
             </header>
+            
             {% endspaceless %}
             <div class="body">
                 {{ entry.formatted_body|safe }}
             </div>
+        </p>
         </article>
         {% if not forloop.last %}<hr>{% endif %}
     {% endfor %}
+    </div>
 
-
-    {{ my_lab }} projects:
+    <h3>{{ my_lab }} projects:</h3>
     <ul>
     {% for my_project in my_projects %}
     <li><a href="{% url 'my_project_url' my_lab my_project %}">{{ my_project }}</a></li>
@@ -35,3 +45,27 @@
     </ul>
 {% endblock %}
 
+<div id="news" class="landing-target">
+            <div class="landing-target-title">
+                <img src="/static/0ce1a241a3/images/rss.png">
+                <h1>News</h1>
+            </div>
+            <p>
+
+                    <span style="color:#aaa">June 24, 2014</span><br>
+                    <a href="/news/#news-2014-06-24-exomes-published">Exomes published</a>
+                    <br>
+
+                    <span style="color:#aaa">June 16, 2014</span><br>
+                    <a href="/news/#news-2014-06-16-exomes-published">Exomes published</a>
+                    <br>
+
+                    <span style="color:#aaa">May 20, 2014</span><br>
+                    <a href="/news/#news-2014-05-20-targeted-resequencing-fqs-bams-pub">Targeted Resequencing FQs &amp; BAMs published</a>
+
+
+            </p>
+            <p>
+              <a href="/news/" class="info">More news</a>
+            </p>
+        </div>

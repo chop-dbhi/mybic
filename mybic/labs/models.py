@@ -21,10 +21,10 @@ class Project(models.Model):
     """ A project with a directory
     """
     name = models.CharField(max_length=100, unique=False, db_index=True)
-    directory = models.CharField(max_length=100, unique=True, db_index=True)
-    index_page = models.CharField(default="index.html",max_length=100, unique=False, db_index=True)
+    directory = models.CharField(max_length=100, unique=True, db_index=True, help_text="e.g. err-rna-seq for labs/templates/pei_lab/err-rna-seq")
+    index_page = models.CharField(default="index.html",max_length=100, unique=False, db_index=True, help_text="e.g. index.html for labs/templates/pei_lab/err-rna-seq/index.html")
     #data expedition directory
-    de_dir = models.CharField(max_length=100, unique=False, db_index=True, blank=True)
+    de_dir = models.CharField(max_length=100, unique=False, db_index=True, blank=True, help_text="e.g. err-rna-seq for labs/templates/pei_lab/err-rna-seq")
     lab = models.ForeignKey('Lab')
     git_repo = models.CharField(max_length=100, unique=True, db_index=True, help_text='e.g. http://github.research.chop.edu/cbmi/pcgc')
     git_branch = models.CharField(max_length=100, unique=False, db_index=True)
