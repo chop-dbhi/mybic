@@ -110,7 +110,7 @@ STATIC_ROOT = os.path.join(BASE_PATH, '_site/static')
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-
+    os.path.join(BASE_PATH,'mybic/labs/templates/pei_lab/err-rna-seq/static'),
 )
 
 # Templates
@@ -144,7 +144,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(PROJECT_PATH, 'templates'),
-    os.path.join(PROJECT_PATH, 'labs', 'wallace')
+    os.path.join(PROJECT_PATH, 'labs', 'templates')
 )
 
 # URLs

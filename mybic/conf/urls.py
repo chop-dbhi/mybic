@@ -1,8 +1,10 @@
 from django.conf.urls import url, patterns, include
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.shortcuts import render
 
+from django.conf import settings
 
 admin.autodiscover()
 
@@ -26,7 +28,7 @@ urlpatterns = patterns(
 
     #url(r'^labs/', include('mybic.labs.urls')),
     #url(r'^labs/(\S+)$', 'mybic.views.labs'),
-)
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 #url(r'^$', TemplateView.as_view(template_name='index.html')),
 #url(r'^accounts/login/{0,1}$', TemplateView.as_view(template_name='foo_index.html'))
