@@ -14,22 +14,36 @@ class Lab(models.Model):
     pi = models.ForeignKey(User)
     group = models.ForeignKey(Group)
 
+    def __str__(self):
+        return self.name
+
 class Project(models.Model):
     """ A project with a directory
     """
     name = models.CharField(max_length=100, unique=False, db_index=True)
     directory = models.CharField(max_length=100, unique=True, db_index=True)
+    index_page = models.CharField(default="index.html",max_length=100, unique=False, db_index=True)
     #data expedition directory
-    de_dir = models.CharField(max_length=100, unique=True, db_index=True, null=True)
+    de_dir = models.CharField(max_length=100, unique=False, db_index=True, blank=True)
     lab = models.ForeignKey('Lab')
-    git_repo = models.CharField(max_length=100, unique=True, db_index=True)
+    git_repo = models.CharField(max_length=100, unique=True, db_index=True, help_text='e.g. http://github.research.chop.edu/cbmi/pcgc')
     git_branch = models.CharField(max_length=100, unique=False, db_index=True)
     created = models.DateTimeField(default=datetime.now)
+    public = models.BooleanField(default=False, db_index=True, help_text='Is this a public project that any myBiC user can see?')
+    markdown = models.BooleanField(default=False, db_index=True, help_text='Is this a markdown page?')
+    def __str__(self):
+        return self.name
+
 
 class ProjectArticle(Article):
     """ A news item or blog entry associated with a project
     """
     project = models.ForeignKey('Project')
+
+class LabArticle(Article):
+    """ A news item or blog entry associated with a lab
+    """
+    lab = models.ForeignKey('Lab')
 
 class staff(User):
     """ cbmi staff

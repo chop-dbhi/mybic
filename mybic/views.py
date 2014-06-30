@@ -2,11 +2,13 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.template import RequestContext
+import sys
 
 from mybic.labs.models import Lab
 from django.contrib.auth.models import User,Group
 
 def dashboard(request):
+    print >>sys.stderr, 'dashboard!'
     if hasattr(request, 'user') and request.user.is_authenticated():
         kwargs = {'user': request.user}
     else:

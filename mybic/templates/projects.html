@@ -1,9 +1,37 @@
 {% extends "base.html" %}
 
+{% block styles %}
+    {{ block.super }}
+    <link rel=stylesheet href="{{ CSS_URL }}news.css">
+{% endblock %}
+
+
 {% block content %}
     <h1>Hello {{request.user.last_name}}</h1>
+    {% for entry in entries %}
+        <article class="entry">
+            {% spaceless %}
+            <header id="{{ entry.slug }}">
+                <span class="date-block">
+                    <span class="month">{{ entry.created|date:"j" }}</span>
+                    {{ entry.created|date:"M Y" }}
+                </span>
+                <h1>{{ entry.title }}</h1>
+            </header>
+            {% endspaceless %}
+            <div class="body">
+                {{ entry.formatted_body|safe }}
+            </div>
+        </article>
+        {% if not forloop.last %}<hr>{% endif %}
+    {% endfor %}
 
-    {{ lab }} projects:
 
+    {{ my_lab }} projects:
+    <ul>
+    {% for my_project in my_projects %}
+    <li><a href="{% url 'my_project_url' my_lab my_project %}">{{ my_project }}</a></li>
+    {% endfor %}
+    </ul>
 {% endblock %}
 

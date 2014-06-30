@@ -13,7 +13,7 @@
     Your labs:
     <ul>
     {% for my_lab in my_labs %}
-    <li><a href="{% url 'myprojects' my_lab %}">{{ my_lab }}</a></li>
+    <li><a href="{% url 'my_lab_url' my_lab %}">{{ my_lab }}</a></li>
     {% endfor %}
     </ul>
 {% endblock %}
