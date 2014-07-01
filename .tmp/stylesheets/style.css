@@ -7462,7 +7462,179 @@ td.visible-print {
     display: none !important;
   }
 }
-/* line 3, ../../mybic/static/stylesheets/scss/style.scss */
+/* line 14, ../../mybic/static/stylesheets/lib/mybic.scss */
+article {
+  padding-right: 40px;
+  font-size: 14px;
+}
+/* line 19, ../../mybic/static/stylesheets/lib/mybic.scss */
+article p, article li {
+  line-height: 22px;
+}
+/* line 23, ../../mybic/static/stylesheets/lib/mybic.scss */
+article h1, article h2, article h3 {
+  color: #8F1916;
+}
+/* line 27, ../../mybic/static/stylesheets/lib/mybic.scss */
+article h1 {
+  font-size: 28px;
+}
+/* line 32, ../../mybic/static/stylesheets/lib/mybic.scss */
+article header > * {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+  vertical-align: middle;
+}
+/* line 37, ../../mybic/static/stylesheets/lib/mybic.scss */
+article header h1 {
+  font-size: 34px;
+  color: #333;
+}
+/* line 42, ../../mybic/static/stylesheets/lib/mybic.scss */
+article header .date-block {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+  vertical-align: middle;
+  color: #999;
+  font-size: 12px;
+  width: 30px;
+  padding-right: 10px;
+  text-align: right;
+}
+/* line 51, ../../mybic/static/stylesheets/lib/mybic.scss */
+article header .date-block .month {
+  font-size: 24px;
+  display: block;
+}
+/* line 58, ../../mybic/static/stylesheets/lib/mybic.scss */
+article .body {
+  padding-left: 40px;
+}
+/* line 62, ../../mybic/static/stylesheets/lib/mybic.scss */
+article ul, article li {
+  padding-left: 0;
+  margin-left: 8px;
+}
+/* line 67, ../../mybic/static/stylesheets/lib/mybic.scss */
+article blockquote {
+  background-color: #eee;
+  padding: 20px;
+  line-height: 22px;
+  margin: 0;
+  font-size: 16px;
+  color: #666;
+}
+/* line 75, ../../mybic/static/stylesheets/lib/mybic.scss */
+article blockquote :first-child {
+  padding-top: 0;
+  margin-top: 0;
+}
+/* line 80, ../../mybic/static/stylesheets/lib/mybic.scss */
+article blockquote :last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+/* line 89, ../../mybic/static/stylesheets/lib/mybic.scss */
+#myBiC-logo {
+  font-family: Lato;
+  font-size: 2.9em;
+  -letter-color: #cccccc #cccccc #374656 #58B9DA #374656;
+}
+
+/* line 22, ../../mybic/static/stylesheets/lib/landing.scss */
+.column {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+  width: 438px;
+  vertical-align: top;
+  text-align: left;
+}
+/* line 28, ../../mybic/static/stylesheets/lib/landing.scss */
+.column:first-child {
+  margin-right: 20px;
+}
+
+/* line 33, ../../mybic/static/stylesheets/lib/landing.scss */
+.landing-target {
+  -webkit-box-shadow: 0 2px 3px #aaaaaa;
+  box-shadow: 0 2px 3px #aaaaaa;
+  margin: 0 auto;
+  font-size: 16px;
+  vertical-align: top;
+  margin-bottom: 20px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  text-shadow: 0 1px 2px #fff;
+  line-height: 22px;
+}
+/* line 44, ../../mybic/static/stylesheets/lib/landing.scss */
+.landing-target > :first-child {
+  margin-top: 0px;
+}
+/* line 48, ../../mybic/static/stylesheets/lib/landing.scss */
+.landing-target > :last-child {
+  margin-bottom: 0;
+}
+/* line 52, ../../mybic/static/stylesheets/lib/landing.scss */
+.landing-target h1, .landing-target h2, .landing-target img {
+  vertical-align: middle;
+  display: inline;
+}
+/* line 57, ../../mybic/static/stylesheets/lib/landing.scss */
+.landing-target img {
+  margin-right: 5px;
+}
+/* line 59, ../../mybic/static/stylesheets/lib/landing.scss */
+.landing-target code {
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
+  border-radius: 3px;
+  text-shadow: 0 1px 0 #fff;
+  font-size: 0.9em;
+  padding: 1px 3px;
+  border: 1px solid #ddd;
+  background-color: #eee;
+}
+
+/* line 70, ../../mybic/static/stylesheets/lib/landing.scss */
+.landing-target-title {
+  margin-bottom: 10px;
+}
+
+/* line 73, ../../mybic/static/stylesheets/lib/landing.scss */
+#choice-block {
+  text-align: center;
+}
+
+/* line 74, ../../mybic/static/stylesheets/lib/landing.scss */
+#download h1 {
+  color: #306cab;
+}
+
+/* line 75, ../../mybic/static/stylesheets/lib/landing.scss */
+#upload h1 {
+  color: #4bab30;
+}
+
+/* line 4, ../../mybic/static/stylesheets/scss/style.scss */
 body {
   padding-top: 40px;
 }

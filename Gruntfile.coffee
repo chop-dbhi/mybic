@@ -79,7 +79,16 @@ module.exports = (grunt) ->
                     dest: '<%= static_path %>/scripts/javascript/src'
                     ext: '.js'
                 ]
-    
+        bowercopy:
+            options: 
+                clean: false
+            scripts: 
+                options: 
+                   destPrefix: '<%= static_path %>/scripts/javascript/src'
+                ,
+                files: 
+                  'kerning.js': 'kerning.js'
+
     grunt.registerTask 'setup', 'Copies the sample local_settings file into place',[
         'copy'
     ]
@@ -94,6 +103,7 @@ module.exports = (grunt) ->
         'cssmin'
         'requirejs'
         'copy'
+        'bowercopy'
     ]
 
     grunt.registerTask 'default', [

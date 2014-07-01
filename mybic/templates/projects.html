@@ -7,11 +7,10 @@
 
 
 {% block content %}
-    <h3>Hello {{request.user.last_name}}</h3>
-
     <div id="news" class="landing-target">
             <div class="landing-target-title">
-                <h3><img src="/static/images/rss.png"> News</h3>
+                <img src="/static/images/rss.png">
+                <h2>News</h2>
             </div>
 
 
@@ -26,7 +25,7 @@
                 </span>
                 <h3>{{ entry.title }}</h3>
             </header>
-            
+
             {% endspaceless %}
             <div class="body">
                 {{ entry.formatted_body|safe }}
@@ -36,7 +35,12 @@
         {% if not forloop.last %}<hr>{% endif %}
     {% endfor %}
     </div>
-
+    groups
+    <ul>
+    {% for my_group in my_groups %}
+                            <li><a href="#">{{ my_group }}</a></li>
+                        {% endfor %}
+    </ul>
     <h3>{{ my_lab }} projects:</h3>
     <ul>
     {% for my_project in my_projects %}
@@ -44,28 +48,3 @@
     {% endfor %}
     </ul>
 {% endblock %}
-
-<div id="news" class="landing-target">
-            <div class="landing-target-title">
-                <img src="/static/0ce1a241a3/images/rss.png">
-                <h1>News</h1>
-            </div>
-            <p>
-
-                    <span style="color:#aaa">June 24, 2014</span><br>
-                    <a href="/news/#news-2014-06-24-exomes-published">Exomes published</a>
-                    <br>
-
-                    <span style="color:#aaa">June 16, 2014</span><br>
-                    <a href="/news/#news-2014-06-16-exomes-published">Exomes published</a>
-                    <br>
-
-                    <span style="color:#aaa">May 20, 2014</span><br>
-                    <a href="/news/#news-2014-05-20-targeted-resequencing-fqs-bams-pub">Targeted Resequencing FQs &amp; BAMs published</a>
-
-
-            </p>
-            <p>
-              <a href="/news/" class="info">More news</a>
-            </p>
-        </div>
