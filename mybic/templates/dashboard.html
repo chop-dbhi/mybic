@@ -3,11 +3,19 @@
 {% block content %}
 
 
-    Your labs:
+    <h3>Your labs:</h3>
+
     <ul>
     {% for my_lab in my_labs %}
-    <li><a href="{% url 'my_lab_url' my_lab %}">{{ my_lab }}</a></li>
+    <li><h4><a href="{% url 'my_lab_url' my_lab %}">{{ my_lab }}</a></h4></li>
     {% endfor %}
     </ul>
+
+     <ul>
+    {% for my_project in my_projects %}
+    <li><h4>{{ my_project }}</h4></li>
+    {% endfor %}
+    </ul>
+
 {% endblock %}
 

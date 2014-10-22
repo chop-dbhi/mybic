@@ -199,6 +199,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_templates.middleware.SimplePageFallbackMiddleware',
+    'siteauth.middleware.SiteAuthenticationMiddleware',
 )
 
 
