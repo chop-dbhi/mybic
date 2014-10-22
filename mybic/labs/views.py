@@ -9,6 +9,16 @@ import sys
 from mybic.labs.models import Project,Lab, LabArticle
 
 def labview(request,lab_name):
+
+    print >>sys.stderr, 'labview! {0}'.format(request.user)
+
+    if hasattr(request, 'user') and request.user.is_authenticated():
+        kwargs = {'user': request.user}
+        user = request.user
+    else:
+        kwargs = {'session_key': request.session.session_key}
+        return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
+
     my_groups = request.user.groups.values_list('name',flat=True)
 
     try:
@@ -29,7 +39,15 @@ def labview(request,lab_name):
     else:
         return render_to_response('error.html',context_instance=RequestContext(request))
 
-def projectview(request,lab_name,project_slug):
+
+def projectview(request,lab_name,project_name):
+    print >>sys.stderr, 'projectview! {0}'.format(request.user)
+    if hasattr(request, 'user') and request.user.is_authenticated():
+        kwargs = {'user': request.user}
+    else:
+        kwargs = {'session_key': request.session.session_key}
+        return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
+
     my_groups = request.user.groups.values_list('name',flat=True)
 
     project = Project.objects.get(slug=project_slug)

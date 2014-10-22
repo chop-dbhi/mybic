@@ -24,6 +24,7 @@ class Project(models.Model):
     slug = models.SlugField(max_length=50, unique=False, db_index=True, help_text=" only letters, numbers, underscores or hyphens e.g. err-rna-seq")
     directory = models.SlugField(max_length=100, unique=True, db_index=True, help_text="e.g. err-rna-seq for labs/templates/pei_lab/err-rna-seq")
     index_page = models.CharField(default="index.html",max_length=100, unique=False, db_index=True, help_text="e.g. index.html for labs/templates/pei_lab/err-rna-seq/index.html")
+    static_dir = models.CharField(default="",max_length=100, unique=False, db_index=True, help_text="the directory in /home/devuser/webapps/mybic/static/ e.g. /my_lab/my_project/static/")
     #data expedition directory
     de_dir = models.CharField(max_length=100, unique=False, db_index=True, blank=True, help_text="e.g. err-rna-seq for labs/templates/pei_lab/err-rna-seq")
     lab = models.ForeignKey('Lab')

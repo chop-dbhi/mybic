@@ -8,7 +8,7 @@ from mybic.labs.models import Lab, Project
 from django.contrib.auth.models import User,Group
 
 def dashboard(request):
-    print >>sys.stderr, 'dashboard!'
+    print >>sys.stderr, 'dashboard! {0}'.format(request.user)
     if hasattr(request, 'user') and request.user.is_authenticated():
         kwargs = {'user': request.user}
     else:

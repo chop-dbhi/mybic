@@ -24,7 +24,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['mybic.chop.edu']
 
 INSTALLED_APPS = (
     #core awesome
@@ -54,7 +54,7 @@ INSTALLED_APPS = (
 
 # Debug
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 
@@ -109,8 +109,11 @@ STATIC_ROOT = os.path.join(BASE_PATH, '_site/static')
 
 STATIC_URL = '/static/'
 
+# os.path.join(BASE_PATH,'_site/static/pei_lab'),
+# os.path.join(BASE_PATH,'_site/static/pei_lab/errRNAseq'),
 STATICFILES_DIRS = (
-    os.path.join(BASE_PATH,'mybic/labs/templates/pei_lab/err-rna-seq/static'),
+    STATIC_ROOT,
+    os.path.join(BASE_PATH,'mybic/labs/templates/'),
 )
 
 # Templates
@@ -129,11 +132,11 @@ TEMPLATE_LOADERS = (
 
 # List of finder classes that know how to find static files in
 # various locations.
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+#STATICFILES_FINDERS = (
+#    'django.contrib.staticfiles.finders.FileSystemFinder',
+#    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 #    'django.contrib.staticfiles.finders.DefaultStorageFinder',
-)
+#)
 
 
 
@@ -275,11 +278,12 @@ REGISTRATION_BACKENDS = {
 }
 
 LDAP = {
-    'DEBUG': True,
+    'DEBUG': False,
     'PREBINDDN': 'cn=Version Control,ou=AdminUsers,ou=Res,dc=research,dc=chop,dc=edu',
     'SEARCHDN': 'dc=chop,dc=edu',
     'SEARCH_FILTER': 'sAMAccountName=%s',
 }
+
 
 # django-registration
 REGISTRATION_ACTIVATION_DAYS = 0
@@ -298,10 +302,9 @@ CSRF_COOKIE_NAME = 'mybic_csrftoken'
 # Sessions
 
 
-# SESSION_COOKIE_AGE = 60 * 20
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_COOKIE_AGE = 60 * 20
+#SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_COOKIE_NAME = 'mybic_sessionid'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = False
-
-

@@ -8,23 +8,15 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'Project.index_page'
-        db.add_column(u'labs_project', 'index_page',
-                      self.gf('django.db.models.fields.CharField')(default='index.html', max_length=100, db_index=True),
-                      keep_default=False)
-
-        # Adding field 'Project.markdown'
-        db.add_column(u'labs_project', 'markdown',
-                      self.gf('django.db.models.fields.BooleanField')(default=False, db_index=True),
+        # Adding field 'Project.static_dir'
+        db.add_column(u'labs_project', 'static_dir',
+                      self.gf('django.db.models.fields.CharField')(default='', max_length=100, db_index=True),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'Project.index_page'
-        db.delete_column(u'labs_project', 'index_page')
-
-        # Deleting field 'Project.markdown'
-        db.delete_column(u'labs_project', 'markdown')
+        # Deleting field 'Project.static_dir'
+        db.delete_column(u'labs_project', 'static_dir')
 
 
     models = {
@@ -46,7 +38,7 @@ class Migration(SchemaMigration):
             'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Group']"}),
+            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
@@ -54,7 +46,7 @@ class Migration(SchemaMigration):
             'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
             'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "u'user_set'", 'blank': 'True', 'to': u"orm['auth.Permission']"}),
+            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': u"orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
         u'contenttypes.contenttype': {
@@ -71,6 +63,11 @@ class Migration(SchemaMigration):
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100', 'db_index': 'True'}),
             'pi': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
         },
+        u'labs.labarticle': {
+            'Meta': {'ordering': "['-created']", 'object_name': 'LabArticle', '_ormbases': [u'news.Article']},
+            u'article_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': u"orm['news.Article']", 'unique': 'True', 'primary_key': 'True'}),
+            'lab': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['labs.Lab']"})
+        },
         u'labs.project': {
             'Meta': {'object_name': 'Project'},
             'created': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
@@ -83,7 +80,8 @@ class Migration(SchemaMigration):
             'lab': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['labs.Lab']"}),
             'markdown': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100', 'db_index': 'True'}),
-            'public': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'})
+            'public': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'static_dir': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '100', 'db_index': 'True'})
         },
         u'labs.projectarticle': {
             'Meta': {'ordering': "['-created']", 'object_name': 'ProjectArticle', '_ormbases': [u'news.Article']},
