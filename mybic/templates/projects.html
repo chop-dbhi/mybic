@@ -35,7 +35,7 @@
     <h1 id="overview" class="page-header"><img src="/static/images/iconmonstr-layer-19-icon-32.png"> {{ my_lab }} Projects</h1>
     <ul>
     {% for my_project in my_projects %}
-    <li><a href="{% url 'my_project_url' my_lab my_project %}">{{ my_project }}</a></li>
+    <li><a href="{% url 'my_project_url' my_lab.slug my_project.slug %}">{{ my_project.name }}</a></li>
     {% endfor %}
     </ul>
     </div>

@@ -8,38 +8,83 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'Lab'
+        db.create_table(u'labs_lab', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=50, db_index=True)),
+            ('pi', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('group', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.Group'])),
+            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=50)),
+        ))
+        db.send_create_signal(u'labs', ['Lab'])
 
-        # Changing field 'Project.name'
-        db.alter_column(u'labs_project', 'name', self.gf('django.db.models.fields.SlugField')(max_length=50))
+        # Adding model 'Project'
+        db.create_table(u'labs_project', (
+            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=50, db_index=True)),
+            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=50)),
+            ('directory', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=100)),
+            ('index_page', self.gf('django.db.models.fields.CharField')(default='index.html', max_length=100, db_index=True)),
+            ('static_dir', self.gf('django.db.models.fields.CharField')(default='', max_length=100, db_index=True)),
+            ('de_dir', self.gf('django.db.models.fields.CharField')(db_index=True, max_length=100, blank=True)),
+            ('lab', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['labs.Lab'])),
+            ('git_repo', self.gf('django.db.models.fields.URLField')(unique=True, max_length=100, db_index=True)),
+            ('git_branch', self.gf('django.db.models.fields.CharField')(max_length=100, db_index=True)),
+            ('created', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
+            ('public', self.gf('django.db.models.fields.BooleanField')(default=False, db_index=True)),
+            ('markdown', self.gf('django.db.models.fields.BooleanField')(default=False, db_index=True)),
+        ))
+        db.send_create_signal(u'labs', ['Project'])
 
-        # Changing field 'Project.index_page'
-        db.alter_column(u'labs_project', 'index_page', self.gf('django.db.models.fields.SlugField')(max_length=100))
+        # Adding model 'ProjectArticle'
+        db.create_table(u'labs_projectarticle', (
+            (u'article_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['news.Article'], unique=True, primary_key=True)),
+            ('project', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['labs.Project'])),
+        ))
+        db.send_create_signal(u'labs', ['ProjectArticle'])
 
-        # Changing field 'Project.directory'
-        db.alter_column(u'labs_project', 'directory', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=100))
+        # Adding model 'LabArticle'
+        db.create_table(u'labs_labarticle', (
+            (u'article_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['news.Article'], unique=True, primary_key=True)),
+            ('lab', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['labs.Lab'])),
+        ))
+        db.send_create_signal(u'labs', ['LabArticle'])
 
-        # Changing field 'Project.git_repo'
-        db.alter_column(u'labs_project', 'git_repo', self.gf('django.db.models.fields.URLField')(unique=True, max_length=100))
+        # Adding model 'staff'
+        db.create_table(u'labs_staff', (
+            (u'user_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['auth.User'], unique=True, primary_key=True)),
+        ))
+        db.send_create_signal(u'labs', ['staff'])
 
-        # Changing field 'Lab.name'
-        db.alter_column(u'labs_lab', 'name', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50))
+        # Adding M2M table for field projects on 'staff'
+        m2m_table_name = db.shorten_name(u'labs_staff_projects')
+        db.create_table(m2m_table_name, (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('staff', models.ForeignKey(orm[u'labs.staff'], null=False)),
+            ('project', models.ForeignKey(orm[u'labs.project'], null=False))
+        ))
+        db.create_unique(m2m_table_name, ['staff_id', 'project_id'])
+
 
     def backwards(self, orm):
+        # Deleting model 'Lab'
+        db.delete_table(u'labs_lab')
 
-        # Changing field 'Project.name'
-        db.alter_column(u'labs_project', 'name', self.gf('django.db.models.fields.CharField')(max_length=100))
+        # Deleting model 'Project'
+        db.delete_table(u'labs_project')
 
-        # Changing field 'Project.index_page'
-        db.alter_column(u'labs_project', 'index_page', self.gf('django.db.models.fields.CharField')(max_length=100))
+        # Deleting model 'ProjectArticle'
+        db.delete_table(u'labs_projectarticle')
 
-        # Changing field 'Project.directory'
-        db.alter_column(u'labs_project', 'directory', self.gf('django.db.models.fields.CharField')(max_length=100, unique=True))
+        # Deleting model 'LabArticle'
+        db.delete_table(u'labs_labarticle')
 
-        # Changing field 'Project.git_repo'
-        db.alter_column(u'labs_project', 'git_repo', self.gf('django.db.models.fields.CharField')(max_length=100, unique=True))
+        # Deleting model 'staff'
+        db.delete_table(u'labs_staff')
 
-        # Changing field 'Lab.name'
-        db.alter_column(u'labs_lab', 'name', self.gf('django.db.models.fields.CharField')(max_length=100, unique=True))
+        # Removing M2M table for field projects on 'staff'
+        db.delete_table(db.shorten_name(u'labs_staff_projects'))
+
 
     models = {
         u'auth.group': {
@@ -82,8 +127,9 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Lab'},
             'group': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.Group']"}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'}),
-            'pi': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"})
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50', 'db_index': 'True'}),
+            'pi': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['auth.User']"}),
+            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50'})
         },
         u'labs.labarticle': {
             'Meta': {'ordering': "['-created']", 'object_name': 'LabArticle', '_ormbases': [u'news.Article']},
@@ -98,11 +144,13 @@ class Migration(SchemaMigration):
             'git_branch': ('django.db.models.fields.CharField', [], {'max_length': '100', 'db_index': 'True'}),
             'git_repo': ('django.db.models.fields.URLField', [], {'unique': 'True', 'max_length': '100', 'db_index': 'True'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'index_page': ('django.db.models.fields.SlugField', [], {'default': "'index.html'", 'max_length': '100'}),
+            'index_page': ('django.db.models.fields.CharField', [], {'default': "'index.html'", 'max_length': '100', 'db_index': 'True'}),
             'lab': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['labs.Lab']"}),
             'markdown': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
-            'name': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
-            'public': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'db_index': 'True'}),
+            'public': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '50'}),
+            'static_dir': ('django.db.models.fields.CharField', [], {'default': "''", 'max_length': '100', 'db_index': 'True'})
         },
         u'labs.projectarticle': {
             'Meta': {'ordering': "['-created']", 'object_name': 'ProjectArticle', '_ormbases': [u'news.Article']},

@@ -112,7 +112,6 @@ STATIC_URL = '/static/'
 # os.path.join(BASE_PATH,'_site/static/pei_lab'),
 # os.path.join(BASE_PATH,'_site/static/pei_lab/errRNAseq'),
 STATICFILES_DIRS = (
-    STATIC_ROOT,
     os.path.join(BASE_PATH,'mybic/labs/templates/'),
 )
 
@@ -225,7 +224,7 @@ LOGGING = {
     },
     'loggers': {
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['stdout'],
             'level': 'ERROR',
             'propagate': True,
         },

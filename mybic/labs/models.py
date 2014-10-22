@@ -10,10 +10,11 @@ class Lab(models.Model):
         A user can belong to more than one group
         So members of that group can access all its labs
     """
-    name = models.SlugField(max_length=50, unique=True, db_index=True, help_text="lab name only letters, numbers, underscores or hyphens e.g. Pei")
+    name = models.CharField(max_length=50, unique=True, db_index=True, help_text="lab name only letters, numbers, underscores or hyphens e.g. Pei")
     pi = models.ForeignKey(User)
     group = models.ForeignKey(Group)
-
+    slug = models.SlugField(max_length=50, unique=False, db_index=True, help_text=" only letters, numbers, underscores or hyphens e.g. pei_lab")
+        
     def __str__(self):
         return self.name
 
@@ -26,7 +27,7 @@ class Project(models.Model):
     index_page = models.CharField(default="index.html",max_length=100, unique=False, db_index=True, help_text="e.g. index.html for labs/templates/pei_lab/err-rna-seq/index.html")
     static_dir = models.CharField(default="",max_length=100, unique=False, db_index=True, help_text="the directory in /home/devuser/webapps/mybic/static/ e.g. /my_lab/my_project/static/")
     #data expedition directory
-    de_dir = models.CharField(max_length=100, unique=False, db_index=True, blank=True, help_text="e.g. err-rna-seq for labs/templates/pei_lab/err-rna-seq")
+    de_dir = models.CharField(max_length=100, unique=False, db_index=True, blank=True, null=True, help_text="e.g. err-rna-seq for labs/templates/pei_lab/err-rna-seq")
     lab = models.ForeignKey('Lab')
     git_repo = models.URLField(max_length=100, unique=True, db_index=True, help_text='e.g. http://github.research.chop.edu/cbmi/pcgc')
     git_branch = models.CharField(max_length=100, unique=False, db_index=True)

@@ -8,7 +8,7 @@ import sys
 
 from mybic.labs.models import Project,Lab, LabArticle
 
-def labview(request,lab_name):
+def labview(request,lab_slug):
 
     print >>sys.stderr, 'labview! {0}'.format(request.user)
 
@@ -22,7 +22,7 @@ def labview(request,lab_name):
     my_groups = request.user.groups.values_list('name',flat=True)
 
     try:
-        lab_object = Lab.objects.get(name=lab_name)
+        lab_object = Lab.objects.get(slug=lab_slug)
     except ObjectDoesNotExist:
         return render_to_response('error.html',context_instance=RequestContext(request))
 
@@ -30,17 +30,17 @@ def labview(request,lab_name):
         entries = LabArticle.objects.filter(published=True,lab=lab_object)
 
         my_projects = Project.objects.filter(
-            lab__name = lab_name
-        ).values_list('slug',flat=True)
+            lab__slug = lab_slug
+        )
 
-        context = {'my_groups':my_groups,'my_lab':lab_name,'my_projects':my_projects,'entries': entries}
+        context = {'my_groups':my_groups,'my_lab':lab_object,'my_projects':my_projects,'entries': entries}
 
         return render_to_response('projects.html', context, context_instance=RequestContext(request))
     else:
         return render_to_response('error.html',context_instance=RequestContext(request))
 
 
-def projectview(request,lab_name,project_name):
+def projectview(request,lab_slug,project_slug):
     print >>sys.stderr, 'projectview! {0}'.format(request.user)
     if hasattr(request, 'user') and request.user.is_authenticated():
         kwargs = {'user': request.user}
@@ -49,18 +49,18 @@ def projectview(request,lab_name,project_name):
         return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
 
     my_groups = request.user.groups.values_list('name',flat=True)
-
+    lab = Lab.objects.get(slug=lab_slug)
     project = Project.objects.get(slug=project_slug)
 
     my_projects = Project.objects.filter(
-            lab__name = lab_name
-        ).values_list('slug',flat=True)
+            lab__slug = lab_slug
+        )
 
-    context = {'my_groups':my_groups,'my_lab':lab_name,'my_project':project_slug,'my_projects':my_projects}
+    context = {'my_groups':my_groups,'my_lab':lab,'my_project':project,'my_projects':my_projects}
 
     #lab_name = project.lab.name
     if project.public or project.lab.group in request.user.groups.all():
-        proj_dir = os.path.join(lab_name,project.directory,project.index_page)
+        proj_dir = os.path.join(lab_slug,project.directory,project.index_page)
         return render_to_response(proj_dir,context,context_instance=RequestContext(request))
     else:
         return render_to_response('error.html',context_instance=RequestContext(request))

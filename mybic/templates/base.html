@@ -11,14 +11,28 @@
     <meta name="viewport" content="width=device-width">
 
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <link rel=stylesheet href="{{ CSS_URL }}/bootstrap.css">
-    <link rel=stylesheet href="{{ CSS_URL }}/style.css">
+	<style>
+	      body {
+	        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+	      }
+	    </style>
 
     <link href='http://fonts.googleapis.com/css?family=Lato:900' rel='stylesheet' type='text/css'>
 
-    <script src="{{ JAVASCRIPT_URL }}/jquery.js"></script>
-    <script src="{{ JAVASCRIPT_URL }}/kerning.js/kerning.js"></script>
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+
+ <script src="{{ JAVASCRIPT_URL }}/jquery.js"></script>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	
+    
+    <script src="{{ JAVASCRIPT_URL }}/kerning.min.js"></script>
+	
 </head>
 
 <body>
@@ -44,10 +58,10 @@
                 {% load url from future %}
                 {% load current from navigation %}
                 {%  if my_lab %}
-                    <li class="active"><a href="{% url 'my_lab_url' my_lab %}">{{ my_lab }}</a>
+                    <li class="active"><a href="{% url 'my_lab_url' my_lab.slug %}">{{ my_lab.name }}</a>
                 {% endif %}
                 {%  if my_project %}
-                    <li class="active"><a href="{% url 'my_project_url' my_lab my_project %}">{{ my_project }}</a>
+                    <li class="active"><a href="{% url 'my_project_url' my_lab.slug my_project.slug %}">{{ my_project.name }}</a>
                 {% endif %}
             </ul>
             {% if request.user.is_authenticated %}

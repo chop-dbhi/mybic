@@ -19,10 +19,11 @@ def dashboard(request):
 
     my_labs = Lab.objects.filter(
         group__in = request.user.groups.all()
-    ).values_list('name',flat=True)
+    )
+    #.values_list('name',flat=True)
 
     my_projects = Project.objects.filter(
-            lab__name__in = my_labs
+            lab__name__in = my_labs.values_list('name',flat=True)
         ).values('slug')
 
     context = {'my_groups':my_groups,'my_labs':my_labs,'my_projects':my_projects}
