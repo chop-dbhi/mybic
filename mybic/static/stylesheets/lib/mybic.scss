@@ -1,0 +1,93 @@
+//http://github.research.chop.edu/cbmi/pcgc/blob/master/pcgc/static/stylesheets/scss/bourbon/css3/_inline-block.scss
+// Legacy support for inline-block in IE7 (maybe IE6)
+@mixin inline-block {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+}
+
+
+article {
+    // account for the date-block spacing..
+    padding-right: 40px;
+    font-size: 14px;
+
+    p, li {
+        line-height: 22px;
+    }
+
+    h1, h2, h3 {
+        color: #8F1916;
+    }
+
+    h1 {
+        font-size: 28px;
+    }
+
+    header {
+        > * {
+            @include inline-block;
+            vertical-align: middle;
+        }
+
+        h1 {
+            font-size: 34px;
+            color: #333;
+        }
+
+        .date-block {
+            @include inline-block;
+            vertical-align: middle;
+            color: #999;
+            font-size: 12px;
+            width: 30px;
+            padding-right: 10px;
+            text-align: right;
+
+            .month {
+                font-size: 24px;
+                display: block;
+            }
+        }
+    }
+
+    .body {
+        padding-left: 40px;
+    }
+
+    ul, li {
+        padding-left: 0;
+        margin-left: 8px;
+    }
+
+    blockquote {
+        background-color: #eee;
+        padding: 20px;
+        line-height: 22px;
+        margin: 0;
+        font-size: 16px;
+        color: #666;
+
+        :first-child {
+            padding-top: 0;
+            margin-top: 0;
+        }
+
+        :last-child {
+            padding-bottom: 0;
+            margin-bottom: 0;
+        }
+    }
+}
+
+
+
+#myBiC-logo {
+  font-family: Lato;
+  font-size:2.9em;
+    -letter-color: #cccccc #cccccc #374656 #58B9DA #374656;
+}

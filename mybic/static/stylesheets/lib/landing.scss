@@ -1,0 +1,75 @@
+// Legacy support for inline-block in IE7 (maybe IE6)
+@mixin inline-block {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+}
+
+//http://github.research.chop.edu/cbmi/pcgc/blob/master/pcgc/static/stylesheets/scss/bourbon/css3/_border-radius.scss
+@mixin border-radius ($radii) {
+  -webkit-border-radius: $radii;
+     -moz-border-radius: $radii;
+      -ms-border-radius: $radii;
+       -o-border-radius: $radii;
+          border-radius: $radii;
+}
+
+
+.column {
+    @include inline-block;
+    width: 438px;
+    vertical-align: top;
+    text-align: left;
+
+    &:first-child {
+        margin-right: 20px;
+    }
+}
+
+.landing-target {
+    @include box-shadow(0 2px 3px #aaa);
+    margin: 0 auto;
+    font-size: 16px;
+    vertical-align: top;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    text-shadow: 0 1px 2px #fff;
+    line-height: 22px;
+
+    > :first-child {
+        margin-top: 0px;
+    }
+
+    > :last-child {
+        margin-bottom: 0;
+    }
+
+    h1, h2, img {
+        vertical-align: middle;
+        display: inline;
+    }
+
+    img { margin-right: 5px; }
+
+    code {
+        @include border-radius(3px);
+        text-shadow: 0 1px 0 #fff;
+        font-size: 0.9em;
+        padding: 1px 3px;
+        border: 1px solid #ddd;
+        background-color: #eee;
+    }
+
+}
+
+.landing-target-title {
+  margin-bottom: 10px;
+}
+#choice-block {text-align: center;}
+#download h1 {color: hsl(211, 56%, 43%) }
+#upload h1 { color: hsl(107, 56%, 43%) }
