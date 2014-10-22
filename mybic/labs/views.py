@@ -22,7 +22,7 @@ def index(request):
     return render_to_response('dashboard.html', context, context_instance=RequestContext(request))
 
 def labview(request,lab_name):
-    print >>sys.stderr, 'labview!'
+    print >>sys.stderr, 'labview! {0}'.format(request.user)
 
     if hasattr(request, 'user') and request.user.is_authenticated():
         kwargs = {'user': request.user}
@@ -50,7 +50,7 @@ def labview(request,lab_name):
         return render_to_response('error.html',context_instance=RequestContext(request))
 
 def projectview(request,lab_name,project_name):
-    print >>sys.stderr, 'projectview!'
+    print >>sys.stderr, 'projectview! {0}'.format(request.user)
     if hasattr(request, 'user') and request.user.is_authenticated():
         kwargs = {'user': request.user}
     else:

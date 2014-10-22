@@ -23,4 +23,7 @@ git+git://github.com/cbmi/django-news.git#egg=django-news
 # Permissions
 django-guardian==1.0.4
 
-http://github.research.chop.edu/cbmi/django-chopauth/archive/master.zip
+
+
+
+http://github.research.chop.edu/cbmi/django-chopauth/archive/master.tar.gz
