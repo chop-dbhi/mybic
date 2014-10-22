@@ -7552,6 +7552,18 @@ article blockquote :last-child {
   -letter-color: #cccccc #cccccc #374656 #58B9DA #374656;
 }
 
+/* line 96, ../../mybic/static/stylesheets/lib/mybic.scss */
+#project li {
+  padding: .5em 1.5em 1.5em 1.5em;
+  margin-bottom: 2.0em;
+  text-indent: 2.0em;
+  font-weight: bold;
+  list-style: none;
+  background-image: url("/static/images/iconmonstr-layer-19-icon-32.png");
+  background-repeat: no-repeat;
+  background-position: 3px 3px;
+}
+
 /* line 22, ../../mybic/static/stylesheets/lib/landing.scss */
 .column {
   display: -moz-inline-box;
@@ -7636,5 +7648,5 @@ article blockquote :last-child {
 
 /* line 4, ../../mybic/static/stylesheets/scss/style.scss */
 body {
-  padding-top: 40px;
+  padding-top: 70px;
 }

@@ -7,17 +7,15 @@
 
 
 {% block content %}
-    <div id="news" class="landing-target">
-            <div class="landing-target-title">
-                <img src="/static/images/rss.png">
-                <h2>News</h2>
-            </div>
+    <div class="landing-target-title">
 
-
+    <h1 id="overview" class="page-header"><img src="/static/images/rss.png"> {{ my_lab.name }} News</h1>
+      </div>
+    <div id="news">
     {% for entry in entries %}
         <article class="entry">
-            {% spaceless %}
-             <p>
+
+
             <header id="{{ entry.slug }}">
                 <span class="date-block">
                     <span class="month">{{ entry.created|date:"j" }}</span>
@@ -25,26 +23,20 @@
                 </span>
                 <h3>{{ entry.title }}</h3>
             </header>
-
-            {% endspaceless %}
             <div class="body">
                 {{ entry.formatted_body|safe }}
             </div>
-        </p>
+
         </article>
         {% if not forloop.last %}<hr>{% endif %}
     {% endfor %}
     </div>
-    groups
-    <ul>
-    {% for my_group in my_groups %}
-                            <li><a href="#">{{ my_group }}</a></li>
-                        {% endfor %}
-    </ul>
-    <h3>{{ my_lab }} projects:</h3>
+    <div id="project">
+    <h1 id="overview" class="page-header"><img src="/static/images/iconmonstr-layer-19-icon-32.png"> {{ my_lab }} Projects</h1>
     <ul>
     {% for my_project in my_projects %}
     <li><a href="{% url 'my_project_url' my_lab my_project %}">{{ my_project }}</a></li>
     {% endfor %}
     </ul>
+    </div>
 {% endblock %}

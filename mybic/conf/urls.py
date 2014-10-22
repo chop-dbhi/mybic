@@ -23,6 +23,7 @@ urlpatterns = patterns(
     #url(r'^page/$', my_view, name='my-page'),
     # Administrative components
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^labs/$','mybic.views.dashboard', name='dashboard'),
     url(r'^labs/(\w+)/$', 'mybic.labs.views.labview', name='my_lab_url'),
     url(r'^labs/(\w+)/(\w+)/$', 'mybic.labs.views.projectview', name='my_project_url'),
 
