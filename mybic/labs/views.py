@@ -55,8 +55,12 @@ def projectview(request,lab_slug,project_slug):
     my_projects = Project.objects.filter(
             lab__slug = lab_slug
         )
-
-    context = {'my_groups':my_groups,'my_lab':lab,'my_project':project,'my_projects':my_projects}
+        
+    static_url = settings.STATIC_URL
+    project_url = os.path.join(lab_slug,project_slug)
+    static_link = os.path.join(static_url,project_url)
+    
+    context = {'my_groups':my_groups,'my_lab':lab,'my_project':project,'my_projects':my_projects,'static_link':static_link}
 
     #lab_name = project.lab.name
     if project.public or project.lab.group in request.user.groups.all():
