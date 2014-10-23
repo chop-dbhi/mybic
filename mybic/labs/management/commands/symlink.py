@@ -39,8 +39,8 @@ class Command(BaseCommand):
             
             if not os.path.exists(proj.index_page):
                 raise Exception("This index file {0} does not exist".format(proj.index_page))
-            lab_dir = os.path.join(BASE_PATH,'mybic/labs/templates/',lab.slug)
-            project_dir = os.path.join(BASE_PATH,'mybic/labs/templates/',lab.slug,proj.slug)
+            lab_dir = os.path.join(settings.BASE_PATH,'mybic/labs/templates/',lab.slug)
+            project_dir = os.path.join(settings.BASE_PATH,'mybic/labs/templates/',lab.slug,proj.slug)
             if not os.path.exists(lab.slug):
                 os.path.join(lab_dir)
             if not os.path.exists(project_dir):

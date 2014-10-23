@@ -11,6 +11,7 @@
 
     <h1 id="overview" class="page-header"><img src="/static/images/rss.png"> {{ my_lab.name }} News</h1>
       </div>
+	  {% if entries %}
     <div id="news">
     {% for entry in entries %}
         <article class="entry">
@@ -31,6 +32,7 @@
         {% if not forloop.last %}<hr>{% endif %}
     {% endfor %}
     </div>
+	{% endif %}
     <div id="project">
     <h1 id="overview" class="page-header"><img src="/static/images/iconmonstr-layer-19-icon-32.png"> {{ my_lab }} Projects</h1>
     <ul>

@@ -2,7 +2,7 @@
 
 {% block content %}
 
-
+	{% if my_labs %}
     <h3>Your labs:</h3>
 
     <ul>
@@ -11,7 +11,9 @@
 	
     {% endfor %}
     </ul>
-
+	{% else %}
+	    No labs.
+	{% endif %}
 
 {% endblock %}
 
