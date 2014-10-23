@@ -38,7 +38,7 @@ class Command(BaseCommand):
             proj = Project.objects.get(lab=lab,slug=args[1])
             
             if not os.path.exists(proj.index_page):
-                raise Exception("This index file {0} does not exist".proj.index_page)
+                raise Exception("This index file {0} does not exist".format(proj.index_page))
             lab_dir = os.path.join(BASE_PATH,'mybic/labs/templates/',lab.slug)
             project_dir = os.path.join(BASE_PATH,'mybic/labs/templates/',lab.slug,proj.slug)
             if not os.path.exists(lab.slug):

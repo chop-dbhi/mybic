@@ -1,32 +1,43 @@
 from django.contrib.auth.models import User,Group
 import mybic.labs.models as models
+from mybic.labs.models import Project,Lab
 from django.contrib import admin
+from django.forms import ModelForm
+from django import forms
+import os
 
-#class LabAdmin(admin.ModelAdmin):
-#    list_display = ('pi','group')
-    #extra = 1
 
 admin.site.unregister(Group)
-#admin.site.register(User)
-
-#http://stackoverflow.com/questions/3409970/django-admin-how-to-display-fields-from-two-different-models-in-same-view
 
 
-admin.site.register(models.Project)
+class ProjectAdminForm(ModelForm):
+    def clean(self):
+        data = self.cleaned_data
+        #data['index_page']
+        index_page = data['index_page']
+        static_dir = data['static_dir']
+        if not os.path.exists(index_page):
+            raise forms.ValidationError("The index page {0} does not exist".format(index_page))
+        if not os.path.exists(static_dir):
+            raise forms.ValidationError("The static directory {0} does not exist".format(static_dir))
+        # do something that validates your data
+        return data
 
-#admin.site.register(models.Project,LabAdmin)
+class ProjectAdmin(admin.ModelAdmin):
+    form = ProjectAdminForm
+
+admin.site.register(models.Project, ProjectAdmin)
 
 
 class LabInline(admin.TabularInline):
     model = models.Lab
-    #extra = 1
-    #list_display = ('first_name','last_name')
-
 
 class LabAdmin(admin.ModelAdmin):
     inlines = [LabInline]
 
 admin.site.register(Group,LabAdmin)
+
+admin.site.register(models.Lab)
 
 admin.site.register(models.LabArticle)
 
