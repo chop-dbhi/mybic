@@ -62,7 +62,7 @@ class Project(models.Model):
         
         #create a symlink to the static directory on the isilon
         #call it _site/static/lab/project
-        lab_static = os.path.join(settings.STATIC_ROOT,self.lab.slug)
+        lab_static = os.path.join(settings.PROTECTED_ROOT,self.lab.slug)
         project_static = os.path.join(lab_static,self.slug)
         if not os.path.exists(lab_static):
             os.mkdir(lab_static)

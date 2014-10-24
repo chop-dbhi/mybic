@@ -35,3 +35,17 @@ def dashboard(request):
 
 
     return render_to_response('dashboard.html', context, context_instance=RequestContext(request))
+
+#http://glitterbug.in/blog/serving-protected-files-from-nginx-with-django-11/show/
+def protected_file(request,path):
+    print >>sys.stderr, 'staticfile! {0} {1}'.format(request.user,request.path_info)
+    if hasattr(request, 'user') and request.user.is_authenticated():
+        kwargs = {'user': request.user}
+        user = request.user
+    else:
+        kwargs = {'session_key': request.session.session_key}
+        return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
+    response = HttpResponse()
+    response['X-Accel-Redirect'] = '%s/%s' % (settings.FORCE_SCRIPT_NAME, path)
+    #response['X-Accel-Redirect'] = '/protected/pei_lab/err_rna_seq/diffExp.pdf'
+    return response

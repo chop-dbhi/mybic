@@ -69,7 +69,7 @@ def projectview(request,lab_slug,project_slug):
             lab__slug = lab_slug
         )
         
-    static_url = settings.STATIC_URL
+    static_url = settings.PROTECTED_URL
     project_url = os.path.join(lab_slug,project_slug)
     static_link = os.path.join(static_url,project_url)
     
