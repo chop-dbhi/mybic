@@ -82,10 +82,10 @@ grunt
 
 #uwsgi
 sudo pip install uwsgi
-uwsgi --ini server/uwsgi/local.ini --protocol http --socket uwsgi.sock --check-static _site --static-safe /home/devuser/webapps/mybic-env/mybic/ --uid devuser --gid devuser
 
 #run wsgi through socket, needs nginx on
-uwsgi --ini server/uwsgi/development.ini
+/home/devuser/webapps/mybic-env/bin/uwsgi --ini /home/devuser/webapps/mybic-env/mybic/server/uwsgi/development.ini  --uid devuser --gid devuser
+
 
 #other
 scp leipzig@eps1.infosys.chop.edu:/Users/leipzig/Downloads/themeforest-5961888-avant-clean-and-responsive-bootstrap-31-admin.zip .
