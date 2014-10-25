@@ -38,7 +38,7 @@ def dashboard(request):
 
 #http://glitterbug.in/blog/serving-protected-files-from-nginx-with-django-11/show/
 def protected_file(request,path):
-    print >>sys.stderr, 'staticfile! {0} {1}'.format(request.user,request.path_info)
+    print >>sys.stderr, 'protectedfile! {0} {1}'.format(request.user,path)
     if hasattr(request, 'user') and request.user.is_authenticated():
         kwargs = {'user': request.user}
         user = request.user
