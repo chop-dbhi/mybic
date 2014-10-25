@@ -111,7 +111,7 @@ PROTECTED_ROOT = os.path.join(BASE_PATH, '_site/protected')
 
 STATIC_URL = '/static/'
 
-PROTECTED_URL = '/protected/'
+PROTECTED_URL = '/slink/'
 
 # os.path.join(BASE_PATH,'_site/static/pei_lab'),
 # os.path.join(BASE_PATH,'_site/static/pei_lab/errRNAseq'),

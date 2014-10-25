@@ -39,13 +39,13 @@ def dashboard(request):
 #http://glitterbug.in/blog/serving-protected-files-from-nginx-with-django-11/show/
 def protected_file(request,path):
     print >>sys.stderr, 'protectedfile! {0} {1}'.format(request.user,path)
-    if hasattr(request, 'user') and request.user.is_authenticated():
-        kwargs = {'user': request.user}
-        user = request.user
-    else:
-        kwargs = {'session_key': request.session.session_key}
-        return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
     response = HttpResponse()
-    response['X-Accel-Redirect'] = '%s/%s' % (settings.FORCE_SCRIPT_NAME, path)
-    #response['X-Accel-Redirect'] = '/protected/pei_lab/err_rna_seq/diffExp.pdf'
+    debug=False
+    if debug:
+        response['X-Accel-Redirect'] = '/protected/pei_lab/err_rna_seq/RNASEQC_DIR/report.html'
+    else:
+        if hasattr(request, 'user') and request.user.is_authenticated():
+            response['X-Accel-Redirect'] = '%s/%s/%s' % (settings.FORCE_SCRIPT_NAME, '/protected/', path)
+        else:
+            response['X-Accel-Redirect'] = '/login/'
     return response
