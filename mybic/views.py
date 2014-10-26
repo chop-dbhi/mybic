@@ -45,7 +45,9 @@ def protected_file(request,path):
         response['X-Accel-Redirect'] = '/protected/pei_lab/err_rna_seq/RNASEQC_DIR/report.html'
     else:
         if hasattr(request, 'user') and request.user.is_authenticated():
-            response['X-Accel-Redirect'] = '%s/%s/%s' % (settings.FORCE_SCRIPT_NAME, '/protected/', path)
+            if path.endswith("pdf"):
+                response['Content-Type'] = 'application/pdf'
+            response['X-Accel-Redirect'] = '{0}/{1}'.format('/protected/', path)
         else:
             response['X-Accel-Redirect'] = '/login/'
     return response
