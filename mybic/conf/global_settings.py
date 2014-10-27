@@ -20,7 +20,7 @@ PROJECT_PATH = BASE_PATH = os.path.join(os.path.dirname(__file__), '../..')
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 TEMPLATE_DEBUG = True
 
@@ -192,8 +192,8 @@ SITE_ID = 1
 
 
 # Middleware
-
 MIDDLEWARE_CLASSES = (
+    'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.middleware.gzip.GZipMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -202,16 +202,25 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'simple_templates.middleware.SimplePageFallbackMiddleware',
-    'siteauth.middleware.SiteAuthenticationMiddleware',
+    'siteauth.middleware.SiteAuthenticationMiddleware'
 )
 
 
 # Email
 
-SUPPORT_EMAIL = 'leipzigj@email.chop.edu'
-DEFAULT_FROM_EMAIL = 'leipzigj@email.chop.edu'
-EMAIL_SUBJECT_PREFIX = '[mybic] '
-SEND_BROKEN_LINK_EMAILS = False
+# SUPPORT_EMAIL = '"myBiC"<mybic@mybic.chop.edu>'
+# DEFAULT_FROM_EMAIL = '"myBiC"<mybic@mybic.chop.edu>'
+# EMAIL_SUBJECT_PREFIX = '[mybic] '
+# SEND_BROKEN_LINK_EMAILS = True
+# SERVER_EMAIL = '"myBiC"<nobody@mybic.chop.edu>'
+
+DEFAULT_FROM_EMAIL='webmaster@localhost' # or webmaster@servername
+SERVER_EMAIL='root@localhost' # or 'root@servername'
+EMAIL_HOST = 'localhost' # or servername
+EMAIL_HOST_USER='' # or 'user@gmail.com'
+EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_PORT = 25 #587 
+EMAIL_USE_TLS = True
 
 
 # Logging
@@ -228,7 +237,7 @@ LOGGING = {
     },
     'loggers': {
         'django.request': {
-            'handlers': ['stdout'],
+            'handlers': ['stdout','mail_admins'],
             'level': 'ERROR',
             'propagate': True,
         },
