@@ -2,7 +2,9 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.template import RequestContext
+from django.http import Http404
 import sys
+import os
 
 from mybic.labs.models import Lab, Project
 from django.contrib.auth.models import User,Group
@@ -37,6 +39,7 @@ def dashboard(request):
     return render_to_response('dashboard.html', context, context_instance=RequestContext(request))
 
 #http://glitterbug.in/blog/serving-protected-files-from-nginx-with-django-11/show/
+#path is lab/project/file
 def protected_file(request,path):
     print >>sys.stderr, 'protectedfile! {0} {1}'.format(request.user,path)
     response = HttpResponse()
@@ -45,6 +48,7 @@ def protected_file(request,path):
         response['X-Accel-Redirect'] = '/protected/pei_lab/err_rna_seq/RNASEQC_DIR/report.html'
     else:
         if hasattr(request, 'user') and request.user.is_authenticated():
+            print >>sys.stderr, "does this exist {0}".format(os.path.join(settings.PROTECTED_ROOT,path))
             if path.endswith("pdf"):
                 response['Content-Type'] = 'application/pdf'
             response['X-Accel-Redirect'] = '{0}/{1}'.format('/protected/', path)
