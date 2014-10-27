@@ -27,7 +27,6 @@ TEMPLATE_DEBUG = True
 ALLOWED_HOSTS = ['mybic.chop.edu']
 
 INSTALLED_APPS = (
-    #core awesome
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -35,13 +34,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
-    #probably needed
-    #deprecated
-    #'django.contrib.markup',
-    'django.contrib.sites',
 
-    #Project apps
-    #'simple_templates',
     'mybic',
     'mybic.labs',
     'south',
@@ -50,10 +43,9 @@ INSTALLED_APPS = (
 
     'chopauth',
 )
-#    'registration',
+
 
 # Debug
-
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
