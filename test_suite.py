@@ -9,7 +9,7 @@ apps = sys.argv[1:]
 
 if not apps:
     apps = [
-        'mybic',
+        'mybic.tests'
     ]
 
 management.call_command('test', *apps, interactive=False)
