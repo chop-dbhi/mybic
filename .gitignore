@@ -1,5 +1,6 @@
 ._*
 *~
+.apdisk
 apache.conf
 !bin/r.js
 build
