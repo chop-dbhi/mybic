@@ -36,9 +36,11 @@ sdist
 settings
 _site/media
 _site/static
+_site/protected
 *.sock
 *.sw?
 *.swp
 .vagrant
 .watch-pid
 whoosh.index
+mybic/labs/templates/
