@@ -1,6 +1,14 @@
 {% extends "base.html" %}
+	{% load markdown_deux_tags %}
+
 
 {% block content %}
+{% markdown %}
+This is some **cool**
+[Markdown](http://daringfireball.net/projects/markdown/)
+text here.
+{% endmarkdown %}
+
 <div id="labs">
 	
     

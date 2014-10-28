@@ -35,7 +35,6 @@ class Project(models.Model):
     git_branch = models.CharField(max_length=100, unique=False, db_index=True, default="master")
     created = models.DateTimeField(default=datetime.now)
     public = models.BooleanField(default=False, db_index=True, help_text='Is this a public project that any myBiC user can see?')
-    markdown = models.BooleanField(default=False, db_index=True, help_text='Is this a markdown page?')
 
     def __str__(self):
         return self.slug
@@ -52,10 +51,7 @@ class Project(models.Model):
             os.mkdir(lab_dir)
         if not os.path.exists(project_dir):
             os.mkdir(project_dir)
-        if self.markdown:
-            link_name = os.path.join(project_dir,'index.md')
-        else:
-            link_name = os.path.join(project_dir,'index.html')
+        link_name = os.path.join(project_dir,'index.html')
         if os.path.exists(link_name):
             os.unlink(link_name)
         os.symlink(self.index_page, link_name)

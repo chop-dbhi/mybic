@@ -42,6 +42,8 @@ INSTALLED_APPS = (
     'ldap',
 
     'chopauth',
+    
+    'markdown_deux',
 )
 
 
