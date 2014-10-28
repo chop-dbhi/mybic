@@ -1,19 +1,20 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<div id="labs">
+	
+    
+    <h2 id="overview" class="page-header"><img src="/static/images/iconmonstr-flask-2-icon-32.png">Labs</h2>
 	{% if my_labs %}
-    <h3>Your labs:</h3>
-
     <ul>
     {% for my_lab in my_labs %}
-    <li><h4><a href="{% url 'my_lab_url' my_lab.slug %}">{{ my_lab.name }}</a></h4></li>
+    <li><a href="{% url 'my_lab_url' my_lab.slug %}">{{ my_lab.name }}</a></li>
 	
     {% endfor %}
     </ul>
 	{% else %}
-	    No labs.
+	    <h3>No labs. Check your groups.</h3>
 	{% endif %}
-
+</div>
 {% endblock %}
 

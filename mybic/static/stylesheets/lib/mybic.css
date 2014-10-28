@@ -69,3 +69,14 @@ article {
   background-image: url("/static/images/iconmonstr-layer-19-icon-32.png");
   background-repeat: no-repeat;
   background-position: 3px 3px; }
+ 
+#labs li {
+	padding: .5em 1.5em 1.5em 1.5em;
+	margin-bottom: 2.0em;
+	text-indent: 2.0em;
+	font-weight: bold;
+	list-style: none;
+	background-image: url("/static/images/iconmonstr-flask-2-icon-32.png");
+	background-repeat: no-repeat;
+	background-position: 3px 3px; }
+
