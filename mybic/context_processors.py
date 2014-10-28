@@ -10,3 +10,14 @@ def static(request):
         'IMAGES_URL': os.path.join(static_url, 'images'),
         'JAVASCRIPT_URL': os.path.join(static_url, 'scripts/javascript', prefix),
     }
+
+def development(request):
+    """Development warning for indicating which site you are on"""
+    if settings.DEVELOPMENT:
+        return {
+            'DEVELOPMENT': 'DEVELOP BRANCH'
+        }
+    else:
+        return {
+            'DEVELOPMENT': ''
+        }
