@@ -1,17 +1,7 @@
 {% extends "base.html" %}
-	{% load markdown_deux_tags %}
-
-
+{% load markdown_deux_tags %}
 {% block content %}
-{% markdown %}
-This is some **cool**
-[Markdown](http://daringfireball.net/projects/markdown/)
-text here.
-{% endmarkdown %}
-
 <div id="labs">
-	
-    
     <h2 id="overview" class="page-header"><img src="/static/images/iconmonstr-flask-2-icon-32.png">Labs</h2>
 	{% if my_labs %}
     <ul>
