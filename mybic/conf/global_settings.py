@@ -42,6 +42,8 @@ INSTALLED_APPS = (
     'ldap',
 
     'chopauth',
+    
+    'markdown_deux',
 )
 
 
@@ -108,7 +110,6 @@ PROTECTED_URL = '/slink/'
 # os.path.join(BASE_PATH,'_site/static/pei_lab'),
 # os.path.join(BASE_PATH,'_site/static/pei_lab/errRNAseq'),
 STATICFILES_DIRS = (
-    os.path.join(BASE_PATH,'mybic/labs/templates/'),
 )
 
 # Templates
@@ -116,6 +117,7 @@ STATICFILES_DIRS = (
 TEMPLATE_CONTEXT_PROCESSORS += (
     'django.core.context_processors.request',
     'mybic.context_processors.static',
+    'mybic.context_processors.development',
 )
 
 # List of callables that know how to import templates from various sources.
@@ -134,8 +136,6 @@ TEMPLATE_LOADERS = (
 #)
 
 
-
-SIMPLE_TEMPLATES_DIR = 'simple_templates'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
@@ -193,7 +193,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'simple_templates.middleware.SimplePageFallbackMiddleware',
     'siteauth.middleware.SiteAuthenticationMiddleware'
 )
 

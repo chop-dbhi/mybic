@@ -13,7 +13,9 @@ python-ldap>=2.3.12,<2.4
 docutils
 git+git://github.com/sgenoud/remarkdown.git
 
-markdown==2.1.1
+django-markdown-deux
+markdown2
+
 django-siteauth
 django-registration2
 

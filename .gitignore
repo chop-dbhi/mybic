@@ -1,5 +1,6 @@
 ._*
 *~
+mybic.db
 .apdisk
 apache.conf
 !bin/r.js
@@ -13,10 +14,6 @@ dist
 .idea
 local_settings.py
 logs
-MANIFEST
-mybic/build
-mybic_conn.properties
-mybic/.coverage
 mybic.db
 node_modules
 pip-log.txt
