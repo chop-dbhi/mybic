@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% load url from future %}
 
+{% block styles %}
+	<link rel="stylesheet" href="{{ CSS_URL }}/signin.css" >
+{% endblock %}
 {% block content %}
 <div class="container">	
     <form method="post" action="{% url "login" %}" class="form-signin" role="form">
