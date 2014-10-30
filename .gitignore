@@ -1,5 +1,6 @@
 ._*
 *~
+.fuse*
 mybic.db
 .apdisk
 apache.conf
