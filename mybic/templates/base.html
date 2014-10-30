@@ -35,6 +35,13 @@
     
     <script src="{{ JAVASCRIPT_URL }}/kerning.min.js"></script>
 	
+	<!-- here we apply the default bootstrap .table class to all tables -->
+	<script type="text/javascript">
+	$(function() {
+	  $( "table" ).addClass( "table" );
+	});
+	</script>
+
 	<link rel="stylesheet" href="{{ CSS_URL }}/mybic.css" >
 	<link rel="stylesheet" href="{{ CSS_URL }}/fa.css" >
 	<link rel="stylesheet" href="{{ CSS_URL }}/news.css" >
