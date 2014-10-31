@@ -118,6 +118,7 @@ TEMPLATE_CONTEXT_PROCESSORS += (
     'django.core.context_processors.request',
     'mybic.context_processors.static',
     'mybic.context_processors.development',
+    'mybic.context_processors.version',
 )
 
 # List of callables that know how to import templates from various sources.

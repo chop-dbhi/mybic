@@ -24,6 +24,9 @@ class Lab(models.Model):
     
     def __unicode__(self):
         return '%s' % self.name
+    
+    def projects(self):
+        return Project.objects.filter(lab=self)
 
 class Project(models.Model):
     """ A project with a directory

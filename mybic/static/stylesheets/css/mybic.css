@@ -59,7 +59,7 @@ article {
   font-family: Lato;
   font-size: 2.9em;
   -letter-color: #cccccc #cccccc #374656 #58B9DA #374656; }
-
+	
 #project li {
   padding: .3em 1.5em 1.5em 1.5em;
   margin-bottom: 0.1em;
@@ -71,13 +71,19 @@ article {
   background-repeat: no-repeat;
   background-position: 3px 3px; }
   
-#labs li {
-padding: 0.3em 1.5em 1.5em 1.5em;
+#labs  > ul > li {
+padding: 0em 1.5em 1.5em 1.5em;
 margin-bottom: 0.1em;
-text-indent: 1.0em;
-font-size: 16px;
+text-indent: 0.5em;
+font-size: 20px;
 font-weight: bold;
 list-style: none;
 background-image: url("/static/images/iconmonstr-flask-2-icon-24.png");
 background-repeat: no-repeat;
 background-position: 3px 3px; }
+
+#labs  > ul > li > ul > li {
+list-style: none;
+text-indent: 0em;
+}
+

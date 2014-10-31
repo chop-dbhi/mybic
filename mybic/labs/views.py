@@ -22,10 +22,10 @@ def labview(request,lab_slug):
     
     if user.is_staff:
         my_groups = Group.objects.all()
-        my_groups_list = Group.objects.values_list('name', flat=True)
+        my_groups_list = my_groups.values_list('name', flat=True)
     else:
-        my_groups = request.user.groups.all()
-        my_groups_list = request.user.groups.values_list('name',flat=True)
+        my_groups = Group.objects.filter(user=request.user)
+        my_groups_list = my_groups.values_list('name',flat=True)
 
     try:
         lab_object = Lab.objects.get(slug=lab_slug)
@@ -57,13 +57,16 @@ def projectview(request,lab_slug,project_slug):
 
     if user.is_staff:
         my_groups = Group.objects.all()
-        my_groups_list = Group.objects.values_list('name', flat=True)
+        my_groups_list = my_groups.values_list('name', flat=True)
     else:
-        my_groups = request.user.groups.all()
-        my_groups_list = request.user.groups.values_list('name',flat=True)
+        my_groups = Group.objects.filter(user=request.user)
+        my_groups_list = my_groups.values_list('name',flat=True)
 
-    lab = Lab.objects.get(slug=lab_slug)
-    project = Project.objects.get(slug=project_slug)
+    try:
+        lab = Lab.objects.get(slug=lab_slug)
+        project = Project.objects.get(slug=project_slug)
+    except ObjectDoesNotExist:
+        return render_to_response('error.html',context_instance=RequestContext(request))
 
     my_projects = Project.objects.filter(
             lab__slug = lab_slug

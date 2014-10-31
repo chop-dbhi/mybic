@@ -1,14 +1,22 @@
 {% extends "base.html" %}
 {% load markdown_deux_tags %}
 {% block content %}
+
+<h2 id="overview" class="page-header"><img src="/static/images/iconmonstr-flask-2-icon-32.png"> Labs</h2>
 <div id="labs">
-    <h2 id="overview" class="page-header"><img src="/static/images/iconmonstr-flask-2-icon-32.png">Labs</h2>
 	{% if my_labs %}
     <ul>
     {% for my_lab in my_labs %}
-    <li><a href="{% url 'my_lab_url' my_lab.slug %}">{{ my_lab.name }}</a></li>
-	
+    <li><a href="{% url 'my_lab_url' my_lab.slug %}">{{ my_lab.name }}</a>
+	 <ul>
+		 <li>
+	   {% for my_project in my_lab.projects %}
+	     <a href="{% url 'my_project_url' my_lab.slug my_project.slug %}"><button type="button" class="btn btn-default btn-xs"><img src="/static/images/iconmonstr-layer-19-icon-16.png"> {{ my_project.name }}</button></a>
+	   {% endfor %}
+	   </li>
+	 </ul>
     {% endfor %}
+    </li>
     </ul>
 	{% else %}
 	    <h3>No labs. Check your groups.</h3>
