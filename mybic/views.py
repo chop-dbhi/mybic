@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 import sys
 import os
+import mimetypes
 
 from mybic.labs.models import Lab, Project
 from django.contrib.auth.models import User,Group
@@ -69,12 +70,23 @@ def protected_file(request,lab,project,path):
                     print >>sys.stderr,"xslx file!\n"
                     response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                     response['Content-Disposition'] = 'attachment; filename="{0}"'.format(os.path.basename(path))
+                elif path.endswith("png"):
+                    response['Content-Type'] = 'image/png'
+                elif path.endswith("jpeg") or path.endswith("jpg"):
+                    response['Content-Type'] = 'image/jpeg'
                 elif path.endswith("xls"):
                     print >>sys.stderr,"xls file!\n"
                     response['Content-Type'] = 'application/vnd.ms-excel'
                     response['Content-Disposition'] = 'attachment; filename="{0}"'.format(os.path.basename(path))
+                elif path.endswith("html") or path.endswith("htm") or path.endswith("txt"):
+                    response['Content-Type'] = 'text/html'
+                elif path.endswith("svg"):
+                    response['Content-Type'] = 'image/svg+xml'
                 else:
                     print >>sys.stderr,"some other file!\n"
+                    mime = mimetypes.guess_type(os.path.basename(path))
+                    response['Content-Type'] = mime.type
+                    response['Content-Disposition'] = 'attachment; filename="{0}"'.format(os.path.basename(path))
                 response['X-Accel-Redirect'] = '{0}/{1}/{2}/{3}'.format('/protected/', lab, project, path)
             else:
                 return render_to_response('error.html',context_instance=RequestContext(request))
