@@ -1,4 +1,4 @@
-mybic website
+myBiC - Bioinformatics Cores Deliverable
 =============
 ###[Documentation and Examples](../../wiki)
 
