@@ -1,4 +1,4 @@
-#myBiC - Bioinformatics Core Portal
+##myBiC - Bioinformatics Core Portal
 
 ###[Documentation and Examples](../../wiki)
 
