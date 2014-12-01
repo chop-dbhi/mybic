@@ -1,7 +1,6 @@
 mybic website
 =============
-###Documentation
-[Documentation](wiki)
+###[Documentation and Examples](../../wiki)
 
 ###Setup
 ```
