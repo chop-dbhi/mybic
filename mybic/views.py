@@ -4,9 +4,11 @@ from django.conf import settings
 from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
+from django.shortcuts import render
 import sys
 import os
 import mimetypes
+from news.models import Article
 
 from mybic.labs.models import Lab, Project
 from django.contrib.auth.models import User,Group
@@ -93,3 +95,9 @@ def protected_file(request,lab,project,path):
         else:
             return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
     return response
+
+def news(request):
+    entries = Article.objects.filter(published=True)
+    return render(request, 'news/list.html', {
+        'entries': entries,
+    })

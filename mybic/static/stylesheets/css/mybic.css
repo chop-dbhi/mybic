@@ -27,7 +27,7 @@ article {
     zoom: 1;
     *display: inline;
     *vertical-align: auto;
-    vertical-align: middle;
+    vertical-align: top;
     color: #999;
     font-size: 12px;
     width: 30px;

@@ -1,0 +1,3 @@
+{{ object.name }}
+{{ object.lab.name }}
+{{ object.description }}
