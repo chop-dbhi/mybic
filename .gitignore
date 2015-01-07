@@ -32,3 +32,4 @@ _site/protected
 .watch-pid
 whoosh.index
 mybic/labs/templates/
+*.fuse_hidden*
