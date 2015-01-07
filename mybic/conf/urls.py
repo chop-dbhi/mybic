@@ -25,7 +25,7 @@ urlpatterns = patterns(
     url(r'^labs/([\w-]+)/$', 'mybic.labs.views.labview', name='my_lab_url'),
     url(r'^labs/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.projectview', name='my_project_url'),
 
-    url(r'^slink/(?P<path>.*)$','mybic.views.protected_file',name='protected')
+    url(r'^slink/(?P<lab>[\w-]+)/(?P<project>[\w-]+)/(?P<path>.+)$','mybic.views.protected_file',name='protected')
     
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

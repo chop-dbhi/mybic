@@ -5,7 +5,8 @@ from django.contrib import admin
 from django.forms import ModelForm
 from django import forms
 import os
-
+import re
+import urllib2
 
 admin.site.unregister(Group)
 
@@ -16,8 +17,16 @@ class ProjectAdminForm(ModelForm):
         #data['index_page']
         index_page = data['index_page']
         static_dir = data['static_dir']
-        if not os.path.exists(index_page):
-            raise forms.ValidationError("The index page {0} does not exist".format(index_page))
+        url_pattern = re.compile(r"^https?://.+")
+        
+        if url_pattern.match(index_page):
+            try:
+                urllib2.urlopen(index_page)
+            except urllib2.HTTPError, e:
+                raise forms.ValidationError("The index page url {0} does not exist".format(index_page))
+        else:
+            if not os.path.exists(index_page):
+                raise forms.ValidationError("The index page file {0} does not exist".format(index_page))
         if not os.path.exists(static_dir):
             raise forms.ValidationError("The static directory {0} does not exist".format(static_dir))
         # do something that validates your data

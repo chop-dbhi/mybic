@@ -1,9 +1,12 @@
+import os
+import re
+import urllib2
 from django.contrib.auth.models import User,Group
 from django.db import models
 from datetime import datetime
 from news.models import Article
 from django.conf import settings
-import os
+
 
 class Lab(models.Model):
     """ A lab with a PI
@@ -21,13 +24,16 @@ class Lab(models.Model):
     
     def __unicode__(self):
         return '%s' % self.name
+    
+    def projects(self):
+        return Project.objects.filter(lab=self)
 
 class Project(models.Model):
     """ A project with a directory
     """
     name = models.CharField(max_length=50, unique=False, db_index=True, help_text=" display name for this project e.g. 'eRR RNA-Seq Analysis'")
     slug = models.SlugField(max_length=50, unique=False, db_index=True, help_text=" only letters, numbers, underscores or hyphens e.g. err-rna-seq")
-    index_page = models.CharField(default="/mnt/variome/",max_length=300, unique=False, db_index=True, help_text="full path to your index.html /mnt/variome/leipzig/liming_err_rnaseq/src/site/_site/index.html")
+    index_page = models.CharField(default="/mnt/variome/",max_length=300, unique=False, db_index=True, help_text="full path to your index.html or index.md /mnt/variome/leipzig/liming_err_rnaseq/src/site/_site/index.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/index.md")
     static_dir = models.CharField(default="/mnt/variome/",max_length=300, unique=False, db_index=True, help_text="the directory where your static files are e.g. /mnt/variome/leipzig/err-rna-seq")
     de_dir = models.CharField(max_length=300, unique=False, db_index=True, blank=True, null=True, help_text="data expedition directory")
     lab = models.ForeignKey('Lab')
@@ -52,9 +58,18 @@ class Project(models.Model):
         if not os.path.exists(project_dir):
             os.mkdir(project_dir)
         link_name = os.path.join(project_dir,'index.html')
-        if os.path.exists(link_name):
-            os.unlink(link_name)
-        os.symlink(self.index_page, link_name)
+        #if os.path.exists(link_name):
+        os.unlink(link_name)
+        
+        url_pattern = re.compile(r"^https?://.+")
+        
+        if url_pattern.match(self.index_page):
+            response=urllib2.urlopen(self.index_page)
+            fh = open(link_name, "w")
+            fh.write(response.read())
+            fh.close()
+        else:
+            os.symlink(self.index_page, link_name)
         
         #create a symlink to the static directory on the isilon
         #call it _site/static/lab/project
@@ -62,8 +77,8 @@ class Project(models.Model):
         project_static = os.path.join(lab_static,self.slug)
         if not os.path.exists(lab_static):
             os.mkdir(lab_static)
-        if os.path.exists(project_static):
-            os.unlink(project_static)
+        #if os.path.exists(project_static):
+        os.unlink(project_static)
         os.symlink(self.static_dir, project_static)
         
         super(Project, self).save()

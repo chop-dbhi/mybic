@@ -2,9 +2,11 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.template import RequestContext
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404
 import sys
 import os
+import mimetypes
 
 from mybic.labs.models import Lab, Project
 from django.contrib.auth.models import User,Group
@@ -20,10 +22,10 @@ def dashboard(request):
 
     if user.is_staff:
         my_groups = Group.objects.all()
-        my_groups_list = Group.objects.values_list('name', flat=True)
+        my_groups_list = my_groups.values_list('name', flat=True)
     else:
-        my_groups = request.user.groups.all()
-        my_groups_list = request.user.groups.values_list('name',flat=True)
+        my_groups = Group.objects.filter(user=request.user)
+        my_groups_list = my_groups.values_list('name',flat=True)
         
     my_labs = Lab.objects.filter(
         group__in = my_groups
@@ -39,19 +41,55 @@ def dashboard(request):
     return render_to_response('dashboard.html', context, context_instance=RequestContext(request))
 
 #http://glitterbug.in/blog/serving-protected-files-from-nginx-with-django-11/show/
-#path is lab/project/file
-def protected_file(request,path):
-    print >>sys.stderr, 'protectedfile! {0} {1}'.format(request.user,path)
+def protected_file(request,lab,project,path):
+    print >>sys.stderr, 'protectedfile! {0} {1} {2} {3}'.format(request.user,lab, project,path)
     response = HttpResponse()
     debug=False
     if debug:
-        response['X-Accel-Redirect'] = '/protected/pei_lab/err_rna_seq/RNASEQC_DIR/report.html'
+        response['X-Accel-Redirect'] = 'test'
     else:
         if hasattr(request, 'user') and request.user.is_authenticated():
-            print >>sys.stderr, "does this exist {0}".format(os.path.join(settings.PROTECTED_ROOT,path))
-            if path.endswith("pdf"):
-                response['Content-Type'] = 'application/pdf'
-            response['X-Accel-Redirect'] = '{0}/{1}'.format('/protected/', path)
+            kwargs = {'user': request.user}
+            user = request.user
+            if user.is_staff:
+                my_groups = Group.objects.all()
+                my_groups_list = my_groups.values_list('name', flat=True)
+            else:
+                my_groups = Group.objects.filter(user=request.user)
+                my_groups_list = my_groups.values_list('name',flat=True)
+
+            try:
+                lab_object = Lab.objects.get(slug=lab)
+                project_object = Project.objects.get(slug=project)
+            except ObjectDoesNotExist:
+                raise Http404
+            if lab_object.group in my_groups:
+                if path.endswith("pdf"):
+                    response['Content-Type'] = 'application/pdf'
+                elif path.endswith("xlsx"):
+                    print >>sys.stderr,"xslx file!\n"
+                    response['Content-Type'] = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    response['Content-Disposition'] = 'attachment; filename="{0}"'.format(os.path.basename(path))
+                elif path.endswith("png"):
+                    response['Content-Type'] = 'image/png'
+                elif path.endswith("jpeg") or path.endswith("jpg"):
+                    response['Content-Type'] = 'image/jpeg'
+                elif path.endswith("xls"):
+                    print >>sys.stderr,"xls file!\n"
+                    response['Content-Type'] = 'application/vnd.ms-excel'
+                    response['Content-Disposition'] = 'attachment; filename="{0}"'.format(os.path.basename(path))
+                elif path.endswith("html") or path.endswith("htm") or path.endswith("txt"):
+                    response['Content-Type'] = 'text/html'
+                elif path.endswith("svg"):
+                    response['Content-Type'] = 'image/svg+xml'
+                else:
+                    print >>sys.stderr,"some other file!\n"
+                    mime = mimetypes.guess_type(os.path.basename(path))
+                    response['Content-Type'] = mime.type
+                    response['Content-Disposition'] = 'attachment; filename="{0}"'.format(os.path.basename(path))
+                response['X-Accel-Redirect'] = '{0}/{1}/{2}/{3}'.format('/protected/', lab, project, path)
+            else:
+                return render_to_response('error.html',context_instance=RequestContext(request))
         else:
-            response['X-Accel-Redirect'] = '/login/'
+            return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
     return response

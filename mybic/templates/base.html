@@ -22,7 +22,8 @@
     <link href='http://fonts.googleapis.com/css?family=Lato:900' rel='stylesheet' type='text/css'>
 
 
- 	<script src="{{ JAVASCRIPT_URL }}/jquery.js"></script>
+ 	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	 
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
@@ -32,13 +33,22 @@
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 	
-    
-    <script src="{{ JAVASCRIPT_URL }}/kerning.min.js"></script>
 	
+		
+    <script src="http://rawgithub.com/endtwist/kerning.js/master/kerning.js"></script>
+
+	<!-- here we apply the default bootstrap .table class to all tables -->
+	<script type="text/javascript">
+	$(function() {
+	  $( "table" ).addClass( "table" );
+	});
+	</script>
+
 	<link rel="stylesheet" href="{{ CSS_URL }}/mybic.css" >
 	<link rel="stylesheet" href="{{ CSS_URL }}/fa.css" >
 	<link rel="stylesheet" href="{{ CSS_URL }}/news.css" >
-	<link rel="stylesheet" href="{{ CSS_URL }}/signin.css" >
+	<link rel="stylesheet" href="{{ CSS_URL }}/sticky-footer-navbar.css">
+	{% block styles %}{% endblock %}
 </head>
 
 <body>
@@ -92,9 +102,7 @@
 </div>
 
 
-<footer>
-    {% block footer %}{% endblock %}
-</footer>
+{% block footer %} {% include "_footer.html" %}{% endblock %}
 <script>
     var
     // Used for non-safe requests
