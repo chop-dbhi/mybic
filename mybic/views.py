@@ -86,8 +86,9 @@ def protected_file(request,lab,project,path):
                     response['Content-Type'] = 'image/svg+xml'
                 else:
                     print >>sys.stderr,"some other file!\n"
-                    mime = mimetypes.guess_type(os.path.basename(path))
-                    response['Content-Type'] = mime.type
+                    mime = mimetypes.guess_type(os.path.basename(path))[0] or 'application/octet-stream'
+                    response['Content-Type'] = mime
+                    print >>sys.stderr,"format guess: {0}".format(mime)
                     response['Content-Disposition'] = 'attachment; filename="{0}"'.format(os.path.basename(path))
                 response['X-Accel-Redirect'] = '{0}/{1}/{2}/{3}'.format('/protected/', lab, project, path)
             else:
