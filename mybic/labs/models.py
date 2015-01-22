@@ -83,6 +83,12 @@ class Project(models.Model):
         
         super(Project, self).save()
         
+class ChildIndex(models.Model):
+    """ Additional index pages
+        These must be named uniquely from the source (i.e. not index.md)
+    """
+    parent = models.ForeignKey('Project')
+    page = models.CharField(default="/mnt/variome/",max_length=300, unique=False, db_index=True, help_text="full path to your child .html or .md page /mnt/variome/leipzig/liming_err_rnaseq/src/site/_site/additional_info.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/additional_info.md")
 
 class ProjectArticle(Article):
     """ A news item or blog entry associated with a project
