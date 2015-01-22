@@ -128,7 +128,19 @@ class ChildIndex(models.Model):
             os.symlink(self.page, link_name)
     
         super(ChildIndex, self).save()
-
+        
+    def delete(self):
+        #create a symlink to the index file
+        lab_dir = os.path.join(settings.BASE_PATH,'mybic/labs/templates/',self.parent.lab.slug)
+        project_dir = os.path.join(lab_dir,self.parent.slug)
+        link_name = os.path.join(project_dir,os.path.basename(self.page))
+        #if os.path.exists(link_name):
+        try:
+            os.unlink(link_name)
+        except OSError, e:
+            pass
+        super(ChildIndex, self).delete()
+        
 class ProjectArticle(Article):
     """ A news item or blog entry associated with a project
     """
