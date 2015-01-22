@@ -3,11 +3,12 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponse
 from django.conf import settings
 from django.template import RequestContext
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import User, Group
 import sys
+import json
 
-from mybic.labs.models import Project,Lab, LabArticle
+from mybic.labs.models import Project,ChildIndex,Lab,LabArticle
 
 def labview(request,lab_slug):
 
@@ -83,6 +84,47 @@ def projectview(request,lab_slug,project_slug):
         return render_to_response(proj_dir,context,context_instance=RequestContext(request))
     else:
         return render_to_response('error.html',context_instance=RequestContext(request))
+
+def updateproject(request,lab_slug,project_slug):
+    print >>sys.stderr, 'updateview! {0}'.format(request.user)
+    response_data = {}
+    if hasattr(request, 'user') and request.user.is_authenticated():
+        kwargs = {'user': request.user}
+        user = request.user
+    else:
+        response_data['result'] = 'failed'
+        response_data['message'] = 'Not logged in'
+    if user.is_staff:
+        my_groups = Group.objects.all()
+        my_groups_list = my_groups.values_list('name', flat=True)
+    else:
+        my_groups = Group.objects.filter(user=request.user)
+        my_groups_list = my_groups.values_list('name',flat=True)
+
+    try:
+        lab = Lab.objects.get(slug=lab_slug)
+        project = Project.objects.get(slug=project_slug)
+    except ObjectDoesNotExist:
+        response_data['result'] = 'failed'
+        response_data['message'] = 'Project does not exist.'
+    
+    if project.lab.group in my_groups:
+        try:
+            project.save()
+            children = ChildIndex.objects.filter(parent=project)
+            for child in children:
+                child.save()
+            response_data['result'] = 'success'
+            response_data['message'] = 'Project refreshed.'
+        except ValidationError:
+            response_data['result'] = 'failed'
+            response_data['message'] = 'Model data is not validating.'
+    else:
+        response_data['result'] = 'failed'
+        response_data['message'] = 'Project not in your groups.'
+    return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
 
 def childview(request,lab_slug,project_slug,child_page):
     print >>sys.stderr, 'childview! {0}'.format(request.user)

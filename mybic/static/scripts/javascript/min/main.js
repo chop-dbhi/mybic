@@ -1,1 +1,1 @@
-define("main",["environ","jquery","underscore","backbone"],function(e,t,n,r){});
+define(['environ', 'jquery', 'underscore', 'backbone'], function(environ, $, _, Backbone) {});
