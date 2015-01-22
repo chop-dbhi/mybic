@@ -79,6 +79,9 @@
                 {%  if my_project %}
                     <li class="active"><a href="{% url 'my_project_url' my_lab.slug my_project.slug %}">{{ my_project.name }}</a>
                 {% endif %}
+                {%  if my_child %}
+                    <li class="active"><a href="{% url 'my_child_url' my_lab.slug my_project.slug my_child %}">{{ my_child }}</a>
+                {% endif %}
             </ul>
             {% if request.user.is_authenticated %}
             <ul class="nav navbar-nav navbar-right">

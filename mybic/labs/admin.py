@@ -32,8 +32,14 @@ class ProjectAdminForm(ModelForm):
         # do something that validates your data
         return data
 
+#TODO: validate no names like "index.md" are used
+#http://stackoverflow.com/questions/877723/inline-form-validation-in-django
+class ChildrenInline(admin.TabularInline):
+    model = models.ChildIndex
+
 class ProjectAdmin(admin.ModelAdmin):
     form = ProjectAdminForm
+    inlines = [ChildrenInline]
 
 admin.site.register(models.Project, ProjectAdmin)
 
