@@ -59,8 +59,11 @@ class Project(models.Model):
             os.mkdir(project_dir)
         link_name = os.path.join(project_dir,'index.html')
         #if os.path.exists(link_name):
-        os.unlink(link_name)
-        
+        try:
+            os.unlink(link_name)
+        except OSError, e:
+            pass
+
         url_pattern = re.compile(r"^https?://.+")
         
         if url_pattern.match(self.index_page):
@@ -78,7 +81,10 @@ class Project(models.Model):
         if not os.path.exists(lab_static):
             os.mkdir(lab_static)
         #if os.path.exists(project_static):
-        os.unlink(project_static)
+        try:
+            os.unlink(project_static)
+        except OSError, e:
+            pass
         os.symlink(self.static_dir, project_static)
         
         super(Project, self).save()
