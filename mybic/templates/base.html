@@ -95,6 +95,10 @@
                              {%  if my_project %}
                                 <li><a id="refresh-project" href="{% url 'update_project_url' my_lab.slug my_project.slug %}">Refresh project</a></li>
                                 
+                                <li><a href="{% url 'admin:labs_project_change' my_project.id %}">Admin project</a></li>
+                             {% endif %}
+                             {% if my_lab %}
+                                <li><a href="{% url 'admin:labs_lab_change' my_lab.id %}">Admin lab</a></li>
                              {% endif %}
                         </ul>
                     </li>
