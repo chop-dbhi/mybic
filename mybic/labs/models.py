@@ -60,8 +60,11 @@ class Project(models.Model):
             os.mkdir(project_dir)
         link_name = os.path.join(project_dir,'index.html')
         #if os.path.exists(link_name):
-        os.unlink(link_name)
-        
+        try:
+            os.unlink(link_name)
+        except OSError, e:
+            pass
+
         url_pattern = re.compile(r"^https?://.+")
         
         if url_pattern.match(self.index_page):
@@ -79,12 +82,66 @@ class Project(models.Model):
         if not os.path.exists(lab_static):
             os.mkdir(lab_static)
         #if os.path.exists(project_static):
-        os.unlink(project_static)
+        try:
+            os.unlink(project_static)
+        except OSError, e:
+            pass
         os.symlink(self.static_dir, project_static)
         
         super(Project, self).save()
         
+class ChildIndex(models.Model):
+    """ Additional index pages
+        These must be named uniquely from the source (i.e. not index.md)
+    """
+    
+    class Meta(object):
+        verbose_name_plural = "Child Indices"
+    
+    parent = models.ForeignKey('Project')
+    page = models.CharField(default="/mnt/variome/",max_length=300, unique=False, db_index=True, help_text="full path to your child .html or .md page /mnt/variome/leipzig/liming_err_rnaseq/src/site/_site/additional_info.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/additional_info.md")
+    
+    def __str__(self):
+        return self.page
+        
+    def __unicode__(self):
+        return '%s' % self.page
+    
+    def save(self):
+        #create a symlink to the index file
+        lab_dir = os.path.join(settings.BASE_PATH,'mybic/labs/templates/',self.parent.lab.slug)
+        project_dir = os.path.join(lab_dir,self.parent.slug)
+        link_name = os.path.join(project_dir,os.path.basename(self.page))
+        #if os.path.exists(link_name):
+        try:
+            os.unlink(link_name)
+        except OSError, e:
+            pass
 
+        url_pattern = re.compile(r"^https?://.+")
+    
+        if url_pattern.match(self.page):
+            response=urllib2.urlopen(self.page)
+            fh = open(link_name, "w")
+            fh.write(response.read())
+            fh.close()
+        else:
+            os.symlink(self.page, link_name)
+    
+        super(ChildIndex, self).save()
+        
+    def delete(self):
+        #create a symlink to the index file
+        lab_dir = os.path.join(settings.BASE_PATH,'mybic/labs/templates/',self.parent.lab.slug)
+        project_dir = os.path.join(lab_dir,self.parent.slug)
+        link_name = os.path.join(project_dir,os.path.basename(self.page))
+        #if os.path.exists(link_name):
+        try:
+            os.unlink(link_name)
+        except OSError, e:
+            pass
+        super(ChildIndex, self).delete()
+        
 class ProjectArticle(Article):
     """ A news item or blog entry associated with a project
     """

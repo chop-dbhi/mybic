@@ -8,27 +8,28 @@ from django.shortcuts import render
 import sys
 import os
 import mimetypes
+<<<<<<< HEAD
 from news.models import Article
+=======
+import json
+>>>>>>> master
 
 from mybic.labs.models import Lab, Project
 from django.contrib.auth.models import User,Group
 
-def dashboard(request):
-    print >>sys.stderr, 'dashboard! {0}'.format(request.user)
-    if hasattr(request, 'user') and request.user.is_authenticated():
-        kwargs = {'user': request.user}
-        user = request.user
-    else:
-        kwargs = {'session_key': request.session.session_key}
-        return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
-
-    if user.is_staff:
+def get_groups(request):
+    if request.user.is_staff and not (request.session.get('masquerade',False)):
+        print >>sys.stderr, 'admin view'
         my_groups = Group.objects.all()
-        my_groups_list = my_groups.values_list('name', flat=True)
     else:
+        print >>sys.stderr, 'user view'
         my_groups = Group.objects.filter(user=request.user)
-        my_groups_list = my_groups.values_list('name',flat=True)
-        
+
+    return my_groups
+
+def get_dash_context(request):
+    my_groups = get_groups(request)
+    my_groups_list = my_groups.values_list('name',flat=True)
     my_labs = Lab.objects.filter(
         group__in = my_groups
     )
@@ -36,10 +37,51 @@ def dashboard(request):
     my_projects = Project.objects.filter(
             lab__name__in = my_labs.values_list('name',flat=True)
         ).values('slug')
-
     context = {'my_groups':my_groups_list,'my_labs':my_labs,'my_projects':my_projects}
+    return context
+    
+def dashboard(request):
+    print >>sys.stderr, 'dashboard! {0} session {1}'.format(request.user,request.session._session_key)
+    
+    if hasattr(request, 'user') and request.user.is_authenticated():
+        kwargs = {'user': request.user}
+        user = request.user
+    else:
+        kwargs = {'session_key': request.session.session_key}
+        return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
+    
+    if 'count' in request.session:
+        request.session['count'] += 1
+        print >>sys.stderr, 'count {0}'.format(request.session['count'])
+    else:
+        request.session['count'] = 1
+        print >>sys.stderr,'No count in session. Setting to 1'
 
+    masquerade = request.session.get('masquerade',None)
+    print >>sys.stderr, 'masquerade {0}'.format(masquerade)
+    
+    context = get_dash_context(request)
+    
+    return render_to_response('dashboard.html', context, context_instance=RequestContext(request))
 
+def masquerade(request):
+    """ Toggles the masquerade setting allowing admins to pretend to be users
+    """
+    print >>sys.stderr, 'toggleview!'
+    response_data = {}
+    try:
+        # if its not set or its false this condition will be false
+        if not (request.session.get('masquerade',False)):
+                request.session['masquerade'] = True
+        else:
+                request.session['masquerade'] = False
+    except Exception, e:
+        request.session['masquerade'] = True
+    request.session.modified = True
+    print >>sys.stderr, request.session['masquerade']
+    
+    context = get_dash_context(request)
+    
     return render_to_response('dashboard.html', context, context_instance=RequestContext(request))
 
 #http://glitterbug.in/blog/serving-protected-files-from-nginx-with-django-11/show/
@@ -53,7 +95,7 @@ def protected_file(request,lab,project,path):
         if hasattr(request, 'user') and request.user.is_authenticated():
             kwargs = {'user': request.user}
             user = request.user
-            if user.is_staff:
+            if user.is_staff and not (request.session and request.session.get('masquerade') and request.session.masquerade == True):
                 my_groups = Group.objects.all()
                 my_groups_list = my_groups.values_list('name', flat=True)
             else:

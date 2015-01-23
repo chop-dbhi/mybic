@@ -1,1 +1,90 @@
-define(["jquery","underscore"],function(e,t){var n;return n={deferred:{},initialize:function(){var e,t,n,r,i=this;this.pending(),r=this.deferred,n=function(e,t){var n;return n=i[e],i[e]=function(){return i.defer(e,n,t,arguments)}};for(e in r)t=r[e],n(e,t)},pending:function(){return(this._deferred=e.Deferred()).once={},this},defer:function(e,n,r,i){r==null&&(r=!1),this._deferred==null&&this.pending();if(t.isString(e)){t.isBoolean(n)&&(r=n,n=this[e]);if(r){if(this._deferred[e])return this;this._deferred.once[e]=!0}}else n=e;return this._deferred.done(function(){return n.apply(null,i)}),this},resolve:function(e){return e==null&&(e=this),this._deferred&&this._deferred.resolveWith(e),this},reject:function(e){return e==null&&(e=this),this._deferred&&this._deferred.rejectWith(e),this},promise:function(){var e;return this._deferred==null&&this.pending(),(e=this._deferred).promise.apply(e,arguments)},when:function(t){return e.when(this).done(t)},state:function(){var e;return(e=this._deferred)!=null?e.state():void 0}},n.resolveWith=n.resolve,n.rejectWith=n.reject,{Deferrable:n}});
+define(['jquery', 'underscore'], function($, _) {
+  var Deferrable;
+  Deferrable = {
+    deferred: {},
+    initialize: function() {
+      var method, once, _fn, _ref,
+        _this = this;
+      this.pending();
+      _ref = this.deferred;
+      _fn = function(method, once) {
+        var func;
+        func = _this[method];
+        return _this[method] = function() {
+          return _this.defer(method, func, once, arguments);
+        };
+      };
+      for (method in _ref) {
+        once = _ref[method];
+        _fn(method, once);
+      }
+    },
+    pending: function() {
+      (this._deferred = $.Deferred()).once = {};
+      return this;
+    },
+    defer: function(name, func, once, args) {
+      if (once == null) {
+        once = false;
+      }
+      if (this._deferred == null) {
+        this.pending();
+      }
+      if (_.isString(name)) {
+        if (_.isBoolean(func)) {
+          once = func;
+          func = this[name];
+        }
+        if (once) {
+          if (this._deferred[name]) {
+            return this;
+          }
+          this._deferred.once[name] = true;
+        }
+      } else {
+        func = name;
+      }
+      this._deferred.done(function() {
+        return func.apply(null, args);
+      });
+      return this;
+    },
+    resolve: function(context) {
+      if (context == null) {
+        context = this;
+      }
+      if (this._deferred) {
+        this._deferred.resolveWith(context);
+      }
+      return this;
+    },
+    reject: function(context) {
+      if (context == null) {
+        context = this;
+      }
+      if (this._deferred) {
+        this._deferred.rejectWith(context);
+      }
+      return this;
+    },
+    promise: function() {
+      var _ref;
+      if (this._deferred == null) {
+        this.pending();
+      }
+      return (_ref = this._deferred).promise.apply(_ref, arguments);
+    },
+    when: function(func) {
+      return $.when(this).done(func);
+    },
+    state: function() {
+      var _ref;
+      return (_ref = this._deferred) != null ? _ref.state() : void 0;
+    }
+  };
+  Deferrable.resolveWith = Deferrable.resolve;
+  Deferrable.rejectWith = Deferrable.reject;
+  return {
+    Deferrable: Deferrable
+  };
+});

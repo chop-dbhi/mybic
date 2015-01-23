@@ -37,6 +37,8 @@
 		
     <script src="http://rawgithub.com/endtwist/kerning.js/master/kerning.js"></script>
 
+    <script src="{{ STATIC_URL }}/scripts/javascript/src/mybic.js">
+    
 	<!-- here we apply the default bootstrap .table class to all tables -->
 	<script type="text/javascript">
 	$(function() {
@@ -79,9 +81,35 @@
                 {%  if my_project %}
                     <li class="active"><a href="{% url 'my_project_url' my_lab.slug my_project.slug %}">{{ my_project.name }}</a>
                 {% endif %}
+                {%  if my_child %}
+                    <li class="active"><a href="{% url 'my_child_url' my_lab.slug my_project.slug my_child %}">{{ my_child }}</a>
+                {% endif %}
             </ul>
+            
             {% if request.user.is_authenticated %}
             <ul class="nav navbar-nav navbar-right">
+                {% if request.user.is_staff %}
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                             {%  if my_project %}
+                                <li><a id="ajax-this-link" href="{% url 'update_project_url' my_lab.slug my_project.slug %}">Refresh project</a></li>
+                                
+                                <li><a href="{% url 'admin:labs_project_change' my_project.id %}">Project admin</a></li>
+                             {% endif %}
+                             {% if my_lab %}
+                                <li><a href="{% url 'admin:labs_lab_change' my_lab.id %}">Lab admin</a></li>
+                             {% endif %}
+                              <li><a href="{% url 'admin:index' %}">Site admin</a></li>
+                              {% if request.session and 'masquerade' in request.session and request.session.masquerade == True %}
+                               <li><a href="{% url 'toggle_url' %}">View as admin</a></li>
+                               {% else %}
+                               <li><a href="{% url 'toggle_url' %}">View as user</a></li>
+                               {% endif %}
+                        </ul>
+                    </li>
+                {% endif %}
+            
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Groups<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
