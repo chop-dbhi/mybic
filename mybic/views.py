@@ -7,23 +7,28 @@ from django.http import Http404
 import sys
 import os
 import mimetypes
+import json
 
 from mybic.labs.models import Lab, Project
 from django.contrib.auth.models import User,Group
 
 def dashboard(request):
     print >>sys.stderr, 'dashboard! {0}'.format(request.user)
+    
+    
     if hasattr(request, 'user') and request.user.is_authenticated():
         kwargs = {'user': request.user}
         user = request.user
     else:
         kwargs = {'session_key': request.session.session_key}
         return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
-
-    if user.is_staff:
+        
+    if user.is_staff and not (request.session.get('masquerade',False)):
+        print >>sys.stderr, 'admin view'
         my_groups = Group.objects.all()
         my_groups_list = my_groups.values_list('name', flat=True)
     else:
+        print >>sys.stderr, 'user view'
         my_groups = Group.objects.filter(user=request.user)
         my_groups_list = my_groups.values_list('name',flat=True)
         
@@ -51,7 +56,7 @@ def protected_file(request,lab,project,path):
         if hasattr(request, 'user') and request.user.is_authenticated():
             kwargs = {'user': request.user}
             user = request.user
-            if user.is_staff:
+            if user.is_staff and not (request.session and request.session.get('masquerade') and request.session.masquerade == True):
                 my_groups = Group.objects.all()
                 my_groups_list = my_groups.values_list('name', flat=True)
             else:
@@ -94,3 +99,19 @@ def protected_file(request,lab,project,path):
         else:
             return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
     return response
+    
+def masquerade(request):
+    print >>sys.stderr, 'toggleview!'
+    response_data = {}
+    try:
+        # if its not set or its false this condition will be false
+        if not (request.session.get('masquerade',False)):
+                request.session['masquerade'] = True
+        else:
+                request.session['masquerade'] = False
+    except Exception, e:
+        request.session['masquerade'] = True
+    request.session.modified = True
+    print >>sys.stderr, request.session['masquerade']
+    response_data['state'] = request.session['masquerade']
+    return HttpResponse(json.dumps(response_data), content_type="application/json")

@@ -93,7 +93,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                              {%  if my_project %}
-                                <li><a id="refresh-project" href="{% url 'update_project_url' my_lab.slug my_project.slug %}">Refresh project</a></li>
+                                <li><a id="ajax-this-link" href="{% url 'update_project_url' my_lab.slug my_project.slug %}">Refresh project</a></li>
                                 
                                 <li><a href="{% url 'admin:labs_project_change' my_project.id %}">Project admin</a></li>
                              {% endif %}
@@ -101,6 +101,11 @@
                                 <li><a href="{% url 'admin:labs_lab_change' my_lab.id %}">Lab admin</a></li>
                              {% endif %}
                               <li><a href="{% url 'admin:index' %}">Site admin</a></li>
+                              {% if request.session and 'masquerade' in request.session and request.session.masquerade == True %}
+                               <li><a id="toggle-masquerade" href="{% url 'toggle_url' %}">View as admin</a></li>
+                               {% else %}
+                               <li><a id="toggle-masquerade" href="{% url 'toggle_url' %}">View as user</a></li>
+                               {% endif %}
                         </ul>
                     </li>
                 {% endif %}

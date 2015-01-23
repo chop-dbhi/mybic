@@ -21,7 +21,7 @@ def labview(request,lab_slug):
         kwargs = {'session_key': request.session.session_key}
         return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
     
-    if user.is_staff:
+    if user.is_staff and not (request.session and request.session.get('masquerade') and request.session.masquerade == True):
         my_groups = Group.objects.all()
         my_groups_list = my_groups.values_list('name', flat=True)
     else:
@@ -56,7 +56,7 @@ def projectview(request,lab_slug,project_slug):
         kwargs = {'session_key': request.session.session_key}
         return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
 
-    if user.is_staff:
+    if user.is_staff and not (request.session and request.session.get('masquerade') and request.session.masquerade == True):
         my_groups = Group.objects.all()
         my_groups_list = my_groups.values_list('name', flat=True)
     else:
@@ -94,7 +94,7 @@ def updateproject(request,lab_slug,project_slug):
     else:
         response_data['result'] = 'failed'
         response_data['message'] = 'Not logged in'
-    if user.is_staff:
+    if user.is_staff and not (request.session and request.session.get('masquerade') and request.session.masquerade == True):
         my_groups = Group.objects.all()
         my_groups_list = my_groups.values_list('name', flat=True)
     else:
@@ -135,7 +135,7 @@ def childview(request,lab_slug,project_slug,child_page):
         kwargs = {'session_key': request.session.session_key}
         return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
 
-    if user.is_staff:
+    if user.is_staff and not (request.session and request.session.get('masquerade') and request.session.masquerade == True):
         my_groups = Group.objects.all()
         my_groups_list = my_groups.values_list('name', flat=True)
     else:

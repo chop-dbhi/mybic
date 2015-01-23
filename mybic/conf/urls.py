@@ -15,6 +15,8 @@ urlpatterns = patterns(
     
     url(r'^admin/', include(admin.site.urls)),
     
+    url(r'^toggle/', 'mybic.views.masquerade', name='toggle_url'),
+    
     url(r'^accounts/login/{0,1}$', 'mybic.views.dashboard', name='dashboard'),
     url(r'^dashboard/{0,1}$', 'mybic.views.dashboard', name='dashboard'),
     url(r'^/{0,1}$', 'mybic.views.dashboard', name='dashboard'),
@@ -27,7 +29,6 @@ urlpatterns = patterns(
     url(r'^labs/([\w-]+)/([\w-]+)/(.+)$', 'mybic.labs.views.childview', name='my_child_url'),
     
     url(r'^update/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.updateproject', name='update_project_url'),
-
     url(r'^slink/(?P<lab>[\w-]+)/(?P<project>[\w-]+)/(?P<path>.+)$','mybic.views.protected_file',name='protected')
     
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
