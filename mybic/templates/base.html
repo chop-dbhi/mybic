@@ -102,9 +102,9 @@
                              {% endif %}
                               <li><a href="{% url 'admin:index' %}">Site admin</a></li>
                               {% if request.session and 'masquerade' in request.session and request.session.masquerade == True %}
-                               <li><a id="toggle-masquerade" href="{% url 'toggle_url' %}">View as admin</a></li>
+                               <li><a href="{% url 'toggle_url' %}">View as admin</a></li>
                                {% else %}
-                               <li><a id="toggle-masquerade" href="{% url 'toggle_url' %}">View as user</a></li>
+                               <li><a href="{% url 'toggle_url' %}">View as user</a></li>
                                {% endif %}
                         </ul>
                     </li>

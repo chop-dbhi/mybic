@@ -10,6 +10,17 @@ import json
 
 from mybic.labs.models import Project,ChildIndex,Lab,LabArticle
 
+def get_groups(request):
+    if request.user.is_staff and not (request.session.get('masquerade',False)):
+        print >>sys.stderr, 'admin view'
+        my_groups = Group.objects.all()
+    else:
+        print >>sys.stderr, 'user view'
+        my_groups = Group.objects.filter(user=request.user)
+    my_groups_list = my_groups.values_list('name', flat=True)
+    return my_groups, my_groups_list
+
+
 def labview(request,lab_slug):
 
     print >>sys.stderr, 'labview! {0}'.format(request.user)
@@ -21,13 +32,8 @@ def labview(request,lab_slug):
         kwargs = {'session_key': request.session.session_key}
         return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
     
-    if user.is_staff and not (request.session and request.session.get('masquerade') and request.session.masquerade == True):
-        my_groups = Group.objects.all()
-        my_groups_list = my_groups.values_list('name', flat=True)
-    else:
-        my_groups = Group.objects.filter(user=request.user)
-        my_groups_list = my_groups.values_list('name',flat=True)
-
+    my_groups, my_groups_list = get_groups(request)
+    
     try:
         lab_object = Lab.objects.get(slug=lab_slug)
     except ObjectDoesNotExist:
@@ -56,12 +62,7 @@ def projectview(request,lab_slug,project_slug):
         kwargs = {'session_key': request.session.session_key}
         return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
 
-    if user.is_staff and not (request.session and request.session.get('masquerade') and request.session.masquerade == True):
-        my_groups = Group.objects.all()
-        my_groups_list = my_groups.values_list('name', flat=True)
-    else:
-        my_groups = Group.objects.filter(user=request.user)
-        my_groups_list = my_groups.values_list('name',flat=True)
+    my_groups, my_groups_list = get_groups(request)
 
     try:
         lab = Lab.objects.get(slug=lab_slug)
@@ -94,12 +95,8 @@ def updateproject(request,lab_slug,project_slug):
     else:
         response_data['result'] = 'failed'
         response_data['message'] = 'Not logged in'
-    if user.is_staff and not (request.session and request.session.get('masquerade') and request.session.masquerade == True):
-        my_groups = Group.objects.all()
-        my_groups_list = my_groups.values_list('name', flat=True)
-    else:
-        my_groups = Group.objects.filter(user=request.user)
-        my_groups_list = my_groups.values_list('name',flat=True)
+
+    my_groups, my_groups_list = get_groups(request)
 
     try:
         lab = Lab.objects.get(slug=lab_slug)
@@ -135,12 +132,7 @@ def childview(request,lab_slug,project_slug,child_page):
         kwargs = {'session_key': request.session.session_key}
         return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
 
-    if user.is_staff and not (request.session and request.session.get('masquerade') and request.session.masquerade == True):
-        my_groups = Group.objects.all()
-        my_groups_list = my_groups.values_list('name', flat=True)
-    else:
-        my_groups = Group.objects.filter(user=request.user)
-        my_groups_list = my_groups.values_list('name',flat=True)
+    my_groups, my_groups_list = get_groups(request)
 
     try:
         lab = Lab.objects.get(slug=lab_slug)
