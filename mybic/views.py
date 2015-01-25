@@ -8,11 +8,8 @@ from django.shortcuts import render
 import sys
 import os
 import mimetypes
-<<<<<<< HEAD
 from news.models import Article
-=======
 import json
->>>>>>> master
 
 from mybic.labs.models import Lab, Project
 from django.contrib.auth.models import User,Group

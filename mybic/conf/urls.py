@@ -37,9 +37,6 @@ urlpatterns = patterns(
     url(r'^labs/$','mybic.views.dashboard', name='dashboard'),
     url(r'^labs/([\w-]+)/$', 'mybic.labs.views.labview', name='my_lab_url'),
     url(r'^labs/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.projectview', name='my_project_url'),
-<<<<<<< HEAD
-
-    url(r'^slink/(?P<lab>[\w-]+)/(?P<project>[\w-]+)/(?P<path>.+)$','mybic.views.protected_file',name='protected'),
 
     url(r'^search', SearchView(
         template='search/search.html',
@@ -47,13 +44,11 @@ urlpatterns = patterns(
         form_class=ModelSearchForm
     ), name='haystack_search'),
 
-=======
     url(r'^labs/([\w-]+)/([\w-]+)/(.+)$', 'mybic.labs.views.childview', name='my_child_url'),
     
     url(r'^update/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.updateproject', name='update_project_url'),
     url(r'^slink/(?P<lab>[\w-]+)/(?P<project>[\w-]+)/(?P<path>.+)$','mybic.views.protected_file',name='protected')
-    
->>>>>>> master
+
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 #'haystack.views',
