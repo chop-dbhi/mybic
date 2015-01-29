@@ -41,7 +41,8 @@ class Project(models.Model):
     git_branch = models.CharField(max_length=100, unique=False, db_index=True, default="master")
     created = models.DateTimeField(default=datetime.now)
     public = models.BooleanField(default=False, db_index=True, help_text='Is this a public project that any myBiC user can see?')
-
+    owner = models.ForeignKey(User)
+    
     def __str__(self):
         return self.slug
         
@@ -87,6 +88,10 @@ class Project(models.Model):
             pass
         os.symlink(self.static_dir, project_static)
         
+        children = ChildIndex.objects.filter(parent=self)
+        for child in children:
+            child.save()
+
         super(Project, self).save()
         
 class ChildIndex(models.Model):
