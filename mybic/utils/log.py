@@ -9,6 +9,7 @@ from django.views.debug import ExceptionReporter, get_exception_reporter_filter
 
 import re
 import sys
+import json
 from mybic.labs.models import Project
 
 
@@ -23,49 +24,32 @@ class ProjectEmailHandler(logging.Handler):
         self.include_html = include_html
         self.email_backend = email_backend
 
-    def emit(self, record):
+    def emit(self, logrecord):
+        print >>sys.stderr, 'projectemailhandler {0} length {1}'.format(logrecord.getMessage(),len(logrecord.getMessage()))
+        pro_dict = json.loads(logrecord.getMessage())
+        project = Project.objects.get(id=pro_dict['project'])
+        path = pro_dict['path']
         try:
-            print >>sys.stderr, 'projectemailhandler'
-            request = record.request
-            subject = '%s (%s IP): %s' % (
-                record.levelname,
-                ('internal' if request.META.get('REMOTE_ADDR') in settings.INTERNAL_IPS
-                 else 'EXTERNAL'),
-                record.getMessage()
+
+            # <LogRecord: protected_file, 40, ./mybic/views.py, 114, "(<Project: mybic_sandbox>, u'dfd.jpg')">
+            subject = '%s %s' % (
+                project,
+                'User attempted to access {0}'.format(path)
             )
-            filter = get_exception_reporter_filter(request)
-            request_repr = filter.get_request_repr(request)
         except Exception:
             subject = '%s: %s' % (
-                record.levelname,
-                record.getMessage()
+                project.name,
+                'User attempted to access {0}'.format(path)
             )
             request = None
             request_repr = "Request repr() unavailable."
         subject = self.format_subject(subject)
 
-        if record.exc_info:
-            exc_info = record.exc_info
-            stack_trace = '\n'.join(traceback.format_exception(*record.exc_info))
-        else:
-            exc_info = (None, record.getMessage(), None)
-            stack_trace = 'No stack trace available'
+        message = "As the owner of the {0} project you are receiving this error. This link is broken: {1}".format(project.name, path)
 
-        project_url_pattern = re.compile(r'^labs/([\w-]+)/([\w-]+)')
-        match = re.search(project_url_pattern, request.path)
-
-        if match:
-            lab_slug, project_slug = match.group(1, 2)
-
-            project = Project.objects.filter(lab__slug=lab_slug, slug=project_slug)
-
-            message = "As the owner of the %s project you are receiving this error. Perhaps a link is broken.\n%s\n\n%s" % (project.name, stack_trace, request_repr)
-            reporter = ExceptionReporter(request, is_email=True, *exc_info)
-            html_message = reporter.get_traceback_html() if self.include_html else None
-
-            mail.mail_owner(project, subject, message, fail_silently=True,
-                            html_message=html_message,
-                            connection=self.connection())
+        self.mail_owner(project, subject, message,
+                        html_message=None,
+                        connection=self.connection())
 
     def connection(self):
         return get_connection(backend=self.email_backend, fail_silently=True)
@@ -80,14 +64,14 @@ class ProjectEmailHandler(logging.Handler):
         return formatted_subject[:989]
 
 
-def mail_owner(project, subject, message, fail_silently=False, connection=None,
-               html_message=None):
-    """Sends a message to the admins, as defined by the ADMINS setting."""
-    if not settings.ADMINS:
-        return
-    mail = EmailMultiAlternatives('%s%s' % (settings.EMAIL_SUBJECT_PREFIX, subject),
-                                  message, settings.SERVER_EMAIL, project.owner.email,
-                                  connection=connection)
-    if html_message:
-        mail.attach_alternative(html_message, 'text/html')
-    mail.send(fail_silently=fail_silently)
+    def mail_owner(self, project, subject, message, fail_silently=False, connection=None,
+                   html_message=None):
+        """Sends a message to the admins, as defined by the ADMINS setting."""
+        if not settings.ADMINS:
+            return
+        mail = EmailMultiAlternatives('%s%s' % (settings.EMAIL_SUBJECT_PREFIX, subject),
+                                      message, settings.SERVER_EMAIL, [project.owner.email],
+                                      connection=connection)
+        if html_message:
+            mail.attach_alternative(html_message, 'text/html')
+        mail.send(fail_silently=fail_silently)

@@ -237,6 +237,12 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'protected_file': {
+            'handlers': ['mail_owner'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+
     },
     'filters': {
         'require_debug_false': {

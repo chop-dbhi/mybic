@@ -8,9 +8,12 @@ import sys
 import os
 import mimetypes
 import json
+import logging
 
 from mybic.labs.models import Lab, Project
 from django.contrib.auth.models import User,Group
+
+
 
 def get_groups(request):
     if request.user.is_staff and not (request.session.get('masquerade',False)):
@@ -82,12 +85,7 @@ def masquerade(request):
 #http://glitterbug.in/blog/serving-protected-files-from-nginx-with-django-11/show/
 def protected_file(request,lab,project,path):
     print >>sys.stderr, 'protectedfile! {0} {1} {2} {3}'.format(request.user,lab, project,path)
-    
-    #add the project owner so they are notified of 404s
-    # @override_settings(
-    # ADMINS = (
-    #     ('Jeremy Leipzig', 'leipzig@gmail.com'),
-    # ))
+    LOG = logging.getLogger("protected_file")
 
     response = HttpResponse()
     debug=False
@@ -110,6 +108,11 @@ def protected_file(request,lab,project,path):
             except ObjectDoesNotExist:
                 raise Http404
             if lab_object.group in my_groups:
+                file_location = os.path.join(settings.PROTECTED_ROOT, lab, project, path)
+                if not os.path.exists(file_location):
+                    pro_path_json = json.dumps({'project':project_object.id, 'path':path})
+                    LOG.error(pro_path_json)
+                    raise Http404
                 if path.endswith("pdf"):
                     response['Content-Type'] = 'application/pdf'
                 elif path.endswith("xlsx"):

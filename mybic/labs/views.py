@@ -7,8 +7,11 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import User, Group
 import sys
 import json
+import logging
 
 from mybic.labs.models import Project,ChildIndex,Lab,LabArticle
+
+LOG = logging.getLogger(__package__)
 
 def get_groups(request):
     if request.user.is_staff and not (request.session.get('masquerade',False)):
