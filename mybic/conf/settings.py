@@ -5,6 +5,7 @@ try:
     from .local_settings import *  # noqa
 except ImportError:
     import warnings
+
     warnings.warn('Local settings have not been found '
                   '(mybic.conf.local_settings)')
 

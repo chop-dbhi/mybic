@@ -1,6 +1,6 @@
-from django.contrib.auth.models import User,Group
+from django.contrib.auth.models import User, Group
 import mybic.labs.models as models
-from mybic.labs.models import Project,Lab
+from mybic.labs.models import Project, Lab
 from django.contrib import admin
 from django.forms import ModelForm
 from django import forms
@@ -14,11 +14,11 @@ admin.site.unregister(Group)
 class ProjectAdminForm(ModelForm):
     def clean(self):
         data = self.cleaned_data
-        #data['index_page']
+        # data['index_page']
         index_page = data['index_page']
         static_dir = data['static_dir']
         url_pattern = re.compile(r"^https?://.+")
-        
+
         if url_pattern.match(index_page):
             try:
                 urllib2.urlopen(index_page)
@@ -32,14 +32,17 @@ class ProjectAdminForm(ModelForm):
         # do something that validates your data
         return data
 
-#TODO: validate no names like "index.md" are used
-#http://stackoverflow.com/questions/877723/inline-form-validation-in-django
+
+# TODO: validate no names like "index.md" are used
+# http://stackoverflow.com/questions/877723/inline-form-validation-in-django
 class ChildrenInline(admin.TabularInline):
     model = models.ChildIndex
+
 
 class ProjectAdmin(admin.ModelAdmin):
     form = ProjectAdminForm
     inlines = [ChildrenInline]
+
 
 admin.site.register(models.Project, ProjectAdmin)
 
@@ -47,10 +50,12 @@ admin.site.register(models.Project, ProjectAdmin)
 class LabInline(admin.TabularInline):
     model = models.Lab
 
+
 class LabAdmin(admin.ModelAdmin):
     inlines = [LabInline]
 
-admin.site.register(Group,LabAdmin)
+
+admin.site.register(Group, LabAdmin)
 
 admin.site.register(models.Lab)
 

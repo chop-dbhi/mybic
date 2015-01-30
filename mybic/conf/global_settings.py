@@ -21,7 +21,7 @@ PROJECT_PATH = BASE_PATH = os.path.join(os.path.dirname(__file__), '../..')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['mybic.chop.edu']
+ALLOWED_HOSTS = ['mybic.chop.edu','10.30.9.53']
 
 INSTALLED_APPS = (
     'django.contrib.admin',
