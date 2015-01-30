@@ -24,7 +24,7 @@ DEBUG = False
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['mybic.chop.edu']
+ALLOWED_HOSTS = ['mybic.chop.edu','localhost']
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -46,10 +46,6 @@ INSTALLED_APPS = (
     'markdown_deux',
 )
 
-
-# Debug
-DEBUG = False
-TEMPLATE_DEBUG = DEBUG
 
 
 # Administration
@@ -225,7 +221,11 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
+        'stdout': {
+             'class': 'logging.StreamHandler',
+                 'level': 'ERROR',
+             },
     },
     'loggers': {
         'django.request': {
