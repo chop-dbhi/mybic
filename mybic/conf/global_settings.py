@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import sys
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 from chopauth.settings import *
 
@@ -21,7 +22,7 @@ PROJECT_PATH = BASE_PATH = os.path.join(os.path.dirname(__file__), '../..')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-ALLOWED_HOSTS = ['mybic.chop.edu','10.30.9.53']
+ALLOWED_HOSTS = ['mybic.chop.edu', '10.30.9.53']
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -30,7 +31,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
 
     'mybic',
     'mybic.labs',
@@ -39,13 +40,13 @@ INSTALLED_APPS = (
     'ldap',
 
     'chopauth',
-    
+
     'markdown_deux',
 )
 
 # Administration
 
-#WSGI_APPLICATION = 'mybic.wsgi.application'
+# WSGI_APPLICATION = 'mybic.wsgi.application'
 
 # Admins receive any error messages by email if DEBUG is False
 ADMINS = (
@@ -116,7 +117,7 @@ TEMPLATE_CONTEXT_PROCESSORS += (
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    #     'django.template.loaders.eggs.Loader',
 )
 
 # List of finder classes that know how to find static files in
@@ -194,15 +195,16 @@ MIDDLEWARE_CLASSES = (
 # SUPPORT_EMAIL = '"myBiC"<mybic@mybic.chop.edu>'
 # DEFAULT_FROM_EMAIL = '"myBiC"<mybic@mybic.chop.edu>'
 # EMAIL_SUBJECT_PREFIX = '[mybic] '
-# SEND_BROKEN_LINK_EMAILS = True
+#the middleware does this methinks
+#SEND_BROKEN_LINK_EMAILS = True
 # SERVER_EMAIL = '"myBiC"<nobody@mybic.chop.edu>'
 
-DEFAULT_FROM_EMAIL='webmaster@localhost' # or webmaster@servername
-SERVER_EMAIL='root@localhost' # or 'root@servername'
-EMAIL_HOST = 'localhost' # or servername
-EMAIL_HOST_USER='' # or 'user@gmail.com'
-EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
-EMAIL_PORT = 25 #587 
+DEFAULT_FROM_EMAIL = 'webmaster@localhost'  # or webmaster@servername
+SERVER_EMAIL = 'root@localhost'  # or 'root@servername'
+EMAIL_HOST = 'localhost'  # or servername
+EMAIL_HOST_USER = ''  # or 'user@gmail.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_PORT = 25  #587
 EMAIL_USE_TLS = True
 
 
@@ -216,12 +218,28 @@ LOGGING = {
             'level': 'ERROR',
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
-        }
+        },
+        'mail_owner': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'mybic.utils.log.ProjectEmailHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            'stream': sys.stderr
+        },
     },
     'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
         'django.request': {
-            'handlers': ['stdout','mail_admins'],
-            'level': 'ERROR',
+            'handlers': ['console'],
+            'level': 'DEBUG',
             'propagate': True,
         },
     },
@@ -229,6 +247,14 @@ LOGGING = {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
         }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
     },
 }
 
@@ -303,7 +329,6 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_COOKIE_NAME = 'mybic_sessionid'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = False
-
 
 MARKDOWN_DEUX_STYLES = {
     "default": {
