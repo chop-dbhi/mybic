@@ -82,6 +82,13 @@ def masquerade(request):
 #http://glitterbug.in/blog/serving-protected-files-from-nginx-with-django-11/show/
 def protected_file(request,lab,project,path):
     print >>sys.stderr, 'protectedfile! {0} {1} {2} {3}'.format(request.user,lab, project,path)
+    
+    #add the project owner so they are notified of 404s
+    # @override_settings(
+    # ADMINS = (
+    #     ('Jeremy Leipzig', 'leipzig@gmail.com'),
+    # ))
+
     response = HttpResponse()
     debug=False
     if debug:
