@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load markdown_deux_tags %}
+{% block content %}
+
+<h2>Last {{ pageview_limit }} Pageviews</h2>
+
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Visitor</th>
+                <th>Url</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+         {% for pageview in pageviews %}
+            <tr>
+                <td>{{ pageview.visitor.user.first_name }} {{ pageview.visitor.user.last_name }}</td>
+                 <td>{{ pageview.url }}</td>
+                <td>{{ pageview.view_time }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

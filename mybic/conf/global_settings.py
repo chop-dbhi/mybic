@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import sys
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS
 from chopauth.settings import *
 
@@ -20,11 +21,9 @@ PROJECT_PATH = BASE_PATH = os.path.join(os.path.dirname(__file__), '../..')
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
 
-TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = ['mybic.chop.edu','localhost']
+ALLOWED_HOSTS = ['mybic.chop.edu','localhost', '10.30.9.53']
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -33,7 +32,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+
 
     'mybic',
     'mybic.labs',
@@ -42,15 +41,16 @@ INSTALLED_APPS = (
     'ldap',
 
     'chopauth',
-    
-    'markdown_deux',
-)
 
+    'markdown_deux',
+
+    'tracking'
+)
 
 
 # Administration
 
-#WSGI_APPLICATION = 'mybic.wsgi.application'
+# WSGI_APPLICATION = 'mybic.wsgi.application'
 
 # Admins receive any error messages by email if DEBUG is False
 ADMINS = (
@@ -121,7 +121,7 @@ TEMPLATE_CONTEXT_PROCESSORS += (
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-#     'django.template.loaders.eggs.Loader',
+    #     'django.template.loaders.eggs.Loader',
 )
 
 # List of finder classes that know how to find static files in
@@ -184,6 +184,7 @@ SITE_ID = 1
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.middleware.gzip.GZipMiddleware',
+    'tracking.middleware.VisitorTrackingMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -199,15 +200,16 @@ MIDDLEWARE_CLASSES = (
 # SUPPORT_EMAIL = '"myBiC"<mybic@mybic.chop.edu>'
 # DEFAULT_FROM_EMAIL = '"myBiC"<mybic@mybic.chop.edu>'
 # EMAIL_SUBJECT_PREFIX = '[mybic] '
-# SEND_BROKEN_LINK_EMAILS = True
+#the middleware does this methinks
+#SEND_BROKEN_LINK_EMAILS = True
 # SERVER_EMAIL = '"myBiC"<nobody@mybic.chop.edu>'
 
-DEFAULT_FROM_EMAIL='webmaster@localhost' # or webmaster@servername
-SERVER_EMAIL='root@localhost' # or 'root@servername'
-EMAIL_HOST = 'localhost' # or servername
-EMAIL_HOST_USER='' # or 'user@gmail.com'
-EMAIL_BACKEND ='django.core.mail.backends.smtp.EmailBackend'
-EMAIL_PORT = 25 #587 
+DEFAULT_FROM_EMAIL = 'webmaster@localhost'  # or webmaster@servername
+SERVER_EMAIL = 'root@localhost'  # or 'root@servername'
+EMAIL_HOST = 'localhost'  # or servername
+EMAIL_HOST_USER = ''  # or 'user@gmail.com'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_PORT = 25  #587
 EMAIL_USE_TLS = True
 
 
@@ -222,22 +224,43 @@ LOGGING = {
             'filters': ['require_debug_false'],
             'class': 'django.utils.log.AdminEmailHandler'
         },
-        'stdout': {
-             'class': 'logging.StreamHandler',
-                 'level': 'ERROR',
-             },
+        'mail_owner': {
+            'level': 'ERROR',
+            'filters': ['require_debug_false'],
+            'class': 'mybic.utils.log.ProjectEmailHandler'
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+            'stream': sys.stderr
+        },
     },
     'loggers': {
         'django.request': {
-            'handlers': ['stdout','mail_admins'],
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'protected_file': {
+            'handlers': ['mail_owner'],
             'level': 'ERROR',
             'propagate': True,
         },
+
     },
     'filters': {
         'require_debug_false': {
             '()': 'django.utils.log.RequireDebugFalse'
         }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
     },
 }
 
@@ -313,7 +336,6 @@ SESSION_COOKIE_NAME = 'mybic_sessionid'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = False
 
-
 MARKDOWN_DEUX_STYLES = {
     "default": {
         "extras": {
@@ -323,3 +345,21 @@ MARKDOWN_DEUX_STYLES = {
         "safe_mode": "escape",
     },
 }
+
+# tracking
+TRACK_AJAX_REQUESTS = False
+TRACK_ANONYMOUS_USERS = False
+
+TRACK_PAGEVIEWS = True
+
+TRACK_IGNORE_URLS = r'^(favicon\.ico|robots\.txt)$',
+
+TRACK_IGNORE_STATUS_CODES = []
+
+TRACK_USING_GEOIP = False
+
+TRACK_REFERER = False
+
+TRACK_QUERY_STRING = True
+
+PAGEVIEW_LIMIT = 100
