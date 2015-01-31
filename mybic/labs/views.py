@@ -185,7 +185,7 @@ def project_logs(request, lab_slug, project_slug):
 
     #what the page looks like in tracking
     project_page = "/labs/{0}/{1}".format(lab_slug, project_slug)
-    pageviews = Pageview.objects.filter(url__startswith=project_page).order_by('view_time').select_related('visitor')[:settings.PAGEVIEW_LIMIT]
+    pageviews = Pageview.objects.filter(url__startswith=project_page).order_by('-view_time').select_related('visitor')[:settings.PAGEVIEW_LIMIT]
 
     print >>sys.stderr, 'pageviews: {0} {1}'.format(project_page,len(pageviews))
 
