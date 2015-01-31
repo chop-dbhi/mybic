@@ -42,6 +42,8 @@ INSTALLED_APPS = (
     'chopauth',
 
     'markdown_deux',
+
+    'tracking'
 )
 
 # Administration
@@ -180,6 +182,7 @@ SITE_ID = 1
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.BrokenLinkEmailsMiddleware',
     'django.middleware.gzip.GZipMiddleware',
+    'tracking.middleware.VisitorTrackingMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -340,3 +343,21 @@ MARKDOWN_DEUX_STYLES = {
         "safe_mode": "escape",
     },
 }
+
+# tracking
+TRACK_AJAX_REQUESTS = False
+TRACK_ANONYMOUS_USERS = False
+
+TRACK_PAGEVIEWS = True
+
+TRACK_IGNORE_URLS = r'^(favicon\.ico|robots\.txt)$',
+
+TRACK_IGNORE_STATUS_CODES = []
+
+TRACK_USING_GEOIP = False
+
+TRACK_REFERER = False
+
+TRACK_QUERY_STRING = True
+
+PAGEVIEW_LIMIT = 100

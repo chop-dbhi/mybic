@@ -7,7 +7,6 @@ from datetime import datetime
 from news.models import Article
 from django.conf import settings
 
-
 class Lab(models.Model):
     """ A lab with a PI
         More than one lab can belong to a group

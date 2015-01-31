@@ -33,13 +33,13 @@ class ProjectEmailHandler(logging.Handler):
 
             # <LogRecord: protected_file, 40, ./mybic/views.py, 114, "(<Project: mybic_sandbox>, u'dfd.jpg')">
             subject = '%s %s' % (
-                project,
-                'User attempted to access {0}'.format(path)
+                project.name,
+                'user unsuccessfully attempted to access {0}'.format(path)
             )
         except Exception:
             subject = '%s: %s' % (
                 project.name,
-                'User attempted to access {0}'.format(path)
+                'user unsuccessfully attempted to access {0}'.format(path)
             )
             request = None
             request_repr = "Request repr() unavailable."

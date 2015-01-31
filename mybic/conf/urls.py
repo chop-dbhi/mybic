@@ -14,7 +14,7 @@ urlpatterns = patterns(
     url(r'', include('chopauth.urls')),
     
     url(r'^admin/', include(admin.site.urls)),
-    
+    url(r'^tracking/', include('tracking.urls')),
     url(r'^toggle/', 'mybic.views.masquerade', name='toggle_url'),
     
     url(r'^accounts/login/{0,1}$', 'mybic.views.dashboard', name='dashboard'),
@@ -26,6 +26,7 @@ urlpatterns = patterns(
     url(r'^labs/$','mybic.views.dashboard', name='dashboard'),
     url(r'^labs/([\w-]+)/$', 'mybic.labs.views.labview', name='my_lab_url'),
     url(r'^labs/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.projectview', name='my_project_url'),
+    url(r'^logs/([\w-]+)/([\w-]+)/$','mybic.labs.views.project_logs',name='project_logs'),
     url(r'^labs/([\w-]+)/([\w-]+)/(.+)$', 'mybic.labs.views.childview', name='my_child_url'),
     
     url(r'^update/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.updateproject', name='update_project_url'),

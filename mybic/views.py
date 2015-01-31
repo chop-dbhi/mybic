@@ -110,6 +110,7 @@ def protected_file(request,lab,project,path):
             if lab_object.group in my_groups:
                 file_location = os.path.join(settings.PROTECTED_ROOT, lab, project, path)
                 if not os.path.exists(file_location):
+                    # TODO: there must be a better way to pass this
                     pro_path_json = json.dumps({'project':project_object.id, 'path':path})
                     LOG.error(pro_path_json)
                     raise Http404
