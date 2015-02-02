@@ -19,6 +19,7 @@ class Lab(models.Model):
     group = models.ForeignKey(Group)
     slug = models.SlugField(max_length=50, unique=False, db_index=True,
                             help_text=" only letters, numbers, underscores or hyphens e.g. pei_lab")
+    modified = models.DateTimeField(default=datetime.now, auto_now=True)
 
     def __str__(self):
         return self.slug
