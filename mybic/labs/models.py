@@ -185,6 +185,9 @@ class LabArticle(Article):
     """
     lab = models.ForeignKey('Lab')
 
+class SiteArticle(Article):
+    """ A news item or blog entry for everyone
+    """
 
 class staff(User):
     """ cbmi staff

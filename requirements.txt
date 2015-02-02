@@ -20,7 +20,7 @@ django-siteauth
 django-registration2
 
 # News
-git+git://github.com/cbmi/django-news.git#egg=django-news
+git+git://github.com/chop-dbhi/django-news.git#egg=django-news
 
 # Permissions
 django-guardian==1.0.4

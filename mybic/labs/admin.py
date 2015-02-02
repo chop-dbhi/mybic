@@ -62,3 +62,5 @@ admin.site.register(models.Lab)
 admin.site.register(models.LabArticle)
 
 admin.site.register(models.ProjectArticle)
+
+admin.site.register(models.SiteArticle)

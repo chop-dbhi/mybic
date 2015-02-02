@@ -10,7 +10,7 @@ import mimetypes
 import json
 import logging
 
-from mybic.labs.models import Lab, Project
+from mybic.labs.models import Lab, Project, SiteArticle
 from django.contrib.auth.models import User,Group
 
 
@@ -35,7 +35,10 @@ def get_dash_context(request):
     my_projects = Project.objects.filter(
             lab__name__in = my_labs.values_list('name',flat=True)
         ).values('slug').order_by('-modified')
-    context = {'my_groups':my_groups_list,'my_labs':my_labs,'my_projects':my_projects}
+
+    entries = SiteArticle.objects.filter(published=True)
+
+    context = {'my_groups':my_groups_list,'my_labs':my_labs,'my_projects':my_projects, 'entries': entries}
     return context
     
 def dashboard(request):
@@ -54,6 +57,8 @@ def dashboard(request):
     else:
         request.session['count'] = 1
         print >>sys.stderr,'No count in session. Setting to 1'
+
+
 
     masquerade = request.session.get('masquerade',None)
     print >>sys.stderr, 'masquerade {0}'.format(masquerade)
