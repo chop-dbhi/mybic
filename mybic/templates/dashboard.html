@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% load markdown_deux_tags %}
 {% load humanize %}
+
+{% block styles %}
+    {{ block.super }}
+{% endblock %}
+
 {% block content %}
 
 <h2 id="overview" class="page-header"><img src="/static/images/iconmonstr-flask-2-icon-32.png"> Labs</h2>
