@@ -48,6 +48,7 @@ class Project(models.Model):
                                help_text='e.g. http://github.research.chop.edu/cbmi/pcgc')
     git_branch = models.CharField(max_length=100, unique=False, db_index=True, default="master")
     created = models.DateTimeField(default=datetime.now)
+    modified = models.DateTimeField(default=datetime.now, auto_now=True)
     public = models.BooleanField(default=False, db_index=True,
                                  help_text='Is this a public project that any myBiC user can see?')
     owner = models.ForeignKey(User)
