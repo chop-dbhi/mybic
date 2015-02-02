@@ -12,7 +12,9 @@ urlpatterns = patterns(
     '',
     url(r'^$',include('chopauth.urls')),
     url(r'', include('chopauth.urls')),
-    
+
+    url(r'^news/', include('news.urls')),
+
     url(r'^admin/', include(admin.site.urls)),
     url(r'^tracking/', include('tracking.urls')),
     url(r'^toggle/', 'mybic.views.masquerade', name='toggle_url'),
