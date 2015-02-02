@@ -1,11 +1,13 @@
 import os
 import re
 import urllib2
+import sys
 from django.contrib.auth.models import User, Group
 from django.db import models
 from datetime import datetime
 from news.models import Article
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
 
 class Lab(models.Model):
     """ A lab with a PI
@@ -28,7 +30,7 @@ class Lab(models.Model):
         return '%s' % self.name
 
     def projects(self):
-        return Project.objects.filter(lab=self)
+        return Project.objects.filter(lab=self).order_by('-modified')
 
 
 class Project(models.Model):
@@ -78,13 +80,16 @@ class Project(models.Model):
 
         url_pattern = re.compile(r"^https?://.+")
 
-        if url_pattern.match(self.index_page):
-            response = urllib2.urlopen(self.index_page)
-            fh = open(link_name, "w")
-            fh.write(response.read())
-            fh.close()
-        else:
-            os.symlink(self.index_page, link_name)
+        try:
+            if url_pattern.match(self.index_page):
+                response = urllib2.urlopen(self.index_page)
+                fh = open(link_name, "w")
+                fh.write(response.read())
+                fh.close()
+            else:
+                os.symlink(self.index_page, link_name)
+        except OSError, e:
+            raise PermissionDenied()
 
         #create a symlink to the static directory on the isilon
         #call it _site/static/lab/project
@@ -92,16 +97,22 @@ class Project(models.Model):
         project_static = os.path.join(lab_static, self.slug)
         if not os.path.exists(lab_static):
             os.mkdir(lab_static)
-        #if os.path.exists(project_static):
         try:
+            print >>sys.stderr, 'unlking! {0}'.format(project_static)
             os.unlink(project_static)
         except OSError, e:
             pass
-        os.symlink(self.static_dir, project_static)
-
+        print >>sys.stderr, 'symlinking {0} to {1}'.format(self.static_dir,project_static)
+        try:
+            os.symlink(self.static_dir, project_static)
+        except OSError, e:
+            raise PermissionDenied()
         children = ChildIndex.objects.filter(parent=self)
         for child in children:
             child.save()
+
+        #bump modified date of parent lab
+        self.lab.save()
 
         super(Project, self).save()
 
@@ -143,7 +154,10 @@ class ChildIndex(models.Model):
             fh.write(response.read())
             fh.close()
         else:
-            os.symlink(self.page, link_name)
+            try:
+                os.symlink(self.page, link_name)
+            except OSError, e:
+                raise PermissionDenied()
 
         super(ChildIndex, self).save()
 

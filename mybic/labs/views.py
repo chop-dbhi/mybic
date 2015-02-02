@@ -48,7 +48,7 @@ def labview(request,lab_slug):
 
         my_projects = Project.objects.filter(
             lab__slug = lab_slug
-        )
+        ).order_by('-modified')
 
         context = {'my_groups':my_groups_list,'my_lab':lab_object,'my_projects':my_projects,'entries': entries}
 
@@ -76,7 +76,7 @@ def projectview(request,lab_slug,project_slug):
 
     my_projects = Project.objects.filter(
             lab__slug = lab_slug
-        )
+        ).order_by('-modified')
         
     static_url = settings.PROTECTED_URL
     project_url = os.path.join(lab_slug,project_slug)
@@ -146,7 +146,7 @@ def childview(request,lab_slug,project_slug,child_page):
 
     my_projects = Project.objects.filter(
             lab__slug = lab_slug
-        )
+        ).order_by('-modified')
         
     static_url = settings.PROTECTED_URL
     project_url = os.path.join(lab_slug,project_slug)
@@ -179,7 +179,7 @@ def project_logs(request, lab_slug, project_slug):
 
     my_projects = Project.objects.filter(
             lab__slug = lab_slug
-        )
+        ).order_by('-modified')
 
     project_url = os.path.join(lab_slug,project_slug)
 

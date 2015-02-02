@@ -30,11 +30,11 @@ def get_dash_context(request):
     my_groups_list = my_groups.values_list('name',flat=True)
     my_labs = Lab.objects.filter(
         group__in = my_groups
-    )
+    ).order_by('-modified')
 
     my_projects = Project.objects.filter(
             lab__name__in = my_labs.values_list('name',flat=True)
-        ).values('slug')
+        ).values('slug').order_by('-modified')
     context = {'my_groups':my_groups_list,'my_labs':my_labs,'my_projects':my_projects}
     return context
     

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load markdown_deux_tags %}
+{% load humanize %}
 {% block content %}
 
 <h2 id="overview" class="page-header"><img src="/static/images/iconmonstr-flask-2-icon-32.png"> Labs</h2>
@@ -11,7 +12,7 @@
 	 <ul>
 		 <li>
 	   {% for my_project in my_lab.projects %}
-	     <a href="{% url 'my_project_url' my_lab.slug my_project.slug %}"><button type="button" class="btn btn-default btn-xs"><img src="/static/images/iconmonstr-layer-19-icon-16.png"> {{ my_project.name }}</button></a>
+	     <a href="{% url 'my_project_url' my_lab.slug my_project.slug %}"><button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="modified {{ my_project.modified|naturaltime }}"><img src="/static/images/iconmonstr-layer-19-icon-16.png"> {{ my_project.name }}</button></a>
 	   {% endfor %}
 	   </li>
 	 </ul>
