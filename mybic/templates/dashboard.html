@@ -3,58 +3,76 @@
 {% load humanize %}
 
 {% block styles %}
-    {{ block.super }}
+{{ block.super }}
 {% endblock %}
 
 {% block content %}
-{% if entries %}
-    <div class="landing-target-title">
-        <h1 id="overview" class="page-header"><img src="/static/images/rss.png"> {{ my_lab.name }} News</h1>
-    </div>
-
-    <div id="news">
-        {% for entry in entries %}
-            <article class="entry">
 
 
-                <header id="{{ entry.slug }}">
-                    <span class="date-block">
+<div class="row">
+	<div class="col-md-6">
+		<h2 id="overview" class="page-header"><img src="/static/images/iconmonstr-flask-2-icon-32.png"> Labs</h2>
+		<div id="labs">
+			{% if my_labs %}
+			<ul>
+				{% for my_lab in my_labs %}
+				<li><a href="{% url 'my_lab_url' my_lab.slug %}">{{ my_lab.name }}</a>
+					<ul>
+						<li>
+							{% for my_project in my_lab.projects %}
+							<a href="{% url 'my_project_url' my_lab.slug my_project.slug %}"><button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="modified {{ my_project.modified|naturaltime }}"><img src="/static/images/iconmonstr-layer-19-icon-16.png"> {{ my_project.name }}</button></a>
+							{% endfor %}
+						</li>
+					</ul>
+					{% endfor %}
+				</li>
+			</ul>
+			{% else %}
+			<h3>No labs. Check your groups.</h3>
+			{% endif %}
+		</div>
+	</div>
+
+
+	<div class="col-md-6" id="news">
+		{% if entries %}
+		<div class="landing-target-title">
+			<h1 id="overview" class="page-header"><img src="/static/images/rss.png"> {{ my_lab.name }} News</h1>
+		</div>
+
+
+		{% for entry in entries %}
+
+		<article class="entry">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-1">
+						<header id="{{ entry.slug }}">
+							<span class="date-block">
                         <span class="month">{{ entry.created|date:"j" }}</span>
                         {{ entry.created|date:"M Y" }}
-                    </span>
-                    <h3><a  data-toggle="collapse" href="#article_{{ entry.id }}" aria-expanded="false" aria-controls="collapseExample">{{ entry.title }}</a></h3>
-                </header>
-                <div class="collapse" id="article_{{ entry.id }}">
-  				<div class="well">
-					    {{ entry.body|markdown }}
-                </div>
+								</span>
+						</header>
+					</div>
+					<div class="col-md-11">
+					<h3><a  data-toggle="collapse" href="#article_{{ entry.id }}" aria-expanded="false" aria-controls="collapseExample">{{ entry.title }}</a></h3>
+
+					<div class="collapse" id="article_{{ entry.id }}">
+						<div class="well">
+							{{ entry.body|markdown }}
+						</div>
+					</div>
 				</div>
-
-            </article>
-            {% if not forloop.last %}<hr>{% endif %}
-        {% endfor %}
-    </div>
-    {% endif %}
-
-<h2 id="overview" class="page-header"><img src="/static/images/iconmonstr-flask-2-icon-32.png"> Labs</h2>
-<div id="labs">
-	{% if my_labs %}
-    <ul>
-    {% for my_lab in my_labs %}
-    <li><a href="{% url 'my_lab_url' my_lab.slug %}">{{ my_lab.name }}</a>
-	 <ul>
-		 <li>
-	   {% for my_project in my_lab.projects %}
-	     <a href="{% url 'my_project_url' my_lab.slug my_project.slug %}"><button type="button" class="btn btn-default btn-xs" data-toggle="tooltip" data-placement="left" title="modified {{ my_project.modified|naturaltime }}"><img src="/static/images/iconmonstr-layer-19-icon-16.png"> {{ my_project.name }}</button></a>
-	   {% endfor %}
-	   </li>
-	 </ul>
-    {% endfor %}
-    </li>
-    </ul>
-	{% else %}
-	    <h3>No labs. Check your groups.</h3>
-	{% endif %}
+				</div>
+		</article>
+		{% if not forloop.last %}<hr>{% endif %}
+		{% endfor %}
+		{% endif %}
+	</div>
 </div>
+
+
+
+
 {% endblock %}
 
