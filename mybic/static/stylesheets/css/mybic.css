@@ -1,59 +1,67 @@
 article {
   padding-right: 40px;
   font-size: 14px; }
-  article p, article li {
-    line-height: 22px; }
-  article h1, article h2, article h3 {
-    color: #8F1916; }
-  article h1 {
-    font-size: 28px; }
-  article header > * {
-    display: -moz-inline-box;
-    -moz-box-orient: vertical;
-    display: inline-block;
-    vertical-align: baseline;
-    zoom: 1;
-    *display: inline;
-    *vertical-align: auto;
-    vertical-align: middle; }
-  article header h1 {
-    font-size: 34px;
-    color: #333; }
-  article header .date-block {
-    display: -moz-inline-box;
-    -moz-box-orient: vertical;
-    display: inline-block;
-    vertical-align: baseline;
-    zoom: 1;
-    *display: inline;
-    *vertical-align: auto;
-    vertical-align: middle;
-    color: #999;
-    font-size: 12px;
-    width: 30px;
-    padding-right: 10px;
-    text-align: right; }
-    article header .date-block .month {
-      font-size: 24px;
-      display: block; }
-  article .body {
-    padding-left: 40px; }
-  article ul, article li {
-    padding-left: 0;
-    margin-left: 8px; }
-  article blockquote {
-    background-color: #eee;
-    padding: 20px;
-    line-height: 22px;
-    margin: 0;
-    font-size: 16px;
-    color: #666; }
-    article blockquote :first-child {
-      padding-top: 0;
-      margin-top: 0; }
-    article blockquote :last-child {
-      padding-bottom: 0;
-      margin-bottom: 0; }
+
+article p, article li {
+  line-height: 22px; }
+article h1, article h2, article h3 {
+  color: #8F1916; }
+article h1 {
+  font-size: 28px; }
+article header > * {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+  vertical-align: middle; }
+article header h1 {
+  font-size: 34px;
+  color: #333; }
+article header .date-block {
+  display: -moz-inline-box;
+  -moz-box-orient: vertical;
+  display: inline-block;
+  vertical-align: baseline;
+  zoom: 1;
+  *display: inline;
+  *vertical-align: auto;
+  vertical-align: middle;
+  color: #999;
+  font-size: 12px;
+  width: 60px;
+  padding-right: 10px;
+  text-align: left; }
+  article header .date-block .month {
+    font-size: 24px;
+    display: block;
+   white-space: nowrap;
+  }
+article .body {
+  padding-left: 40px; }
+article ul, article li {
+  padding-left: 0;
+  margin-left: 8px; }
+article blockquote {
+  background-color: #eee;
+  padding: 20px;
+  line-height: 22px;
+  margin: 0;
+  font-size: 16px;
+  color: #666; }
+article blockquote :first-child {
+  padding-top: 0;
+  margin-top: 0; }
+article blockquote :last-child {
+  padding-bottom: 0;
+  margin-bottom: 0; }
+
+article .datecol {
+    width:80px;
+    margin-right:0px;
+}
 
 #myBiC-logo {
   font-family: Lato;
