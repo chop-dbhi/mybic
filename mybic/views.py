@@ -81,7 +81,7 @@ def masquerade(request):
     except Exception, e:
         request.session['masquerade'] = True
     request.session.modified = True
-    print >>sys.stderr, request.session['masquerade']
+    print >>sys.stderr, 'toggling to masquerade:{0}'.format(request.session['masquerade'])
     
     context = get_dash_context(request)
     
