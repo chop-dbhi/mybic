@@ -24,7 +24,7 @@
                 </p>
                  {% elif result.model_name == 'article' %}
                  <p>
-                    <a href="{%  url 'news_article' result.object.slug %}">{{ result.object.title }}</a>
+                    <a href="{%  url 'dashboard' %}/#article{{ result.object.id }}">{{ result.object.title }}</a>
                 </p>
                 {% endif %}
             {% empty %}

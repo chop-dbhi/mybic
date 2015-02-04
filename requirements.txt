@@ -18,6 +18,9 @@ markdown2
 
 django-siteauth
 django-registration2
+
+#search
+pysolr<=3.2.99
 django-haystack
 
 # News

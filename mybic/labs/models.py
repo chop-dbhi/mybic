@@ -38,6 +38,7 @@ class Project(models.Model):
     """
     name = models.CharField(max_length=50, unique=False, db_index=True,
                             help_text=" display name for this project e.g. 'eRR RNA-Seq Analysis'")
+    description = models.TextField(unique=False, db_index=True, null=True, help_text="description of the project")
     slug = models.SlugField(max_length=50, unique=False, db_index=True,
                             help_text=" only letters, numbers, underscores or hyphens e.g. err-rna-seq")
     index_page = models.CharField(default="/mnt/variome/", max_length=300, unique=False, db_index=True,
