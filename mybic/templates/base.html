@@ -1,4 +1,4 @@
-
+{% load humanize %}
 {% block header %}{% endblock %}
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -12,10 +12,10 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
 
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="shortcut icon" href="{{STATIC_URL}}/favicon.ico"/>
 	<style>
 	      body {
-	        padding-top: 80px; /* 60px to make the container go all the way to the bottom of the topbar */
+	        padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
 	      }
 	    </style>
 
@@ -23,7 +23,7 @@
 
 
  	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-	 
+
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
@@ -32,13 +32,13 @@
 
 	<!-- Latest compiled and minified JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-	
-	
-		
-    <script src="http://rawgithub.com/endtwist/kerning.js/master/kerning.js"></script>
+
+
+
+    <script src="{{ STATIC_URL }}/scripts/javascript/src/kerning.js"></script>
 
     <script src="{{ STATIC_URL }}/scripts/javascript/src/mybic.js">
-    
+
 	<!-- here we apply the default bootstrap .table class to all tables -->
 	<script type="text/javascript">
 	$(function() {
@@ -48,7 +48,7 @@
 
 	<link rel="stylesheet" href="{{ CSS_URL }}/mybic.css" >
 	<link rel="stylesheet" href="{{ CSS_URL }}/fa.css" >
-	<link rel="stylesheet" href="{{ CSS_URL }}/news.css" >
+
 	<link rel="stylesheet" href="{{ CSS_URL }}/sticky-footer-navbar.css">
 	{% block styles %}{% endblock %}
 </head>
@@ -85,7 +85,7 @@
                     <li class="active"><a href="{% url 'my_child_url' my_lab.slug my_project.slug my_child %}">{{ my_child }}</a>
                 {% endif %}
             </ul>
-            
+
             {% if request.user.is_authenticated %}
             <ul class="nav navbar-nav navbar-right">
                 {% if request.user.is_staff %}
@@ -94,8 +94,10 @@
                         <ul class="dropdown-menu" role="menu">
                              {%  if my_project %}
                                 <li><a id="ajax-this-link" href="{% url 'update_project_url' my_lab.slug my_project.slug %}">Refresh project</a></li>
-                                
+
                                 <li><a href="{% url 'admin:labs_project_change' my_project.id %}">Project admin</a></li>
+
+                                <li><a href="{% url 'project_logs' my_lab.slug my_project.slug %}">Project logs</a></li>
                              {% endif %}
                              {% if my_lab %}
                                 <li><a href="{% url 'admin:labs_lab_change' my_lab.id %}">Lab admin</a></li>
@@ -109,13 +111,18 @@
                         </ul>
                     </li>
                 {% endif %}
-            
+
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Groups<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
+                        <li role="presentation" class="dropdown-header">Your groups</li>
                         {% for my_group in my_groups %}
                             <li><a href="#">{{ my_group }}</a></li>
                         {% endfor %}
+                        {% if my_lab %}
+                        <li role="presentation" class="dropdown-header">This lab group</li>
+                        <li><a href="#">{{ my_lab.group }}</a></li>
+                        {% endif %}
                     </ul>
                 </li>
                 <li><a href="/logout">Logout</a></li>
@@ -126,6 +133,9 @@
     </nav>
 
 <div class="container">
+    {%  if my_project %}
+        <div class="pull-right" style="text-align:right"><small>Analyst: {{ my_project.owner.first_name }} {{ my_project.owner.last_name }}<br/>Modified: {{ my_project.modified|naturaltime }}</small></div>
+    {% endif %}
     {% block content %}{% endblock %}
 </div>
 

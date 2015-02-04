@@ -21,8 +21,8 @@ django-registration2
 django-haystack
 
 # News
-git+git://github.com/leipzig/django-news.git
 
+git+git://github.com/leipzig/django-news.git#egg=django-news
 
 # Permissions
 django-guardian==1.0.4
@@ -30,6 +30,8 @@ django-guardian==1.0.4
 #scraping
 scrapy
 
+#tracking
+django-tracking2
 
 
 http://github.research.chop.edu/cbmi/django-chopauth/archive/master.tar.gz

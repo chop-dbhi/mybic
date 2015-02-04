@@ -7,8 +7,12 @@ from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import User, Group
 import sys
 import json
+import logging
 
 from mybic.labs.models import Project,ChildIndex,Lab,LabArticle
+from tracking.models import Pageview
+
+LOG = logging.getLogger(__package__)
 
 def get_groups(request):
     if request.user.is_staff and not (request.session.get('masquerade',False)):
@@ -44,7 +48,7 @@ def labview(request,lab_slug):
 
         my_projects = Project.objects.filter(
             lab__slug = lab_slug
-        )
+        ).order_by('-modified')
 
         context = {'my_groups':my_groups_list,'my_lab':lab_object,'my_projects':my_projects,'entries': entries}
 
@@ -72,7 +76,7 @@ def projectview(request,lab_slug,project_slug):
 
     my_projects = Project.objects.filter(
             lab__slug = lab_slug
-        )
+        ).order_by('-modified')
         
     static_url = settings.PROTECTED_URL
     project_url = os.path.join(lab_slug,project_slug)
@@ -142,7 +146,7 @@ def childview(request,lab_slug,project_slug,child_page):
 
     my_projects = Project.objects.filter(
             lab__slug = lab_slug
-        )
+        ).order_by('-modified')
         
     static_url = settings.PROTECTED_URL
     project_url = os.path.join(lab_slug,project_slug)
@@ -155,3 +159,35 @@ def childview(request,lab_slug,project_slug,child_page):
         return render_to_response(child_page,context,context_instance=RequestContext(request))
     else:
         return render_to_response('error.html',context_instance=RequestContext(request))
+
+def project_logs(request, lab_slug, project_slug):
+    print >>sys.stderr, 'projectview! {0}'.format(request.user)
+    if hasattr(request, 'user') and request.user.is_authenticated():
+        kwargs = {'user': request.user}
+        user = request.user
+    else:
+        kwargs = {'session_key': request.session.session_key}
+        return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME+'/login/')
+
+    my_groups, my_groups_list = get_groups(request)
+
+    try:
+        lab = Lab.objects.get(slug=lab_slug)
+        project = Project.objects.get(slug=project_slug)
+    except ObjectDoesNotExist:
+        return render_to_response('error.html',context_instance=RequestContext(request))
+
+    my_projects = Project.objects.filter(
+            lab__slug = lab_slug
+        ).order_by('-modified')
+
+    project_url = os.path.join(lab_slug,project_slug)
+
+    #what the page looks like in tracking
+    project_page = "/labs/{0}/{1}".format(lab_slug, project_slug)
+    pageviews = Pageview.objects.filter(url__startswith=project_page).order_by('-view_time').select_related('visitor')[:settings.PAGEVIEW_LIMIT]
+
+    print >>sys.stderr, 'pageviews: {0} {1}'.format(project_page,len(pageviews))
+
+    context = {'pageviews': pageviews, 'pageview_limit': settings.PAGEVIEW_LIMIT, 'my_groups':my_groups_list,'my_lab':lab,'my_project':project,'my_projects':my_projects }
+    return render_to_response('tracking/logs.html', context, context_instance=RequestContext(request))

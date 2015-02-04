@@ -1,0 +1,61 @@
+<h2>Registered Users</h2>
+{% if user_stats %}
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th></th>
+            <th># Visits</th>
+            <th>Avg. Time on Site</th>
+            <th>Avg. Pages/Visit</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for user in user_stats %}
+        <tr>
+            <th>{% firstof user.get_full_name user %}</th>
+            <td>{{ user.visit_count }}</td>
+            <td>{{ user.time_on_site|default_if_none:"n/a" }}</td>
+            <td>{{ user.pages_per_visit|floatformat|default:"n/a" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p>No registered user stats available</p>
+{% endif %}
+
+{% if pageview_stats %}
+<h2>Pageviews</h2>
+    {% if pageview_stats.total %}
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Total</th>
+                <th>Unique</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Registered</th>
+                <td>{{ pageview_stats.registered.total }}</td>
+                <td>{{ pageview_stats.registered.unique }}</td>
+            </tr>
+            {% if pageview_stats.guests %}
+            <tr>
+                <th>Guests</th>
+                <td>{{ pageview_stats.guests.total }}</td>
+                <td>{{ pageview_stats.guests.unique }}</td>
+            </tr>
+            <tr>
+                <th>Total</th>
+                <td>{{ pageview_stats.total }}</td>
+                <td>{{ pageview_stats.unique }}</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No pageview stats available</p>
+    {% endif %}
+{% endif %}

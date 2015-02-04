@@ -10,9 +10,12 @@ import os
 import mimetypes
 from news.models import Article
 import json
+import logging
 
-from mybic.labs.models import Lab, Project
+from mybic.labs.models import Lab, Project, SiteArticle
 from django.contrib.auth.models import User,Group
+
+
 
 def get_groups(request):
     if request.user.is_staff and not (request.session.get('masquerade',False)):
@@ -29,12 +32,15 @@ def get_dash_context(request):
     my_groups_list = my_groups.values_list('name',flat=True)
     my_labs = Lab.objects.filter(
         group__in = my_groups
-    )
+    ).order_by('-modified')
 
     my_projects = Project.objects.filter(
             lab__name__in = my_labs.values_list('name',flat=True)
-        ).values('slug')
-    context = {'my_groups':my_groups_list,'my_labs':my_labs,'my_projects':my_projects}
+        ).values('slug').order_by('-modified')
+
+    entries = SiteArticle.objects.filter(published=True)
+
+    context = {'my_groups':my_groups_list,'my_labs':my_labs,'my_projects':my_projects, 'entries': entries}
     return context
     
 def dashboard(request):
@@ -53,6 +59,8 @@ def dashboard(request):
     else:
         request.session['count'] = 1
         print >>sys.stderr,'No count in session. Setting to 1'
+
+
 
     masquerade = request.session.get('masquerade',None)
     print >>sys.stderr, 'masquerade {0}'.format(masquerade)
@@ -75,7 +83,7 @@ def masquerade(request):
     except Exception, e:
         request.session['masquerade'] = True
     request.session.modified = True
-    print >>sys.stderr, request.session['masquerade']
+    print >>sys.stderr, 'toggling to masquerade:{0}'.format(request.session['masquerade'])
     
     context = get_dash_context(request)
     
@@ -84,6 +92,8 @@ def masquerade(request):
 #http://glitterbug.in/blog/serving-protected-files-from-nginx-with-django-11/show/
 def protected_file(request,lab,project,path):
     print >>sys.stderr, 'protectedfile! {0} {1} {2} {3}'.format(request.user,lab, project,path)
+    LOG = logging.getLogger("protected_file")
+
     response = HttpResponse()
     debug=False
     if debug:
@@ -105,6 +115,12 @@ def protected_file(request,lab,project,path):
             except ObjectDoesNotExist:
                 raise Http404
             if lab_object.group in my_groups:
+                file_location = os.path.join(settings.PROTECTED_ROOT, lab, project, path)
+                if not os.path.exists(file_location):
+                    # TODO: there must be a better way to pass this
+                    pro_path_json = json.dumps({'project':project_object.id, 'path':path})
+                    LOG.error(pro_path_json)
+                    raise Http404
                 if path.endswith("pdf"):
                     response['Content-Type'] = 'application/pdf'
                 elif path.endswith("xlsx"):

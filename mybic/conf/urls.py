@@ -22,10 +22,11 @@ urlpatterns = patterns(
     url(r'^$',include('chopauth.urls')),
     url(r'', include('chopauth.urls')),
 
+
     url(r'^news/$', 'mybic.views.news', name='news'),
 
     url(r'^admin/', include(admin.site.urls)),
-    
+    url(r'^tracking/', include('tracking.urls')),
     url(r'^toggle/', 'mybic.views.masquerade', name='toggle_url'),
     
     url(r'^accounts/login/{0,1}$', 'mybic.views.dashboard', name='dashboard'),
@@ -38,16 +39,21 @@ urlpatterns = patterns(
     url(r'^labs/([\w-]+)/$', 'mybic.labs.views.labview', name='my_lab_url'),
     url(r'^labs/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.projectview', name='my_project_url'),
 
-    url(r'^search', SearchView(
-        template='search/search.html',
-        searchqueryset=sqs,
-        form_class=ModelSearchForm
-    ), name='haystack_search'),
+
+    url(r'^logs/([\w-]+)/([\w-]+)/$','mybic.labs.views.project_logs',name='project_logs'),
+
 
     url(r'^labs/([\w-]+)/([\w-]+)/(.+)$', 'mybic.labs.views.childview', name='my_child_url'),
     
     url(r'^update/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.updateproject', name='update_project_url'),
-    url(r'^slink/(?P<lab>[\w-]+)/(?P<project>[\w-]+)/(?P<path>.+)$','mybic.views.protected_file',name='protected')
+    url(r'^slink/(?P<lab>[\w-]+)/(?P<project>[\w-]+)/(?P<path>.+)$','mybic.views.protected_file',name='protected'),
+
+
+    url(r'^search', SearchView(
+        template='search/search.html',
+        searchqueryset=sqs,
+        form_class=ModelSearchForm
+    ), name='haystack_search')
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
