@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block styles %}
+    {{ block.super }}
+    <link rel=stylesheet href="{{ CSS_URL }}/news.css">
+{% endblock %}
+
+
+{% block content %}
+    {% for entry in entries %}
+        <article class="entry">
+            {% spaceless %}
+            <header id="{{ entry.slug }}">
+                <span class="date-block">
+                    <span class="month">{{ entry.created|date:"j" }}</span>
+                    {{ entry.created|date:"M Y" }}
+                </span>
+                <h1>{{ entry.title }}</h1>
+            </header>
+            {% endspaceless %}
+            <div class="body">
+                {{ entry.formatted_body|safe }}
+            </div>
+        </article>
+        {% if not forloop.last %}<hr>{% endif %}
+    {% endfor %}
+{% endblock %}

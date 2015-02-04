@@ -42,7 +42,10 @@ INSTALLED_APPS = (
 
     'chopauth',
 
+    
     'markdown_deux',
+
+    'haystack',
 
     'tracking'
 )
@@ -336,6 +339,9 @@ SESSION_COOKIE_NAME = 'mybic_sessionid'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = False
 
+
+#Markdown
+
 MARKDOWN_DEUX_STYLES = {
     "default": {
         "extras": {
@@ -343,6 +349,16 @@ MARKDOWN_DEUX_STYLES = {
             "tables": None,
         },
         "safe_mode": "escape",
+    },
+}
+
+
+#Haystack
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'haystack',
     },
 }
 
