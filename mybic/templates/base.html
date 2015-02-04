@@ -1,4 +1,4 @@
-
+{% load humanize %}
 {% block header %}{% endblock %}
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
@@ -115,9 +115,14 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Groups<span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
+                        <li role="presentation" class="dropdown-header">Your groups</li>
                         {% for my_group in my_groups %}
                             <li><a href="#">{{ my_group }}</a></li>
                         {% endfor %}
+                        {% if my_lab %}
+                        <li role="presentation" class="dropdown-header">This lab group</li>
+                        <li><a href="#">{{ my_lab.group }}</a></li>
+                        {% endif %}
                     </ul>
                 </li>
                 <li><a href="/logout">Logout</a></li>
@@ -128,6 +133,9 @@
     </nav>
 
 <div class="container">
+    {%  if my_project %}
+        <div class="pull-right" style="text-align:right"><small>Analyst: {{ my_project.owner.first_name }} {{ my_project.owner.last_name }}<br/>Modified: {{ my_project.modified|naturaltime }}</small></div>
+    {% endif %}
     {% block content %}{% endblock %}
 </div>
 
