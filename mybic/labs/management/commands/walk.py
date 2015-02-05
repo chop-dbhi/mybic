@@ -18,17 +18,20 @@ class Walker(object):
             prot_file.delete()
 
     def walk_project(self, project):
+
         print "walking {0}".format(os.path.join(settings.TEMPLATE_ROOT,project.lab.slug,project.slug))
         for dirpath, dirs, files in os.walk(os.path.join(settings.TEMPLATE_ROOT,project.lab.slug,project.slug)):
             for file in files:
                 if file.lower().endswith(".md") or file.lower().endswith(".html"):
                     print file
                     ProjectFile(project=project,filepath=file).save()
-        for dirpath, dirs, files in os.walk(os.path.join(settings.PROTECTED_ROOT,project.lab.slug,project.slug)):
+        protected_root = os.path.join(settings.PROTECTED_ROOT,project.lab.slug,project.slug)
+        for dirpath, dirs, files in protected_root:
             for file in files:
                 if file.lower().endswith(settings.EXTRACTION_SUFFIXES):
                     print file
-                    ProtectedFile(project=project,filepath=os.path.join(dirpath,file)).save()
+                    relDir = os.path.relpath(dirpath, protected_root)
+                    ProtectedFile(project=project,filepath=os.path.join(relDir,file)).save()
 
     def do_project(self,project):
         with transaction.atomic():
