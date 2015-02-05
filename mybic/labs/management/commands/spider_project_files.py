@@ -20,12 +20,9 @@ class Walker(object):
                     print file
 
     def do_project(self,project):
-        transaction.set_autocommit(False)
-        try:
+        with transaction.atomic():
             self.clear_project(project)
             self.walk_project(project)
-        finally:
-            transaction.set_autocommit(True)
 
 
 class Command(BaseCommand):
