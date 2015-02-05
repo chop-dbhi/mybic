@@ -40,7 +40,7 @@ class Command(BaseCommand):
         (
             make_option('--project',
                         dest='project',
-                        default='default',
+                        default=None,
                         metavar='NAME',
                         help='Specify project slug name'),
         )
