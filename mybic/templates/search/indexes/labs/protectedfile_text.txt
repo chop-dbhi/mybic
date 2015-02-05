@@ -1,0 +1,3 @@
+{{ object.filepath }}
+{{ object.project.name }}
+{{ extracted }}
