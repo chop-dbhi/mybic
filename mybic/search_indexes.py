@@ -66,7 +66,7 @@ class FileIndex(indexes.SearchIndex, indexes.Indexable):
 
         return data
 
-class ProtectedFileIndex(indexes.SearchIndex, indexes.Indexable):
+class ProtectedFileIndex(FileIndex):
     text = indexes.CharField(document=True, use_template=True)
     filepath = indexes.CharField(model_attr='filepath')
 
