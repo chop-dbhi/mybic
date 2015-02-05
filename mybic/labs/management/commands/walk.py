@@ -14,8 +14,8 @@ class Walker(object):
             proj_file.delete()
 
     def walk_project(self, project):
-        for root, dirs, files in os.walk(os.path.join(settings.PROJECT_ROOT,project.lab.slug,project.slug)):
-            print "walking {0}".format(root)
+        print "walking {0}".format(os.path.join(settings.TEMPLATE_ROOT,project.lab.slug,project.slug))
+        for root, dirs, files in os.walk(os.path.join(settings.TEMPLATE_ROOT,project.lab.slug,project.slug)):
             for file in files:
                     print file
 
