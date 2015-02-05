@@ -159,6 +159,8 @@
 
     <field name="text" type="text_en" indexed="true" stored="true" multiValued="false" />
 
+    <field name="filepath" type="text_en" indexed="true" stored="true" multiValued="false" />
+
     <field name="project_created" type="date" indexed="true" stored="true" multiValued="false" />
 
     <field name="project_name" type="text_en" indexed="true" stored="true" multiValued="false" />

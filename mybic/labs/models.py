@@ -117,6 +117,9 @@ class Project(models.Model):
 
         super(Project, self).save()
 
+class ProjectFile(models.Model):
+    project = models.ForeignKey(Project)
+    filepath = models.CharField(max_length=500, unique=False, db_index=True)
 
 class ChildIndex(models.Model):
     """ Additional index pages
