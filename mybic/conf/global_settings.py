@@ -110,7 +110,7 @@ STATIC_URL = '/static/'
 
 PROTECTED_URL = '/slink/'
 
-EXTRACTION_SUFFIXES = ('.html','.md','.pdf')
+EXTRACTION_SUFFIXES = ('.html','.md','.pdf','.txt')
 
 # Templates
 

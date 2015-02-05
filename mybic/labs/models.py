@@ -118,6 +118,14 @@ class Project(models.Model):
         super(Project, self).save()
 
 class ProjectFile(models.Model):
+    """ Holds record of template files to be extracted by solr
+    """
+    project = models.ForeignKey(Project)
+    filepath = models.CharField(max_length=500, unique=False, db_index=True)
+
+class ProtectedFile(models.Model):
+    """ Holds record of protected files to be extracted by solr
+    """
     project = models.ForeignKey(Project)
     filepath = models.CharField(max_length=500, unique=False, db_index=True)
 
