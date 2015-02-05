@@ -92,7 +92,7 @@ class ProtectedFileIndex(FileIndex):
 
         # Now we'll finally perform the template processing to render the
         # text field with *all* of our metadata visible for templating:
-        t = loader.select_template(('search/indexes/labs/projectfile_text.txt', ))
+        t = loader.select_template(('search/indexes/labs/protectedfile_text.txt', ))
         data['text'] = t.render(Context({'object': obj,
                                         'extracted': extracted_data}))
 
