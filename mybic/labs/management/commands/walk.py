@@ -4,6 +4,7 @@ from optparse import make_option
 from django.conf import settings
 from django.db import transaction
 import os
+import fnmatch
 
 from mybic.labs.models import Project,ProjectFile
 
@@ -17,8 +18,12 @@ class Walker(object):
         print "walking {0}".format(os.path.join(settings.TEMPLATE_ROOT,project.lab.slug,project.slug))
         for root, dirs, files in os.walk(os.path.join(settings.TEMPLATE_ROOT,project.lab.slug,project.slug)):
             for file in files:
+                if file.lower().endswith(".md") or file.lower().endswith(".html"):
                     print file
-
+        for root, dirs, files in os.walk(os.path.join(settings.PROTECTED_ROOT,project.lab.slug,project.slug)):
+            for file in files:
+                if file.lower().endswith(settings.EXTRACTION_SUFFIXES):
+                    print file
     def do_project(self,project):
         with transaction.atomic():
             self.clear_project(project)
