@@ -26,7 +26,7 @@ class Walker(object):
                     print file
                     ProjectFile(project=project,filepath=file).save()
         protected_root = os.path.join(settings.PROTECTED_ROOT,project.lab.slug,project.slug)
-        for dirpath, dirs, files in protected_root:
+        for dirpath, dirs, files in os.walk(protected_root):
             for file in files:
                 if file.lower().endswith(settings.EXTRACTION_SUFFIXES):
                     print file
