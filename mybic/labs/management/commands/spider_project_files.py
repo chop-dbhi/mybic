@@ -14,9 +14,9 @@ class Walker(object):
             proj_file.delete()
 
     def walk_project(self, project):
-        for root, dirs, files in os.walk(os.path.join(settings.PROJECT_ROOT,project.slug)):
+        for root, dirs, files in os.walk(os.path.join(settings.PROJECT_ROOT,project.lab.slug,project.slug)):
+            print "walking {0}".format(root)
             for file in files:
-                if file.endswith('.txt'):
                     print file
 
     def do_project(self,project):
@@ -46,10 +46,10 @@ class Command(BaseCommand):
         if options['project']:
             try:
                 myproject = Project.objects.get(slug=options['project'])
+                walker.do_project(myproject)
             except ObjectDoesNotExist:
                 fmt = 'Project matching slug={slug} not found'
-                raise ObjectDoesNotExist(fmt.format(slug=options['project']))
-            walker.do_project(myproject)
+                print(fmt.format(slug=options['project']))
         else:
             for myproject in Project.objects.all():
                 walker.do_project(myproject)
