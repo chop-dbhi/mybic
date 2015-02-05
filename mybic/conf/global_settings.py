@@ -373,7 +373,8 @@ HAYSTACK_CONNECTIONS = {
         'BATCH_SIZE': 1,
         'EXCLUDED_INDEXES': [
             'news.search_indexes.ArticleIndex',
-        ]
+        ],
+        'TIMEOUT': 60 * 5,
     }
 }
 
