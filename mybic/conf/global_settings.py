@@ -102,6 +102,8 @@ STATIC_ROOT = os.path.join(BASE_PATH, '_site/static')
 
 PROTECTED_ROOT = os.path.join(BASE_PATH, '_site/protected')
 
+PROJECT_ROOT = os.path.join(PROJECT_PATH, 'labs', 'templates')
+
 STATIC_URL = '/static/'
 
 PROTECTED_URL = '/slink/'

@@ -87,6 +87,49 @@ sudo pip install uwsgi
 #run wsgi through socket, needs nginx on
 /home/devuser/webapps/mybic-env/bin/uwsgi --ini /home/devuser/webapps/mybic-env/mybic/server/uwsgi/development.ini  --uid devuser --gid devuser
 
+#solr
+The fabfile or a puppet script (or docker what have you) will do this,
+but here is what needs to be done if the app is deployed in the usual way:
+
+# install Oracle Java 7 and make available via link /usr/java/java7 (Note: when containerizing, will switch to OpenJDK)
+# Surf to relevant link at http://www.java.com/en/download/manual.jsp and download Linux x64 (non-RPM)
+curl -L http://javadl.sun.com/webapps/download/AutoDL?BundleId=90216 > jre-7u60-linux-x64.tar.gz
+sudo mkdir -p /usr/java
+cd /usr/java
+sudo tar xzvf ~/jre-7u60-linux-x64.tar.gz
+sudo ln -s /usr/java/jre1.7.0_60 /usr/java/java7
+
+# Make /opt/solr
+sudo mkdir -p /opt/solr
+
+# download Solr 4.8.x
+curl -O -L http://mirror.symnds.com/software/Apache/lucene/solr/4.8.1/solr-4.8.1.tgz
+tar xzvf solr-4.8.1.tgz
+sudo wget http://supergsego.com/apache/lucene/solr/4.10.3/solr-4.10.3.tgz
+sudo gunzip solr-4.10.3.tgz 
+sudo tar -xvf solr-4.10.3.tar 
+sudo cp solr-4.10.3 /opt/
+
+# Customize this directory with our own schema.xml and logging.properties - best to make these links into /home/devuser/webapps/pcgc-env/pcgc/server/solr/*
+/home/devuser/webapps/mybic-dev-env/mybic-dev//bin/manage.py build_solr_schema > /home/devuser/webapps/mybic-dev-env/mybic-dev/server/solr/schema.xml
+sudo ln -sf /home/devuser/webapps/mybic-dev-env/mybic-dev/server/solr/schema.xml /opt/solr/solr/collection1/conf/schema.xml
+
+# this config has set <unlockOnStartup>true</unlockOnStartup>
+sudo ln -sf /home/devuser/webapps/mybic-dev-env/mybic-dev/server/solr/solrconfig.xml /opt/solr-4.10.3/example/solr/collection1/solrconfig.xml
+
+# create solr user:
+sudo /usr/sbin/useradd -d /opt/solr -s /sbin/nologin solr
+
+# Add solr user to devuser group:
+sudo /usr/sbin/usermod -a -G devuser solr
+
+# make /opt/solr tree owned by solr
+sudo chown -RH solr:devuser /opt/solr
+
+#Solr 4.8.x requires Java 1.7.  As mentioned, when we Dockerize this, for convenience, we probably want to switch to OpenJDK.
+sudo supervisorctl update
+sudo supervisorctl start solr-development
+/home/devuser/webapps/mybic-dev-env/mybic-dev//bin/manage.py rebuild_index
 
 #other
 scp leipzig@eps1.infosys.chop.edu:/Users/leipzig/Downloads/themeforest-5961888-avant-clean-and-responsive-bootstrap-31-admin.zip .

@@ -30,9 +30,6 @@ git+git://github.com/leipzig/django-news.git#egg=django-news
 # Permissions
 django-guardian==1.0.4
 
-#scraping
-scrapy
-
 #tracking
 django-tracking2
 
