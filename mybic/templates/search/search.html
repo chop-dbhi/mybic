@@ -26,6 +26,10 @@
                  <p>
                     <a href="{%  url 'dashboard' %}/#article{{ result.object.id }}">{{ result.object.title }}</a>
                 </p>
+                    {% elif result.model_name == 'projectfile' %}
+                    <p>
+                    <p>{{ result.object.filepath }}</p>
+                    </p>
                 {% endif %}
             {% empty %}
                 <p>No results found.</p>
