@@ -13,6 +13,9 @@ class Walker(object):
         proj_files = ProjectFile.objects.filter(project=project)
         for proj_file in proj_files:
             proj_file.delete()
+        prot_files = ProtectedFile.objects.filter(project=project)
+        for prot_file in prot_files:
+            prot_file.delete()
 
     def walk_project(self, project):
         print "walking {0}".format(os.path.join(settings.TEMPLATE_ROOT,project.lab.slug,project.slug))
@@ -25,7 +28,7 @@ class Walker(object):
             for file in files:
                 if file.lower().endswith(settings.EXTRACTION_SUFFIXES):
                     print file
-                    ProjectFile(project=project,filepath=os.path.join(dirpath,file)).save()
+                    ProtectedFile(project=project,filepath=os.path.join(dirpath,file)).save()
 
     def do_project(self,project):
         with transaction.atomic():
