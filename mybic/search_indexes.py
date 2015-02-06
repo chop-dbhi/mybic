@@ -80,7 +80,7 @@ class ProtectedFileIndex(indexes.SearchIndex, indexes.Indexable):
         return self.get_model().objects.all()
 
     def prepare(self, obj):
-        data = super(ProtectedFile, self).prepare(obj)
+        data = super(ProtectedFileIndex, self).prepare(obj)
 
         # This could also be a regular Python open() call, a StringIO instance
         # or the result of opening a URL. Note that due to a library limitation
