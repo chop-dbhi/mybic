@@ -87,7 +87,7 @@ class ProtectedFileIndex(indexes.SearchIndex, indexes.Indexable):
         # file_obj must have a .name attribute even if you need to set one
         # manually before calling extract_file_contents:
         # file_obj = obj.filepath.open()
-        
+
         abs_fp = os.path.join(settings.PROTECTED_ROOT, obj.project.lab.slug, obj.project.slug, obj.filepath)
 
         print "loading {0}".format(abs_fp)
