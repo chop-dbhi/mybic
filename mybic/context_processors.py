@@ -2,6 +2,7 @@ import os
 from django.conf import settings
 from mybic import __version__
 
+
 def static(request):
     "Shorthand static URLs. In debug mode, the JavaScript is not minified."
     static_url = settings.STATIC_URL
@@ -12,11 +13,13 @@ def static(request):
         'JAVASCRIPT_URL': os.path.join(static_url, 'scripts/javascript', prefix),
     }
 
+
 def version(request):
     """Provides an APP_VERSION variable"""
     return {
         'APP_VERSION': "{0}".format(__version__)
     }
+
 
 def development(request):
     """Development warning for indicating which site you are on"""

@@ -5,7 +5,7 @@ from mybic.labs import views
 import news
 
 urlpatterns = patterns('',
-    url(r'^$', views.index, name='index')
+                       url(r'^$', views.index, name='index')
 )
 
 

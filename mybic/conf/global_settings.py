@@ -23,7 +23,7 @@ PROJECT_PATH = BASE_PATH = os.path.join(os.path.dirname(__file__), '../..')
 # SECURITY WARNING: don't run with debug turned on in production!
 
 
-ALLOWED_HOSTS = ['mybic.chop.edu','localhost', '10.30.9.53']
+ALLOWED_HOSTS = ['mybic.chop.edu', 'localhost', '10.30.9.53']
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -42,7 +42,7 @@ INSTALLED_APPS = (
 
     'chopauth',
 
-    
+
     'markdown_deux',
 
     'haystack',
@@ -70,7 +70,7 @@ INTERNAL_IPS = ('127.0.0.1', '::1')
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
-#DATABASES = {
+# DATABASES = {
 #    'default': {
 #        'ENGINE': 'django.db.backends.sqlite3',
 #        'NAME': os.path.join(BASE_PATH, 'mybic.db'),
@@ -110,7 +110,7 @@ STATIC_URL = '/static/'
 
 PROTECTED_URL = '/slink/'
 
-EXTRACTION_SUFFIXES = ('.html','.md','.pdf','.txt')
+EXTRACTION_SUFFIXES = ('.html', '.md', '.pdf', '.txt')
 
 # Templates
 

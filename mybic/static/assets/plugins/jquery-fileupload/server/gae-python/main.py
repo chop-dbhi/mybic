@@ -33,7 +33,6 @@ def cleanup(blob_keys):
 
 
 class UploadHandler(webapp2.RequestHandler):
-
     def initialize(self, request, response):
         super(UploadHandler, self).initialize(request, response)
         self.response.headers['Access-Control-Allow-Origin'] = '*'
@@ -91,8 +90,8 @@ class UploadHandler(webapp2.RequestHandler):
                 )
                 blob_keys.append(blob_key)
                 result['deleteType'] = 'DELETE'
-                result['deleteUrl'] = self.request.host_url +\
-                    '/?key=' + urllib.quote(blob_key, '')
+                result['deleteUrl'] = self.request.host_url + \
+                                      '/?key=' + urllib.quote(blob_key, '')
                 if (IMAGE_TYPES.match(result['type'])):
                     try:
                         result['url'] = images.get_serving_url(
@@ -101,14 +100,14 @@ class UploadHandler(webapp2.RequestHandler):
                                 'https'
                             )
                         )
-                        result['thumbnailUrl'] = result['url'] +\
-                            THUMBNAIL_MODIFICATOR
+                        result['thumbnailUrl'] = result['url'] + \
+                                                 THUMBNAIL_MODIFICATOR
                     except:  # Could not get an image serving url
                         pass
                 if not 'url' in result:
-                    result['url'] = self.request.host_url +\
-                        '/' + blob_key + '/' + urllib.quote(
-                            result['name'].encode('utf-8'), '')
+                    result['url'] = self.request.host_url + \
+                                    '/' + blob_key + '/' + urllib.quote(
+                        result['name'].encode('utf-8'), '')
             results.append(result)
         deferred.defer(
             cleanup,
@@ -155,6 +154,7 @@ class DownloadHandler(blobstore_handlers.BlobstoreDownloadHandler):
             self.response.headers['Cache-Control'] = 'public,max-age=%d' % EXPIRATION_TIME
             # Send the file forcing a download dialog:
             self.send_blob(key, save_as=filename, content_type='application/octet-stream')
+
 
 app = webapp2.WSGIApplication(
     [
