@@ -35,8 +35,8 @@ class ArticleIndex(indexes.SearchIndex, indexes.Indexable):
     def index_queryset(self, using=None):
         return self.get_model().objects.all()
 
-
-class FileIndex(indexes.SearchIndex, indexes.Indexable):
+#orignally FileIndex(indexes.SearchIndex, indexes.Indexable)
+class ProjectFileIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     filepath = indexes.CharField(model_attr='filepath')
 
@@ -47,7 +47,7 @@ class FileIndex(indexes.SearchIndex, indexes.Indexable):
         return self.get_model().objects.all()
 
     def prepare(self, obj):
-        data = super(FileIndex, self).prepare(obj)
+        data = super(ProjectFileIndex, self).prepare(obj)
 
         # This could also be a regular Python open() call, a StringIO instance
         # or the result of opening a URL. Note that due to a library limitation
@@ -69,7 +69,7 @@ class FileIndex(indexes.SearchIndex, indexes.Indexable):
         return data
 
 
-class ProtectedFileIndex(FileIndex):
+class ProtectedFileIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     filepath = indexes.CharField(model_attr='filepath')
 
@@ -80,7 +80,7 @@ class ProtectedFileIndex(FileIndex):
         return self.get_model().objects.all()
 
     def prepare(self, obj):
-        data = super(FileIndex, self).prepare(obj)
+        data = super(ProtectedFile, self).prepare(obj)
 
         # This could also be a regular Python open() call, a StringIO instance
         # or the result of opening a URL. Note that due to a library limitation
