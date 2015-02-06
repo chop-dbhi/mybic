@@ -3,6 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from optparse import make_option
 from django.conf import settings
 from django.db import transaction
+from haystack.management.commands import update_index
 import os
 import fnmatch
 
@@ -26,6 +27,8 @@ class Walker(object):
                 if file.lower().endswith(".md") or file.lower().endswith(".html"):
                     print file
                     ProjectFile(project=project, filepath=file).save()
+
+
         protected_root = os.path.join(settings.PROTECTED_ROOT, project.lab.slug, project.slug)
         for dirpath, dirs, files in os.walk(protected_root):
             for file in files:
