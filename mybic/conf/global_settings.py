@@ -363,7 +363,7 @@ HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
         'URL': 'http://127.0.0.1:8983/solr',
-        'BATCH_SIZE': 1,
+        'BATCH_SIZE': 5,
         'EXCLUDED_INDEXES': [
             'news.search_indexes.ArticleIndex',
         ],
