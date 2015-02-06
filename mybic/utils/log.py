@@ -25,7 +25,8 @@ class ProjectEmailHandler(logging.Handler):
         self.email_backend = email_backend
 
     def emit(self, logrecord):
-        print >>sys.stderr, 'projectemailhandler {0} length {1}'.format(logrecord.getMessage(),len(logrecord.getMessage()))
+        print >> sys.stderr, 'projectemailhandler {0} length {1}'.format(logrecord.getMessage(),
+                                                                         len(logrecord.getMessage()))
         pro_dict = json.loads(logrecord.getMessage())
         project = Project.objects.get(id=pro_dict['project'])
         path = pro_dict['path']
@@ -45,7 +46,8 @@ class ProjectEmailHandler(logging.Handler):
             request_repr = "Request repr() unavailable."
         subject = self.format_subject(subject)
 
-        message = "As the owner of the {0} project you are receiving this error. This link is broken: {1}".format(project.name, path)
+        message = "As the owner of the {0} project you are receiving this error. This link is broken: {1}".format(
+            project.name, path)
 
         self.mail_owner(project, subject, message,
                         html_message=None,

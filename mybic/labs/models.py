@@ -9,6 +9,7 @@ from news.models import Article
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 
+
 class Lab(models.Model):
     """ A lab with a PI
         More than one lab can belong to a group
@@ -92,18 +93,18 @@ class Project(models.Model):
         except OSError, e:
             raise PermissionDenied()
 
-        #create a symlink to the static directory on the isilon
+        # create a symlink to the static directory on the isilon
         #call it _site/static/lab/project
         lab_static = os.path.join(settings.PROTECTED_ROOT, self.lab.slug)
         project_static = os.path.join(lab_static, self.slug)
         if not os.path.exists(lab_static):
             os.mkdir(lab_static)
         try:
-            print >>sys.stderr, 'unlking! {0}'.format(project_static)
+            print >> sys.stderr, 'unlking! {0}'.format(project_static)
             os.unlink(project_static)
         except OSError, e:
             pass
-        print >>sys.stderr, 'symlinking {0} to {1}'.format(self.static_dir,project_static)
+        print >> sys.stderr, 'symlinking {0} to {1}'.format(self.static_dir, project_static)
         try:
             os.symlink(self.static_dir, project_static)
         except OSError, e:
@@ -117,17 +118,20 @@ class Project(models.Model):
 
         super(Project, self).save()
 
+
 class ProjectFile(models.Model):
     """ Holds record of template files to be extracted by solr
     """
     project = models.ForeignKey(Project)
     filepath = models.CharField(max_length=500, unique=False, db_index=True)
 
+
 class ProtectedFile(models.Model):
     """ Holds record of protected files to be extracted by solr
     """
     project = models.ForeignKey(Project)
     filepath = models.CharField(max_length=500, unique=False, db_index=True)
+
 
 class ChildIndex(models.Model):
     """ Additional index pages
@@ -197,9 +201,11 @@ class LabArticle(Article):
     """
     lab = models.ForeignKey('Lab')
 
+
 class SiteArticle(Article):
     """ A news item or blog entry for everyone
     """
+
 
 class staff(User):
     """ cbmi staff

@@ -8,10 +8,11 @@ from haystack.backends.solr_backend import SolrSearchBackend
 import os
 from django.conf import settings
 
+
 class ProjectIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     project_name = indexes.CharField(model_attr='name')
-    project_description = indexes.CharField(model_attr='description',null=True)
+    project_description = indexes.CharField(model_attr='description', null=True)
     project_created = indexes.DateTimeField(model_attr='created')
 
     def get_model(self):
@@ -34,6 +35,7 @@ class ArticleIndex(indexes.SearchIndex, indexes.Indexable):
     def index_queryset(self, using=None):
         return self.get_model().objects.all()
 
+
 class FileIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)
     filepath = indexes.CharField(model_attr='filepath')
@@ -51,8 +53,8 @@ class FileIndex(indexes.SearchIndex, indexes.Indexable):
         # or the result of opening a URL. Note that due to a library limitation
         # file_obj must have a .name attribute even if you need to set one
         # manually before calling extract_file_contents:
-        #file_obj = obj.filepath.open()
-        abs_fp = os.path.join(settings.TEMPLATE_ROOT,obj.project.lab.slug,obj.project.slug,obj.filepath)
+        # file_obj = obj.filepath.open()
+        abs_fp = os.path.join(settings.TEMPLATE_ROOT, obj.project.lab.slug, obj.project.slug, obj.filepath)
         file_obj = open(abs_fp, "rb")
 
         #https://github.com/courseportal/coursePortal/blob/10aad71186452c55c72507e83c7ee0a7e6372fe0/haystack/search_indexes.py
@@ -62,9 +64,10 @@ class FileIndex(indexes.SearchIndex, indexes.Indexable):
         # text field with *all* of our metadata visible for templating:
         t = loader.select_template(('search/indexes/labs/projectfile_text.txt', ))
         data['text'] = t.render(Context({'object': obj,
-                                        'extracted': extracted_data}))
+                                         'extracted': extracted_data}))
 
         return data
+
 
 class ProtectedFileIndex(FileIndex):
     text = indexes.CharField(document=True, use_template=True)
@@ -83,8 +86,8 @@ class ProtectedFileIndex(FileIndex):
         # or the result of opening a URL. Note that due to a library limitation
         # file_obj must have a .name attribute even if you need to set one
         # manually before calling extract_file_contents:
-        #file_obj = obj.filepath.open()
-        abs_fp = os.path.join(settings.PROTECTED_ROOT,obj.project.lab.slug,obj.project.slug,obj.filepath)
+        # file_obj = obj.filepath.open()
+        abs_fp = os.path.join(settings.PROTECTED_ROOT, obj.project.lab.slug, obj.project.slug, obj.filepath)
         file_obj = open(abs_fp, "rb")
 
         #https://github.com/courseportal/coursePortal/blob/10aad71186452c55c72507e83c7ee0a7e6372fe0/haystack/search_indexes.py
@@ -94,6 +97,6 @@ class ProtectedFileIndex(FileIndex):
         # text field with *all* of our metadata visible for templating:
         t = loader.select_template(('search/indexes/labs/protectedfile_text.txt', ))
         data['text'] = t.render(Context({'object': obj,
-                                        'extracted': extracted_data}))
+                                         'extracted': extracted_data}))
 
         return data

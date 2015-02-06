@@ -6,10 +6,11 @@ from django.db import transaction
 import os
 import fnmatch
 
-from mybic.labs.models import Project,ProjectFile,ProtectedFile
+from mybic.labs.models import Project, ProjectFile, ProtectedFile
+
 
 class Walker(object):
-    def clear_project(self,project):
+    def clear_project(self, project):
         proj_files = ProjectFile.objects.filter(project=project)
         for proj_file in proj_files:
             proj_file.delete()
@@ -19,21 +20,21 @@ class Walker(object):
 
     def walk_project(self, project):
 
-        print "walking {0}".format(os.path.join(settings.TEMPLATE_ROOT,project.lab.slug,project.slug))
-        for dirpath, dirs, files in os.walk(os.path.join(settings.TEMPLATE_ROOT,project.lab.slug,project.slug)):
+        print "walking {0}".format(os.path.join(settings.TEMPLATE_ROOT, project.lab.slug, project.slug))
+        for dirpath, dirs, files in os.walk(os.path.join(settings.TEMPLATE_ROOT, project.lab.slug, project.slug)):
             for file in files:
                 if file.lower().endswith(".md") or file.lower().endswith(".html"):
                     print file
-                    ProjectFile(project=project,filepath=file).save()
-        protected_root = os.path.join(settings.PROTECTED_ROOT,project.lab.slug,project.slug)
+                    ProjectFile(project=project, filepath=file).save()
+        protected_root = os.path.join(settings.PROTECTED_ROOT, project.lab.slug, project.slug)
         for dirpath, dirs, files in os.walk(protected_root):
             for file in files:
                 if file.lower().endswith(settings.EXTRACTION_SUFFIXES):
                     print file
                     relDir = os.path.relpath(dirpath, protected_root)
-                    ProtectedFile(project=project,filepath=os.path.join(relDir,file)).save()
+                    ProtectedFile(project=project, filepath=os.path.join(relDir, file)).save()
 
-    def do_project(self,project):
+    def do_project(self, project):
         with transaction.atomic():
             self.clear_project(project)
             self.walk_project(project)
@@ -46,13 +47,13 @@ class Command(BaseCommand):
     help = ('Walks project directories, including static directories and children')
 
     option_list = BaseCommand.option_list + \
-        (
-            make_option('--project',
-                        dest='project',
-                        default=None,
-                        metavar='NAME',
-                        help='Specify project slug name'),
-        )
+                  (
+                      make_option('--project',
+                                  dest='project',
+                                  default=None,
+                                  metavar='NAME',
+                                  help='Specify project slug name'),
+                  )
 
     def handle(self, *args, **options):
         """ Handle the command line """
