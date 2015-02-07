@@ -94,7 +94,7 @@ class ProtectedFileIndex(indexes.SearchIndex, indexes.Indexable):
         try:
             file_obj = open(abs_fp, "rb")
         except:
-            print "problem with loading {0}".format(file_obj)
+            print "problem with loading {0}".format(abs_fp)
             return data
 
         #https://github.com/courseportal/coursePortal/blob/10aad71186452c55c72507e83c7ee0a7e6372fe0/haystack/search_indexes.py
