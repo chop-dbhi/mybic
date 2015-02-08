@@ -7,15 +7,15 @@ from haystack.forms import SearchForm
 from haystack.forms import ModelSearchForm
 from haystack.query import SearchQuerySet
 from haystack.views import SearchView
-from mybic.labs.models import Project
+from mybic.labs.models import Project, ProjectFile, ProtectedFile
 from news.models import Article
 from django.conf import settings
 
 admin.autodiscover()
 
-sqs = SearchQuerySet().models(Project, Article)
-# .filter(lab__slug='Pei_lab')
+sqs = SearchQuerySet().models(Project, Article, ProjectFile, ProtectedFile)
 
+from haystack.forms import ModelSearchForm, HighlightedSearchForm
 
 urlpatterns = patterns(
     '',
@@ -52,7 +52,7 @@ urlpatterns = patterns(
     url(r'^search', SearchView(
         template='search/search.html',
         searchqueryset=sqs,
-        form_class=ModelSearchForm
+        form_class=HighlightedSearchForm,
     ), name='haystack_search')
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
