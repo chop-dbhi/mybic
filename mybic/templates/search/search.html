@@ -21,6 +21,7 @@
             {% for result in page.object_list %}
                 {% if result.model_name == 'project' %}
                 <p>
+		  <p>{{ result.summary }}</p>
                     <a href="{%  url 'my_project_url' result.object.lab.slug result.object.slug %}">{{ result.object.name }}</a>
                 </p>
                  {% elif result.model_name == 'article' %}
@@ -28,7 +29,7 @@
                     <a href="{%  url 'dashboard' %}/#article{{ result.object.id }}">{{ result.object.title }}</a>
                 </p>
                     {% elif result.model_name == 'projectfile' %}
-                    <p>{% highlight result.summary with query %}</p>
+                    
                     <p>{{ result.object.filepath }}</p>
 
 
