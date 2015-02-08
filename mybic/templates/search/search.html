@@ -30,7 +30,9 @@
                     <p>
                     <p>{{ result.object.filepath }}</p>
                     </p>
+
                 {% endif %}
+ {% highlight result.summary with query %}
             {% empty %}
                 <p>No results found.</p>
             {% endfor %}
