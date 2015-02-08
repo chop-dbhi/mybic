@@ -88,7 +88,10 @@
 
             {% if request.user.is_authenticated %}
             <ul class="nav navbar-nav navbar-right">
-            {{ form.as_p }}<input type="submit" value="Search">
+            <form  method="get" action="/search/" class="navbar-search pull-left">
+   <input type="text" class="search-query" placeholder="Search">
+</form>
+            
 
 
                 {% if request.user.is_staff %}
