@@ -15,7 +15,7 @@ admin.autodiscover()
 
 sqs = SearchQuerySet().models(Project, Article, ProjectFile, ProtectedFile)
 
-from haystack.forms import ModelSearchForm, HighlightedSearchForm
+from haystack.forms import ModelSearchForm, HighlightedModelSearchForm
 
 urlpatterns = patterns(
     '',
@@ -52,7 +52,7 @@ urlpatterns = patterns(
     url(r'^search', SearchView(
         template='search/search.html',
         searchqueryset=sqs,
-        form_class=HighlightedSearchForm,
+        form_class=HighlightedModelSearchForm,
     ), name='haystack_search')
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
