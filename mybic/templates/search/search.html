@@ -32,7 +32,7 @@
                     {% endif %}
                     {%  for high_text in result.highlighted.text %}
                         <blockquote>
-                            {{ high_text }}
+                            {{ high_text | safe }}
                         </blockquote>
                     {% endfor %}
                 {% empty %}
