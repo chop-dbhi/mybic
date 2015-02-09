@@ -30,7 +30,9 @@
                     {% elif result.model_name == 'protectedfile' %}
                         <a href="{%  url 'protected' result.object.project.lab.slug result.object.project.slug result.object.filepath %}">{{ result.object.filepath }}</a>
                     {% endif %}
-
+                    <blockquote>
+                        {{ result.object.highlighted.text | safe }}
+                    </blockquote>
                 {% empty %}
                     <p>No results found.</p>
                 {% endfor %}
