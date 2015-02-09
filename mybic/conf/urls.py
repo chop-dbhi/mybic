@@ -51,8 +51,8 @@ urlpatterns = patterns(
 
     url(r'^search', SearchView(
         template='search/search.html',
-        searchqueryset=sqs,
-        form_class=ModelSearchForm,
+        
+        form_class=HighlightedModelSearchForm,
     ), name='haystack_search')
 
 ) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
