@@ -6,8 +6,6 @@
         <div class="row">
             <div class="col-md-6">
                 <h2 id="overview" class="page-header">Search</h2>
-
-
                 <table>
                     {{ form.as_table }}
                     <tr>
@@ -24,19 +22,13 @@
 
                 {% for result in page.object_list %}
                     {% if result.model_name == 'project' %}
-                        <p>
-                        <p>{{ result.summary }}</p>
                         <a href="{%  url 'my_project_url' result.object.lab.slug result.object.slug %}">{{ result.object.name }}</a>
-                        </p>
                     {% elif result.model_name == 'article' %}
-                        <p>
-                            <a href="{%  url 'dashboard' %}/#article{{ result.object.id }}">{{ result.object.title }}</a>
-                        </p>
+                        <a href="{%  url 'dashboard' %}/#article{{ result.object.id }}">{{ result.object.title }}</a>
                     {% elif result.model_name == 'projectfile' %}
-
-                        <p>{{ result.object.filepath }}</p>
-
-
+                        <a href="{%  url 'my_child_url' result.object.project.lab.slug result.object.project.slug result.object.filepath %}">{{ result.object.filepath }}</a>
+                    {% elif result.model_name == 'protectedfile' %}
+                        <a href="{%  url 'protected' result.object.project.lab.slug result.object.project.slug result.object.filepath %}">{{ result.object.filepath }}</a>
                     {% endif %}
 
                 {% empty %}
