@@ -22,6 +22,7 @@
 
                 {% for result in page.object_list %}
                     {% if result.model_name == 'project' %}
+                        <a href="{%  url 'my_project_url' result.object.lab.slug result.object.slug %}"><button type="button" class="btn btn-default btn-xs"><img src="/static/images/iconmonstr-layer-19-icon-16.png"> {{ result.object.name }}</button></a>
                         <a href="{%  url 'my_project_url' result.object.lab.slug result.object.slug %}">{{ result.object.name }}</a>
                     {% elif result.model_name == 'article' %}
                         <a href="{%  url 'dashboard' %}/#article{{ result.object.id }}">{{ result.object.title }}</a>
