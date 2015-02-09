@@ -31,7 +31,7 @@
                         <a href="{%  url 'protected' result.object.project.lab.slug result.object.project.slug result.object.filepath %}">{{ result.object.filepath }}</a>
                     {% endif %}
                     <blockquote>
-                        {{ result.get_additional_fields }}
+                        {{ result.highlighted.text }}
                     </blockquote>
                 {% empty %}
                     <p>No results found.</p>
