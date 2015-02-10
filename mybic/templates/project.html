@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load markdown_tags %}
+{{ content | markdown }}
+{% endblock %}

@@ -107,6 +107,13 @@ STATIC_URL = '/static/'
 
 PROTECTED_URL = '/slink/'
 
+# how dynamically-parsed index pages are stored in myBiC
+# one of:
+# database
+# symlink
+# copy
+INDEX_PAGE_HANDLING = 'database'
+
 # '.txt'
 EXTRACTION_SUFFIXES = ('.html', '.md', '.pdf')
 
