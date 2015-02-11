@@ -67,36 +67,7 @@ class Project(models.Model):
         return '%s' % self.name
 
     def save(self, *args, **kwargs):
-        url_pattern = re.compile(r"^https?://.+")
-
-        if settings.INDEX_PAGE_HANDLING == 'database':
-            self.index, created = ChildIndex.objects.get_or_create(parent=self,page=self.index_page)
-
-        else:
-            # create a symlink to the index file
-            # call it lab/project/index.html or lab/project/index.md
-            lab_dir = os.path.join(settings.BASE_PATH, 'mybic/labs/templates/', self.lab.slug)
-            project_dir = os.path.join(lab_dir, self.slug)
-            if not os.path.exists(lab_dir):
-                os.mkdir(lab_dir)
-            if not os.path.exists(project_dir):
-                os.mkdir(project_dir)
-            link_name = os.path.join(project_dir, os.path.basename(self.index_page))
-            try:
-                os.unlink(link_name)
-            except OSError, e:
-                pass
-
-            try:
-                if url_pattern.match(self.index_page):
-                    response = urllib2.urlopen(self.index_page)
-                    fh = open(link_name, "w")
-                    fh.write(response.read())
-                    fh.close()
-                else:
-                    os.symlink(self.index_page, link_name)
-            except OSError, e:
-                raise PermissionDenied()
+        self.index, created = ChildIndex.objects.get_or_create(parent=self,page=self.index_page)
 
         # create a symlink to the static directory on the isilon
         #call it _site/static/lab/project
