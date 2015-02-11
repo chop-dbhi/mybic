@@ -9,6 +9,7 @@ from news.models import Article
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 
+from dbtemplates.models import Template
 
 class Lab(models.Model):
     """ A lab with a PI
@@ -42,10 +43,11 @@ class Project(models.Model):
     description = models.TextField(unique=False, db_index=True, null=True, help_text="description of the project")
     slug = models.SlugField(max_length=50, unique=False, db_index=True,
                             help_text=" only letters, numbers, underscores or hyphens e.g. err-rna-seq")
-    index_page = models.CharField(default="/mnt/variome/", max_length=300, unique=False, db_index=True,
-                                  help_text="full path to your index.html or index.md /mnt/variome/leipzig/liming_err_rnaseq/src/site/_site/index.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/index.md")
-    static_dir = models.CharField(default="/mnt/variome/", max_length=300, unique=False, db_index=True,
-                                  help_text="the directory where your static files are e.g. /mnt/variome/leipzig/err-rna-seq")
+    index_page = models.CharField(default="", max_length=300, unique=False, db_index=True,
+                                  help_text="path to your index.html or index.md on the Isilon mount e.g. leipzig/liming_err_rnaseq/src/site/_site/index.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/index.md or a directory")
+    index = models.ForeignKey('ChildIndex',null=True,editable=False,on_delete=models.SET_NULL)
+    static_dir = models.CharField(default="", max_length=300, unique=False, db_index=True,
+                                  help_text="Isilon subdirectory where your static files are e.g. leipzig/err-rna-seq")
     de_dir = models.CharField(max_length=300, unique=False, db_index=True, blank=True, null=True,
                               help_text="data expedition directory")
     lab = models.ForeignKey('Lab')
@@ -64,34 +66,8 @@ class Project(models.Model):
     def __unicode__(self):
         return '%s' % self.name
 
-    def save(self):
-        # create a symlink to the index file
-        # call it lab/project/index.html or lab/project/index.md
-        lab_dir = os.path.join(settings.BASE_PATH, 'mybic/labs/templates/', self.lab.slug)
-        project_dir = os.path.join(lab_dir, self.slug)
-        if not os.path.exists(lab_dir):
-            os.mkdir(lab_dir)
-        if not os.path.exists(project_dir):
-            os.mkdir(project_dir)
-        link_name = os.path.join(project_dir, 'index.html')
-        # if os.path.exists(link_name):
-        try:
-            os.unlink(link_name)
-        except OSError, e:
-            pass
-
-        url_pattern = re.compile(r"^https?://.+")
-
-        try:
-            if url_pattern.match(self.index_page):
-                response = urllib2.urlopen(self.index_page)
-                fh = open(link_name, "w")
-                fh.write(response.read())
-                fh.close()
-            else:
-                os.symlink(self.index_page, link_name)
-        except OSError, e:
-            raise PermissionDenied()
+    def save(self, *args, **kwargs):
+        self.index, created = ChildIndex.objects.get_or_create(parent=self,page=self.index_page)
 
         # create a symlink to the static directory on the isilon
         #call it _site/static/lab/project
@@ -104,9 +80,9 @@ class Project(models.Model):
             os.unlink(project_static)
         except OSError, e:
             pass
-        print >> sys.stderr, 'symlinking {0} to {1}'.format(self.static_dir, project_static)
+        print >> sys.stderr, 'symlinking {0} to {1}'.format(os.path.join(settings.ISILON_ROOT,self.static_dir), project_static)
         try:
-            os.symlink(self.static_dir, project_static)
+            os.symlink(os.path.join(settings.ISILON_ROOT,self.static_dir), project_static)
         except OSError, e:
             raise PermissionDenied()
         children = ChildIndex.objects.filter(parent=self)
@@ -116,25 +92,13 @@ class Project(models.Model):
         #bump modified date of parent lab
         self.lab.save()
 
-        super(Project, self).save()
+        super(Project, self).save(*args, **kwargs)
 
 
-class ProjectFile(models.Model):
-    """ Holds record of template files to be extracted by solr
-    """
-    project = models.ForeignKey(Project)
-    filepath = models.CharField(max_length=500, unique=False, db_index=True)
-
-
-class ProtectedFile(models.Model):
-    """ Holds record of protected files to be extracted by solr
-    """
-    project = models.ForeignKey(Project)
-    filepath = models.CharField(max_length=500, unique=False, db_index=True)
 
 
 class ChildIndex(models.Model):
-    """ Additional index pages
+    """ index pages, main and children
         These must be named uniquely from the source (i.e. not index.md)
     """
 
@@ -142,8 +106,9 @@ class ChildIndex(models.Model):
         verbose_name_plural = "Child Indices"
 
     parent = models.ForeignKey('Project')
-    page = models.CharField(default="/mnt/variome/", max_length=300, unique=False, db_index=True,
-                            help_text="full path to your child .html or .md page /mnt/variome/leipzig/liming_err_rnaseq/src/site/_site/additional_info.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/additional_info.md")
+    page = models.CharField(default="", max_length=300, unique=False, db_index=True,
+                            help_text="Path to your child .html or .md page on the Isilon mount leipzig/liming_err_rnaseq/src/site/_site/additional_info.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/additional_info.md")
+    template = models.ForeignKey(Template, null=True, editable=False, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.page
@@ -151,34 +116,67 @@ class ChildIndex(models.Model):
     def __unicode__(self):
         return '%s' % self.page
 
-    def save(self):
-        # create a symlink to the index file
-        lab_dir = os.path.join(settings.BASE_PATH, 'mybic/labs/templates/', self.parent.lab.slug)
-        project_dir = os.path.join(lab_dir, self.parent.slug)
-        link_name = os.path.join(project_dir, os.path.basename(self.page))
-        # if os.path.exists(link_name):
-        try:
-            os.unlink(link_name)
-        except OSError, e:
-            pass
-
+    def save(self, *args, **kwargs):
         url_pattern = re.compile(r"^https?://.+")
+
 
         if url_pattern.match(self.page):
             response = urllib2.urlopen(self.page)
-            fh = open(link_name, "w")
-            fh.write(response.read())
-            fh.close()
+            pre_content = response.read()
         else:
+            print "trying to open {0} {1}".format(settings.ISILON_ROOT, os.path.join(settings.ISILON_ROOT,self.page))
+            file = open(os.path.join(settings.ISILON_ROOT,self.page),'rb')
+            pre_content = file.read()
+
+        if settings.AUTOFLANK == True:
+            if self.page.lower().endswith('.md'):
+                open_flank = '{% extends "base.html" %} {% load markdown_tags %} {% block content %} {% markdown %}'
+                close_flank = '{% endmarkdown %} {% endblock %}'
+            else:
+                open_flank = '{% extends "base.html" %} {% block content %}'
+                close_flank = '{% endblock %}'
+            # clear out any existing tags that would interfere, including legacy tags
+            # flank with new tags
+            content = "{0}\n{1}\n{2}\n".format(open_flank,
+                pre_content.replace('{% extends "base.html" %}', '').
+                            replace('{% load markdown_tags %}','').
+                            replace('{% load markdown_deux_tags %}','').
+                            replace('{% block content %}', '').
+                            replace('{% endblock %}', '').
+                            replace('{% markdown %}', '').
+                            replace('{% endmarkdown %}', ''),
+                close_flank)
+        else:
+            content=pre_content
+        if settings.INDEX_PAGE_HANDLING == 'database':
             try:
-                os.symlink(self.page, link_name)
+                self.template.delete()
+            except:
+                pass
+            self.template = Template.objects.create(name=os.path.join(self.parent.lab.slug,self.parent.slug,os.path.basename(self.page)),content=content)
+        else:
+            # create a symlink to the index file
+            lab_dir = os.path.join(settings.BASE_PATH, 'mybic/labs/templates/', self.parent.lab.slug)
+            project_dir = os.path.join(lab_dir, self.parent.slug)
+            link_name = os.path.join(project_dir, os.path.basename(self.page))
+            try:
+                os.unlink(link_name)
+            except OSError, e:
+                pass
+
+            # web sources are always copied, files can be symlinked
+            try:
+                if settings.INDEX_PAGE_HANDLING == 'symlink' and not url_pattern.match(self.page):
+                    os.symlink(os.path.join(settings.ISILON_ROOT,self.page), link_name)
+                else:
+                    fh = open(link_name, "w")
+                    fh.write(content)
+                    fh.close()
             except OSError, e:
                 raise PermissionDenied()
+        super(ChildIndex, self).save(*args, **kwargs)
 
-        super(ChildIndex, self).save()
-
-    def delete(self):
-        # create a symlink to the index file
+    def delete(self, *args, **kwargs):
         lab_dir = os.path.join(settings.BASE_PATH, 'mybic/labs/templates/', self.parent.lab.slug)
         project_dir = os.path.join(lab_dir, self.parent.slug)
         link_name = os.path.join(project_dir, os.path.basename(self.page))
@@ -187,8 +185,19 @@ class ChildIndex(models.Model):
             os.unlink(link_name)
         except OSError, e:
             pass
-        super(ChildIndex, self).delete()
+        super(ChildIndex, self).delete(*args, **kwargs)
 
+class ProjectFile(models.Model):
+    """ Holds record of template files to be extracted by solr
+    """
+    project = models.ForeignKey(Project)
+    filepath = models.CharField(max_length=500, unique=False, db_index=True)
+
+class ProtectedFile(models.Model):
+    """ Holds record of protected files to be extracted by solr
+    """
+    project = models.ForeignKey(Project)
+    filepath = models.CharField(max_length=500, unique=False, db_index=True)
 
 class ProjectArticle(Article):
     """ A news item or blog entry associated with a project

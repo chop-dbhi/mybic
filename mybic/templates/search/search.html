@@ -25,6 +25,8 @@
                         <a href="{%  url 'my_project_url' result.object.lab.slug result.object.slug %}"><button type="button" class="btn btn-default btn-xs"><img src="/static/images/iconmonstr-layer-19-icon-16.png"> {{ result.object.name }}</button></a>
                     {% elif result.model_name == 'article' %}
                         <a href="{%  url 'dashboard' %}/#article{{ result.object.id }}">{{ result.object.title }}</a>
+                    {% elif result.model_name = 'childindex' %}
+                        <a href="{%  url 'my_direct_child_url' result.object.template.name }}">{{ result.object.template.name }}</a>
                     {% elif result.model_name == 'projectfile' %}
                         <a href="{%  url 'my_project_url' result.object.project.lab.slug result.object.project.slug %}"><button type="button" class="btn btn-default btn-xs"><img src="/static/images/iconmonstr-layer-19-icon-16.png"> {{ result.object.project.name }}</button></a>
                         <a href="{%  url 'my_child_url' result.object.project.lab.slug result.object.project.slug result.object.filepath %}">{{ result.object.filepath }}</a>

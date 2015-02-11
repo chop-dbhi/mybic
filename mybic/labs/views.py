@@ -86,7 +86,7 @@ def projectview(request, lab_slug, project_slug):
                'SLINK': static_link}
 
     if project.public or project.lab.group in my_groups:
-        proj_dir = os.path.join(lab_slug, project_slug, "index.html")
+        proj_dir = os.path.join(lab_slug, project_slug, os.path.basename(project.index_page))
         return render_to_response(proj_dir, context, context_instance=RequestContext(request))
     else:
         return render_to_response('error.html', context_instance=RequestContext(request))

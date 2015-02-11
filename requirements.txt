@@ -18,6 +18,9 @@ mistune
 django-siteauth
 django-registration2
 
+#database templates
+git+git://github.com/jezdez/django-dbtemplates.git@b371cc6518fbc0389898271e77f1b9962ea38391
+
 #search
 pysolr<=3.2.99
 django-haystack

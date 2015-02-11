@@ -35,6 +35,17 @@ class ArticleIndex(indexes.SearchIndex, indexes.Indexable):
     def index_queryset(self, using=None):
         return self.get_model().objects.all()
 
+#http://stackoverflow.com/questions/20081578/how-to-index-a-foreign-key-charfield-using-haystack-whoosh-with-django
+class ChildIndex(indexes.SearchIndex, indexes.Indexable):
+    text = indexes.CharField(document=True, use_template=True)
+    child_content = indexes.CharField()
+
+    def get_model(self):
+        return ChildIndex
+
+    def index_queryset(self, using=None):
+        return self.get_model().objects.all()
+
 #orignally FileIndex(indexes.SearchIndex, indexes.Indexable)
 class ProjectFileIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, use_template=True)

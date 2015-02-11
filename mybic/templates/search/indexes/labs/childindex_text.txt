@@ -1,0 +1,3 @@
+{{ object.parent.name }}
+{{ object.parent.lab.name }}
+{{ object.template.content }}
