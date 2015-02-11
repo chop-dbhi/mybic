@@ -44,7 +44,7 @@ class Project(models.Model):
                             help_text=" only letters, numbers, underscores or hyphens e.g. err-rna-seq")
     index_page = models.CharField(default="/mnt/variome/", max_length=300, unique=False, db_index=True,
                                   help_text="full path to your index.html or index.md /mnt/variome/leipzig/liming_err_rnaseq/src/site/_site/index.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/index.md or a directory")
-    index = models.ForeignKey('ChildIndex',null=True)
+    index = models.ForeignKey('ChildIndex',null=True,editable=False)
     static_dir = models.CharField(default="/mnt/variome/", max_length=300, unique=False, db_index=True,
                                   help_text="the directory where your static files are e.g. /mnt/variome/leipzig/err-rna-seq")
     de_dir = models.CharField(max_length=300, unique=False, db_index=True, blank=True, null=True,
@@ -65,7 +65,7 @@ class Project(models.Model):
     def __unicode__(self):
         return '%s' % self.name
 
-    def save(self):
+    def save(self, *args, **kwargs):
         url_pattern = re.compile(r"^https?://.+")
 
         if settings.INDEX_PAGE_HANDLING == 'database':
@@ -76,7 +76,8 @@ class Project(models.Model):
                 else:
                     file = open(self.index_page,'rb')
                     content = file.read()
-                self.index = ChildIndex(parent=self,page=self.index_page,content=content)
+                #ValueError: Cannot assign "(<ChildIndex: https://github.research.chop.edu/leipzigj/mybic_sandbox/raw/master/README.md>, False)": "Project.index" must be a "ChildIndex" instance.
+                self.index, created = ChildIndex.objects.get_or_create(parent=self,page=self.index_page,content=content)
             except OSError, e:
                 raise PermissionDenied()
 
@@ -129,7 +130,7 @@ class Project(models.Model):
         #bump modified date of parent lab
         self.lab.save()
 
-        super(Project, self).save()
+        super(Project, self).save(*args, **kwargs)
 
 
 class ProjectFile(models.Model):
@@ -158,7 +159,7 @@ class ChildIndex(models.Model):
     parent = models.ForeignKey('Project')
     page = models.CharField(default="/mnt/variome/", max_length=300, unique=False, db_index=True,
                             help_text="full path to your child .html or .md page /mnt/variome/leipzig/liming_err_rnaseq/src/site/_site/additional_info.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/additional_info.md")
-    content = models.TextField(blank=True)
+    content = models.TextField(blank=True, editable=False)
 
     def __str__(self):
         return self.page
@@ -166,13 +167,13 @@ class ChildIndex(models.Model):
     def __unicode__(self):
         return '%s' % self.page
 
-    def save(self):
+    def save(self, *args, **kwargs):
         url_pattern = re.compile(r"^https?://.+")
 
         if settings.INDEX_PAGE_HANDLING == 'database':
             try:
                 if url_pattern.match(self.page):
-                    response = urllib2.urlopen(self.index_page)
+                    response = urllib2.urlopen(self.page)
                     self.content = response.read()
                 else:
                     file = open(self.page,'rb')
@@ -203,9 +204,9 @@ class ChildIndex(models.Model):
                 except OSError, e:
                     raise PermissionDenied()
 
-        super(ChildIndex, self).save()
+        super(ChildIndex, self).save(*args, **kwargs)
 
-    def delete(self):
+    def delete(self, *args, **kwargs):
         # create a symlink to the index file
         lab_dir = os.path.join(settings.BASE_PATH, 'mybic/labs/templates/', self.parent.lab.slug)
         project_dir = os.path.join(lab_dir, self.parent.slug)
@@ -215,7 +216,7 @@ class ChildIndex(models.Model):
             os.unlink(link_name)
         except OSError, e:
             pass
-        super(ChildIndex, self).delete()
+        super(ChildIndex, self).delete(*args, **kwargs)
 
 
 class ProjectArticle(Article):
