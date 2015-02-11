@@ -44,10 +44,10 @@ class Project(models.Model):
     slug = models.SlugField(max_length=50, unique=False, db_index=True,
                             help_text=" only letters, numbers, underscores or hyphens e.g. err-rna-seq")
     index_page = models.CharField(default="", max_length=300, unique=False, db_index=True,
-                                  help_text="path to your index.html or index.md on the Isilon mount e.g. /leipzig/liming_err_rnaseq/src/site/_site/index.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/index.md or a directory")
+                                  help_text="path to your index.html or index.md on the Isilon mount e.g. leipzig/liming_err_rnaseq/src/site/_site/index.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/index.md or a directory")
     index = models.ForeignKey('ChildIndex',null=True,editable=False,on_delete=models.SET_NULL)
     static_dir = models.CharField(default="", max_length=300, unique=False, db_index=True,
-                                  help_text="Isilon subdirectory where your static files are e.g. /leipzig/err-rna-seq")
+                                  help_text="Isilon subdirectory where your static files are e.g. leipzig/err-rna-seq")
     de_dir = models.CharField(max_length=300, unique=False, db_index=True, blank=True, null=True,
                               help_text="data expedition directory")
     lab = models.ForeignKey('Lab')
@@ -107,7 +107,7 @@ class ChildIndex(models.Model):
 
     parent = models.ForeignKey('Project')
     page = models.CharField(default="", max_length=300, unique=False, db_index=True,
-                            help_text="Path to your child .html or .md page on the Isilon mount /leipzig/liming_err_rnaseq/src/site/_site/additional_info.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/additional_info.md")
+                            help_text="Path to your child .html or .md page on the Isilon mount leipzig/liming_err_rnaseq/src/site/_site/additional_info.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/additional_info.md")
     template = models.ForeignKey(Template, null=True, editable=False, on_delete=models.SET_NULL)
 
     def __str__(self):
@@ -124,14 +124,20 @@ class ChildIndex(models.Model):
             response = urllib2.urlopen(self.page)
             pre_content = response.read()
         else:
+            print "trying to open {0} {1}".format(settings.ISILON_ROOT, os.path.join(settings.ISILON_ROOT,self.page))
             file = open(os.path.join(settings.ISILON_ROOT,self.page),'rb')
             pre_content = file.read()
 
         if settings.AUTOFLANK == True:
+            if self.page.lower().endswith('.md'):
+                open_flank = '{% extends "base.html" %} {% load markdown_tags %} {% block content %} {% markdown %}'
+                close_flank = '{% endmarkdown %} {% endblock %}'
+            else:
+                open_flank = '{% extends "base.html" %} {% block content %}'
+                close_flank = '{% endblock %}'
             # clear out any existing tags that would interfere, including legacy tags
             # flank with new tags
-            content = "{0}\n{1}\n{2}\n".format(
-                '{% extends "base.html" %} {% load markdown_tags %} {% block content %} {% markdown %}',
+            content = "{0}\n{1}\n{2}\n".format(open_flank,
                 pre_content.replace('{% extends "base.html" %}', '').
                             replace('{% load markdown_tags %}','').
                             replace('{% load markdown_deux_tags %}','').
@@ -139,7 +145,7 @@ class ChildIndex(models.Model):
                             replace('{% endblock %}', '').
                             replace('{% markdown %}', '').
                             replace('{% endmarkdown %}', ''),
-                '{% endmarkdown %} {% endblock %}')
+                close_flank)
         else:
             content=pre_content
         if settings.INDEX_PAGE_HANDLING == 'database':

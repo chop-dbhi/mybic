@@ -16,8 +16,8 @@ class ProjectAdminForm(ModelForm):
     def clean(self):
         data = self.cleaned_data
         # data['index_page']
-        index_page = data['index_page'].replace(settings.ISILON_ROOT,'')
-        static_dir = data['static_dir'].replace(settings.ISILON_ROOT,'')
+        index_page = data['index_page'].replace(settings.ISILON_ROOT,'').strip("/")
+        static_dir = data['static_dir'].replace(settings.ISILON_ROOT,'').strip("/")
         url_pattern = re.compile(r"^https?://.+")
 
         if url_pattern.match(index_page):

@@ -157,16 +157,8 @@ def childview(request, lab_slug, project_slug, child_page):
                'my_projects': my_projects, 'SLINK': static_link}
 
     if project.public or project.lab.group in my_groups:
-        if settings.INDEX_PAGE_HANDLING == 'database':
-            children = ChildIndex.objects.filter(parent=project)
-            for child in children:
-                if os.path.basename(child.page) == child_page:
-                    context['content']=project.index.content
-                    render_to_response("project.html", context, context_instance=RequestContext(request))
-                render_to_response('error.html', context_instance=RequestContext(request))
-        else:
-            child_page = os.path.join(lab_slug, project_slug, child_page)
-            return render_to_response(child_page, context, context_instance=RequestContext(request))
+        child_page = os.path.join(lab_slug, project_slug, child_page)
+        return render_to_response(child_page, context, context_instance=RequestContext(request))
     else:
         return render_to_response('error.html', context_instance=RequestContext(request))
 
