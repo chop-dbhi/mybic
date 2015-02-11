@@ -33,6 +33,9 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
+
+    'dbtemplates',
 
     'mybic',
     'mybic.labs',
@@ -114,6 +117,9 @@ PROTECTED_URL = '/slink/'
 # copy
 INDEX_PAGE_HANDLING = 'database'
 
+# do we flank the index and child pages with navigation and markdown tags
+AUTOFLANK = True
+
 # '.txt'
 EXTRACTION_SUFFIXES = ('.html', '.md', '.pdf')
 
@@ -130,7 +136,7 @@ TEMPLATE_CONTEXT_PROCESSORS += (
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
-    #     'django.template.loaders.eggs.Loader',
+    'dbtemplates.loader.Loader',
 )
 
 # List of finder classes that know how to find static files in

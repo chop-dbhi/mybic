@@ -9,6 +9,7 @@ from news.models import Article
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 
+from dbtemplates.models import Template
 
 class Lab(models.Model):
     """ A lab with a PI
@@ -44,7 +45,7 @@ class Project(models.Model):
                             help_text=" only letters, numbers, underscores or hyphens e.g. err-rna-seq")
     index_page = models.CharField(default="/mnt/variome/", max_length=300, unique=False, db_index=True,
                                   help_text="full path to your index.html or index.md /mnt/variome/leipzig/liming_err_rnaseq/src/site/_site/index.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/index.md or a directory")
-    index = models.ForeignKey('ChildIndex',null=True,editable=False)
+    index = models.ForeignKey('ChildIndex',null=True,editable=False,on_delete=models.SET_NULL)
     static_dir = models.CharField(default="/mnt/variome/", max_length=300, unique=False, db_index=True,
                                   help_text="the directory where your static files are e.g. /mnt/variome/leipzig/err-rna-seq")
     de_dir = models.CharField(max_length=300, unique=False, db_index=True, blank=True, null=True,
@@ -69,17 +70,7 @@ class Project(models.Model):
         url_pattern = re.compile(r"^https?://.+")
 
         if settings.INDEX_PAGE_HANDLING == 'database':
-            try:
-                if url_pattern.match(self.index_page):
-                    response = urllib2.urlopen(self.index_page)
-                    content = response.read()
-                else:
-                    file = open(self.index_page,'rb')
-                    content = file.read()
-                #ValueError: Cannot assign "(<ChildIndex: https://github.research.chop.edu/leipzigj/mybic_sandbox/raw/master/README.md>, False)": "Project.index" must be a "ChildIndex" instance.
-                self.index, created = ChildIndex.objects.get_or_create(parent=self,page=self.index_page,content=content)
-            except OSError, e:
-                raise PermissionDenied()
+            self.index, created = ChildIndex.objects.get_or_create(parent=self,page=self.index_page)
 
         else:
             # create a symlink to the index file
@@ -90,7 +81,7 @@ class Project(models.Model):
                 os.mkdir(lab_dir)
             if not os.path.exists(project_dir):
                 os.mkdir(project_dir)
-            link_name = os.path.join(project_dir, 'index.html')
+            link_name = os.path.join(project_dir, os.path.basename(self.index_page))
             try:
                 os.unlink(link_name)
             except OSError, e:
@@ -159,7 +150,7 @@ class ChildIndex(models.Model):
     parent = models.ForeignKey('Project')
     page = models.CharField(default="/mnt/variome/", max_length=300, unique=False, db_index=True,
                             help_text="full path to your child .html or .md page /mnt/variome/leipzig/liming_err_rnaseq/src/site/_site/additional_info.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/additional_info.md")
-    content = models.TextField(blank=True, editable=False)
+    template = models.ForeignKey(Template, null=True, editable=False)
 
     def __str__(self):
         return self.page
@@ -170,17 +161,34 @@ class ChildIndex(models.Model):
     def save(self, *args, **kwargs):
         url_pattern = re.compile(r"^https?://.+")
 
-        if settings.INDEX_PAGE_HANDLING == 'database':
-            try:
-                if url_pattern.match(self.page):
-                    response = urllib2.urlopen(self.page)
-                    self.content = response.read()
-                else:
-                    file = open(self.page,'rb')
-                    self.content = file.read()
-            except OSError, e:
-                raise PermissionDenied()
 
+        try:
+            if url_pattern.match(self.page):
+                response = urllib2.urlopen(self.page)
+                pre_content = response.read()
+            else:
+                file = open(self.page,'rb')
+                pre_content = file.read()
+        except OSError, e:
+            raise PermissionDenied()
+        if settings.AUTOFLANK == True:
+            # clear out any existing tags that would interfere, including legacy tags
+            # flank with new tags
+            content = "{0}\n{1}\n{2}\n".format(
+                '{% extends "base.html" %} {% load markdown_tags %} {% block content %} {% markdown %}',
+                pre_content.replace('{% extends "base.html" %}', '').
+                            replace('{% load markdown_tags %}','').
+                            replace('{% load markdown_deux_tags %}','').
+                            replace('{% block content %}', '').
+                            replace('{% endblock %}', '').
+                            replace('{% markdown %}', '').
+                            replace('{% endmarkdown %}', ''),
+                '{% endmarkdown %} {% endblock %}')
+        else:
+            content=pre_content
+        if settings.INDEX_PAGE_HANDLING == 'database':
+            self.template.delete()
+            self.template = Template.objects.create(name=os.path.join(self.parent.lab.slug,self.parent.slug,os.path.basename(self.page)),content=content)
         else:
             # create a symlink to the index file
             lab_dir = os.path.join(settings.BASE_PATH, 'mybic/labs/templates/', self.parent.lab.slug)
@@ -192,22 +200,19 @@ class ChildIndex(models.Model):
             except OSError, e:
                 pass
 
-
-            if url_pattern.match(self.page):
-                response = urllib2.urlopen(self.page)
-                fh = open(link_name, "w")
-                fh.write(response.read())
-                fh.close()
-            else:
-                try:
+            # web sources are always copied, files can be symlinked
+            try:
+                if settings.INDEX_PAGE_HANDLING == 'symlink' and not url_pattern.match(self.page):
                     os.symlink(self.page, link_name)
-                except OSError, e:
-                    raise PermissionDenied()
-
+                else:
+                    fh = open(link_name, "w")
+                    fh.write(content)
+                    fh.close()
+            except OSError, e:
+                raise PermissionDenied()
         super(ChildIndex, self).save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):
-        # create a symlink to the index file
         lab_dir = os.path.join(settings.BASE_PATH, 'mybic/labs/templates/', self.parent.lab.slug)
         project_dir = os.path.join(lab_dir, self.parent.slug)
         link_name = os.path.join(project_dir, os.path.basename(self.page))
