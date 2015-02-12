@@ -49,7 +49,7 @@ class Project(models.Model):
     static_dir = models.CharField(default="", max_length=300, unique=False, db_index=True,
                                   help_text="Isilon subdirectory where your static files are e.g. leipzig/err-rna-seq")
     de_dir = models.CharField(max_length=300, unique=False, db_index=True, blank=True, null=True,
-                              help_text="data expedition directory")
+                              help_text="data expedition directory", editable=False)
     lab = models.ForeignKey('Lab')
     git_repo = models.URLField(max_length=300, unique=True, db_index=True,
                                help_text='e.g. http://github.research.chop.edu/cbmi/pcgc')
@@ -68,7 +68,7 @@ class Project(models.Model):
         return '%s' % self.name
 
     def save(self, *args, **kwargs):
-        self.index, created = ChildIndex.objects.get_or_create(parent=self,page=self.index_page)
+
 
         # create a symlink to the static directory on the isilon
         #call it _site/static/lab/project
@@ -86,14 +86,19 @@ class Project(models.Model):
             os.symlink(os.path.join(settings.ISILON_ROOT,self.static_dir), project_static)
         except OSError, e:
             raise PermissionDenied()
-        children = ChildIndex.objects.filter(parent=self)
-        for child in children:
-            child.save()
 
         #bump modified date of parent lab
         self.lab.save()
 
         super(Project, self).save(*args, **kwargs)
+
+        self.index, created = ChildIndex.objects.get_or_create(parent=self,page=self.index_page)
+
+        children = ChildIndex.objects.filter(parent=self)
+        for child in children:
+            child.save()
+
+
 
 
 
