@@ -58,7 +58,8 @@ class Project(models.Model):
     modified = models.DateTimeField(default=datetime.now, auto_now=True)
     public = models.BooleanField(default=False, db_index=True,
                                  help_text='Is this a public project that any myBiC user can see?')
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, help_text="Set this to the analyst responsible for maintaining the content. This person will receive emails for broken links, etc.")
+    autoflank = models.BooleanField(default=settings.AUTOFLANK, help_text="Automatically flank all index pages with base template tags and .md files with markdown template tags")
 
     def __str__(self):
         return self.slug
@@ -128,7 +129,7 @@ class ChildIndex(models.Model):
             file = open(os.path.join(settings.ISILON_ROOT,self.page),'rb')
             pre_content = file.read()
 
-        if settings.AUTOFLANK == True:
+        if self.parent.autoflank == True:
             if self.page.lower().endswith('.md'):
                 open_flank = '{% extends "base.html" %} {% load markdown_tags %} {% block content %} {% markdown %}'
                 close_flank = '{% endmarkdown %} {% endblock %}'
