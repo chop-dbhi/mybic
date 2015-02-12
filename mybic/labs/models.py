@@ -49,7 +49,7 @@ class Project(models.Model):
     static_dir = models.CharField(default="", max_length=300, unique=False, db_index=True,
                                   help_text="Isilon subdirectory where your static files are e.g. leipzig/err-rna-seq")
     de_dir = models.CharField(max_length=300, unique=False, db_index=True, blank=True, null=True,
-                              help_text="data expedition directory")
+                              help_text="data expedition directory", editable=False)
     lab = models.ForeignKey('Lab')
     git_repo = models.URLField(max_length=300, unique=True, db_index=True,
                                help_text='e.g. http://github.research.chop.edu/cbmi/pcgc')
@@ -58,7 +58,8 @@ class Project(models.Model):
     modified = models.DateTimeField(default=datetime.now, auto_now=True)
     public = models.BooleanField(default=False, db_index=True,
                                  help_text='Is this a public project that any myBiC user can see?')
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, help_text="Set this to the analyst responsible for maintaining the content. This person will receive emails for broken links, etc.")
+    autoflank = models.BooleanField(default=settings.AUTOFLANK, help_text="Automatically flank all index pages with base template tags and .md files with markdown template tags")
 
     def __str__(self):
         return self.slug
@@ -67,7 +68,7 @@ class Project(models.Model):
         return '%s' % self.name
 
     def save(self, *args, **kwargs):
-        self.index, created = ChildIndex.objects.get_or_create(parent=self,page=self.index_page)
+
 
         # create a symlink to the static directory on the isilon
         #call it _site/static/lab/project
@@ -85,14 +86,19 @@ class Project(models.Model):
             os.symlink(os.path.join(settings.ISILON_ROOT,self.static_dir), project_static)
         except OSError, e:
             raise PermissionDenied()
-        children = ChildIndex.objects.filter(parent=self)
-        for child in children:
-            child.save()
 
         #bump modified date of parent lab
         self.lab.save()
 
         super(Project, self).save(*args, **kwargs)
+
+        self.index, created = ChildIndex.objects.get_or_create(parent=self,page=self.index_page)
+
+        children = ChildIndex.objects.filter(parent=self)
+        for child in children:
+            child.save()
+
+
 
 
 
@@ -128,7 +134,7 @@ class ChildIndex(models.Model):
             file = open(os.path.join(settings.ISILON_ROOT,self.page),'rb')
             pre_content = file.read()
 
-        if settings.AUTOFLANK == True:
+        if self.parent.autoflank == True:
             if self.page.lower().endswith('.md'):
                 open_flank = '{% extends "base.html" %} {% load markdown_tags %} {% block content %} {% markdown %}'
                 close_flank = '{% endmarkdown %} {% endblock %}'
