@@ -38,7 +38,8 @@ urlpatterns = patterns(
     url(r'^labs/$', 'mybic.views.dashboard', name='dashboard'),
     url(r'^labs/([\w-]+)/$', 'mybic.labs.views.labview', name='my_lab_url'),
     url(r'^labs/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.projectview', name='my_project_url'),
-
+    # Project Endpoint
+    url(r'^api/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.projectendpoint', name='project_endpoint'),
 
     url(r'^logs/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.project_logs', name='project_logs'),
 

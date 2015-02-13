@@ -79,10 +79,10 @@
                     <li class="active"><a href="{% url 'my_lab_url' my_lab.slug %}">{{ my_lab.name }}</a>
                 {% endif %}
                 {%  if my_project %}
-                    <li class="active"><a href="{% url 'my_project_url' my_lab.slug my_project.slug %}">{{ my_project.name|slice:":25" }}</a>
+                    <li class="active"><a href="{% url 'my_project_url' my_lab.slug my_project.slug %}">{{ my_project.name|slice:":15" }}</a>
                 {% endif %}
                 {%  if my_child %}
-                    <li class="active"><a href="{% url 'my_child_url' my_lab.slug my_project.slug my_child %}">{{ my_child|slice:":25" }}</a>
+                    <li class="active"><a href="{% url 'my_child_url' my_lab.slug my_project.slug my_child %}">{{ my_child|slice:":35" }}</a>
                 {% endif %}
             </ul>
 
@@ -111,6 +111,8 @@
                                 <li><a href="{% url 'admin:labs_project_change' my_project.id %}">Project admin</a></li>
 
                                 <li><a href="{% url 'project_logs' my_lab.slug my_project.slug %}">Project logs</a></li>
+
+                                 <li><a href="{% url 'project_endpoint' my_lab.slug my_project.slug %}">Project API</a></li>
                             {% endif %}
                             {% if my_lab %}
                                 <li><a href="{% url 'admin:labs_lab_change' my_lab.id %}">Lab admin</a></li>

@@ -91,6 +91,26 @@ def projectview(request, lab_slug, project_slug):
     else:
         return render_to_response('error.html', context_instance=RequestContext(request))
 
+def projectendpoint(request, lab_slug, project_slug):
+    print >> sys.stderr, 'endpoint! {0}'.format(request.user)
+    if hasattr(request, 'user') and request.user.is_authenticated():
+        kwargs = {'user': request.user}
+        user = request.user
+    else:
+        kwargs = {'session_key': request.session.session_key}
+        return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME + '/login/')
+
+    my_groups, my_groups_list = get_groups(request)
+
+    try:
+        project = Project.objects.get(lab__slug = lab_slug, slug=project_slug)
+    except ObjectDoesNotExist:
+        return HttpResponse(json.dumps({"error":"project not found"}), content_type='application/json')
+
+    if project.public or project.lab.group in my_groups:
+        return HttpResponse(json.dumps(json.loads(project.json()), indent=4), content_type='application/json')
+    else:
+        return HttpResponse(json.dumps({"error":"this project is not in your groups"}), content_type='application/json')
 
 def updateproject(request, lab_slug, project_slug):
     print >> sys.stderr, 'updateview! {0}'.format(request.user)

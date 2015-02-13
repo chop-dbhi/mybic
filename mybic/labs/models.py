@@ -8,8 +8,10 @@ from datetime import datetime
 from news.models import Article
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
-
+from django.core import serializers
+import json
 from dbtemplates.models import Template
+
 
 class Lab(models.Model):
     """ A lab with a PI
@@ -21,7 +23,7 @@ class Lab(models.Model):
                             help_text="lab name only letters, numbers, underscores or hyphens e.g. Pei")
     pi = models.ForeignKey(User)
     group = models.ForeignKey(Group)
-    slug = models.SlugField(max_length=50, unique=False, db_index=True,
+    slug = models.SlugField(max_length=50, unique=True, db_index=True,
                             help_text=" only letters, numbers, underscores or hyphens e.g. pei_lab")
     modified = models.DateTimeField(default=datetime.now, auto_now=True)
 
@@ -33,6 +35,9 @@ class Lab(models.Model):
 
     def projects(self):
         return Project.objects.filter(lab=self).order_by('-modified')
+
+    def natural_key(self):
+        return (self.slug)
 
 
 class Project(models.Model):
@@ -61,14 +66,43 @@ class Project(models.Model):
     owner = models.ForeignKey(User, help_text="Set this to the analyst responsible for maintaining the content. This person will receive emails for broken links, etc.")
     autoflank = models.BooleanField(default=settings.AUTOFLANK, help_text="Automatically flank all index pages with base template tags and .md files with markdown template tags")
 
+
+    class Meta:
+        unique_together = (('slug','lab'),)
+
+
     def __str__(self):
         return self.slug
 
     def __unicode__(self):
         return '%s' % self.name
 
-    def save(self, *args, **kwargs):
+    def natural_key(self):
+        return (self.lab.slug, self.slug)
 
+    def json(self):
+        # http://stackoverflow.com/questions/9436954/excluding-primary-key-in-django-dumpdata-with-natural-keys
+        serialized = serializers.serialize('json', [self], indent=2, use_natural_keys=True)
+        serialized = re.sub('"pk": [0-9]{1,5}', '"pk": null', serialized)
+        serialized = re.sub('"index": \[[^]]+\]', '"index": null', serialized)
+        serialized = re.sub('"modified": \"[A-Z0-9:.\-]+\"', '"modified": null', serialized)
+        serialized = re.sub('"created": \"[A-Z0-9:.\-]+\"', '"created": null', serialized)
+
+        struct = json.loads(serialized)
+        my_children = ChildIndex.objects.filter(parent=self).exclude(page=self.index_page)
+        json_list = [struct[0]]
+        for child in my_children:
+            json_list += [json.loads(child.json())]
+        data = json.dumps(json_list)
+        return data
+        #return HttpResponse(data, mimetype='application/json')
+
+    def save(self, *args, **kwargs):
+        print >> sys.stderr, 'trying to save!'
+        # http://stackoverflow.com/a/1737078/264696
+        if not self.id:
+            self.created = datetime.datetime.today()
+            self.modified = datetime.datetime.today()
 
         # create a symlink to the static directory on the isilon
         #call it _site/static/lab/project
@@ -97,8 +131,7 @@ class Project(models.Model):
         children = ChildIndex.objects.filter(parent=self)
         for child in children:
             child.save()
-
-
+        print >> sys.stderr, 'saved project!'
 
 
 
@@ -116,11 +149,27 @@ class ChildIndex(models.Model):
                             help_text="Path to your child .html or .md page on the Isilon mount leipzig/liming_err_rnaseq/src/site/_site/additional_info.html or a valid url https://github.research.chop.edu/BiG/pei-err-rna-seq/raw/master/site/additional_info.md")
     template = models.ForeignKey(Template, null=True, editable=False, on_delete=models.SET_NULL)
 
+    class Meta:
+        unique_together = (('page','parent'),)
+
     def __str__(self):
         return self.page
 
     def __unicode__(self):
         return '%s' % self.page
+
+    def natural_key(self):
+        return (self.page,) + self.parent.natural_key()
+    natural_key.dependencies = ['labs.Project']
+
+    def json(self):
+        # http://stackoverflow.com/questions/9436954/excluding-primary-key-in-django-dumpdata-with-natural-keys
+        serialized = serializers.serialize('json', [self], indent=2, use_natural_keys=True)
+        serialized = re.sub('"pk": [0-9]{1,5}', '"pk": null', serialized)
+        serialized = re.sub('"template": [0-9]{1,5}', '"template": null', serialized)
+        struct = json.loads(serialized)
+        data = json.dumps(struct[0])
+        return data
 
     def save(self, *args, **kwargs):
         url_pattern = re.compile(r"^https?://.+")
