@@ -76,13 +76,13 @@
                 {% load url from future %}
                 {% load current from navigation %}
                 {%  if my_lab %}
-                    <li class="active"><a href="{% url 'my_lab_url' my_lab.slug %}">{{ my_lab.name }}</a>
+                    <li class="active"><a href="{% url 'my_lab_url' my_lab.slug %}">{{ my_lab.name|slice:":20" }}</a>
                 {% endif %}
                 {%  if my_project %}
-                    <li class="active"><a href="{% url 'my_project_url' my_lab.slug my_project.slug %}">{{ my_project.name|slice:":15" }}</a>
+                    <li class="active"><a href="{% url 'my_project_url' my_lab.slug my_project.slug %}">{{ my_project.name|slice:":35" }}</a>
                 {% endif %}
                 {%  if my_child %}
-                    <li class="active"><a href="{% url 'my_child_url' my_lab.slug my_project.slug my_child %}">{{ my_child|slice:":35" }}</a>
+                    <li class="active"><a href="{% url 'my_child_url' my_lab.slug my_project.slug my_child %}">{{ my_child|slice:":10" }}</a>
                 {% endif %}
             </ul>
 
@@ -118,6 +118,7 @@
                                 <li><a href="{% url 'admin:labs_lab_change' my_lab.id %}">Lab admin</a></li>
                             {% endif %}
                             <li><a href="{% url 'admin:index' %}">Site admin</a></li>
+                            <li><a data-toggle="modal" data-target="#fixtureModal" href="#">Create New Project From Fixture</a></li>
                             {% if request.session and 'masquerade' in request.session and request.session.masquerade == True %}
                                 <li><a href="{% url 'toggle_url' %}">View as admin</a></li>
                             {% else %}
@@ -148,6 +149,28 @@
 </nav>
 
 <div class="container">
+    <div class="modal fade" id="fixtureModal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="newProjectLabel">New Project</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="/new/" method="post">
+                        <div class="form-group">
+                            {% csrf_token %}
+                            <label for="fixture" class="control-label">Fixture URL:</label> <input type="text" class="form-control" id="fixture" placeholder="Enter URL of Fixture e.g. https://github.research.chop.edu/leipzigj/Gas1_Drugs_by_RNAseq/raw/master/fixture.json" name="fixture"><br/>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Create project</button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
     {%  if my_project %}
         <div class="pull-right" style="text-align:right"><small>Analyst: {{ my_project.owner.first_name }} {{ my_project.owner.last_name }}<br/>Modified: {{ my_project.modified|naturaltime }}</small></div>
     {% endif %}

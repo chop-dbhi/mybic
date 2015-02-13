@@ -5,10 +5,12 @@ from django.conf import settings
 from django.template import RequestContext
 from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.contrib.auth.models import User, Group
+from django.core.urlresolvers import reverse
+from mybic.utils.deserializer import ProjectDeserializer
 import sys
 import json
 import logging
-
+import urllib2
 from mybic.labs.models import Project, ChildIndex, Lab, LabArticle
 from tracking.models import Pageview
 
@@ -70,7 +72,7 @@ def projectview(request, lab_slug, project_slug):
 
     try:
         lab = Lab.objects.get(slug=lab_slug)
-        project = Project.objects.get(slug=project_slug)
+        project = Project.objects.get(slug=project_slug,lab__slug=lab_slug)
     except ObjectDoesNotExist:
         return render_to_response('error.html', context_instance=RequestContext(request))
 
@@ -126,7 +128,7 @@ def updateproject(request, lab_slug, project_slug):
 
     try:
         lab = Lab.objects.get(slug=lab_slug)
-        project = Project.objects.get(slug=project_slug)
+        project = Project.objects.get(slug=project_slug,lab__slug=lab_slug)
     except ObjectDoesNotExist:
         response_data['result'] = 'failed'
         response_data['message'] = 'Project does not exist.'
@@ -161,7 +163,7 @@ def childview(request, lab_slug, project_slug, child_page):
 
     try:
         lab = Lab.objects.get(slug=lab_slug)
-        project = Project.objects.get(slug=project_slug)
+        project = Project.objects.get(slug=project_slug,lab__slug=lab_slug)
     except ObjectDoesNotExist:
         return render_to_response('error.html', context_instance=RequestContext(request))
 
@@ -196,7 +198,7 @@ def project_logs(request, lab_slug, project_slug):
 
     try:
         lab = Lab.objects.get(slug=lab_slug)
-        project = Project.objects.get(slug=project_slug)
+        project = Project.objects.get(slug=project_slug,lab__slug=lab_slug)
     except ObjectDoesNotExist:
         return render_to_response('error.html', context_instance=RequestContext(request))
 
@@ -216,3 +218,16 @@ def project_logs(request, lab_slug, project_slug):
     context = {'pageviews': pageviews, 'pageview_limit': settings.PAGEVIEW_LIMIT, 'my_groups': my_groups_list,
                'my_lab': lab, 'my_project': project, 'my_projects': my_projects}
     return render_to_response('tracking/logs.html', context, context_instance=RequestContext(request))
+
+def upload_project_fixture(request):
+    print >> sys.stderr, 'fixtureview! {0}'.format(request)
+    if hasattr(request, 'user') and request.user.is_authenticated() and request.user.is_staff:
+        if request.method == 'POST':
+            fixture = request.POST['fixture']
+            site_content = urllib2.urlopen(fixture)
+            content = site_content.read()
+            my_deserializer = ProjectDeserializer()
+            (lab_slug, project_slug) = my_deserializer.jsonToProject(content)
+            return HttpResponseRedirect(reverse('my_project_url', args=[lab_slug,project_slug]))
+    else:
+        return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME + '/login/')

@@ -82,11 +82,15 @@ class Project(models.Model):
 
     def json(self):
         # http://stackoverflow.com/questions/9436954/excluding-primary-key-in-django-dumpdata-with-natural-keys
-        serialized = serializers.serialize('json', [self], indent=2, use_natural_keys=True)
-        serialized = re.sub('"pk": [0-9]{1,5}', '"pk": null', serialized)
-        serialized = re.sub('"index": \[[^]]+\]', '"index": null', serialized)
-        serialized = re.sub('"modified": \"[A-Z0-9:.\-]+\"', '"modified": null', serialized)
-        serialized = re.sub('"created": \"[A-Z0-9:.\-]+\"', '"created": null', serialized)
+        serialized = serializers.serialize('json', [self], use_natural_keys=True)
+        serialized = re.sub(r'"pk": [0-9]{1,5}', '"pk": null', serialized)
+        serialized = re.sub(r'"index": \[[^]]+\]', '"index": null', serialized)
+        serialized = re.sub(r'"modified": \"[A-Z0-9:.\-]+\"', '"modified": null', serialized)
+        serialized = re.sub(r'"created": \"[A-Z0-9:.\-]+\"', '"created": null', serialized)
+        # "owner": ["leipzigj"],
+        serialized = re.sub('"owner": \[([^]]+)\]', '"owner": \\1', serialized)
+
+        print >> sys.stderr, 'serialized:\n{0}'.format(serialized)
 
         struct = json.loads(serialized)
         my_children = ChildIndex.objects.filter(parent=self).exclude(page=self.index_page)
@@ -133,9 +137,6 @@ class Project(models.Model):
             child.save()
         print >> sys.stderr, 'saved project!'
 
-
-
-
 class ChildIndex(models.Model):
     """ index pages, main and children
         These must be named uniquely from the source (i.e. not index.md)
@@ -167,6 +168,9 @@ class ChildIndex(models.Model):
         serialized = serializers.serialize('json', [self], indent=2, use_natural_keys=True)
         serialized = re.sub('"pk": [0-9]{1,5}', '"pk": null', serialized)
         serialized = re.sub('"template": [0-9]{1,5}', '"template": null', serialized)
+
+        print >> sys.stderr, 'serialized:\n{0}'.format(serialized)
+
         struct = json.loads(serialized)
         data = json.dumps(struct[0])
         return data
@@ -208,6 +212,9 @@ class ChildIndex(models.Model):
                 self.template.delete()
             except:
                 pass
+            old_templates = Template.objects.filter(name=os.path.join(self.parent.lab.slug,self.parent.slug,os.path.basename(self.page)))
+            for temp_clear in old_templates:
+                temp_clear.delete()
             self.template = Template.objects.create(name=os.path.join(self.parent.lab.slug,self.parent.slug,os.path.basename(self.page)),content=content)
         else:
             # create a symlink to the index file

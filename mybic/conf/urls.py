@@ -48,6 +48,9 @@ urlpatterns = patterns(
     url(r'^labs/(.+)$', 'mybic.labs.views.childview', name='my_direct_child_url'),
 
     url(r'^update/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.updateproject', name='update_project_url'),
+
+    url(r'^new/{0,1}$', 'mybic.labs.views.upload_project_fixture', name='upload_project_fixture_url'),
+
     url(r'^slink/(?P<lab>[\w-]+)/(?P<project>[\w-]+)/(?P<path>.+)$', 'mybic.views.protected_file', name='protected'),
 
 
