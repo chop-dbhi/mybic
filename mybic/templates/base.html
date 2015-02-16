@@ -112,13 +112,15 @@
 
                                 <li><a href="{% url 'project_logs' my_lab.slug my_project.slug %}">Project logs</a></li>
 
-                                 <li><a href="{% url 'project_endpoint' my_lab.slug my_project.slug %}">Project API</a></li>
                             {% endif %}
                             {% if my_lab %}
                                 <li><a href="{% url 'admin:labs_lab_change' my_lab.id %}">Lab admin</a></li>
                             {% endif %}
                             <li><a href="{% url 'admin:index' %}">Site admin</a></li>
-                            <li><a data-toggle="modal" data-target="#fixtureModal" href="#">Create New Project From Fixture</a></li>
+                            {%  if my_project %}
+                                                             <li><a href="{% url 'project_endpoint' my_lab.slug my_project.slug %}">View project fixture</a></li>
+                            {% endif %}
+                            <li><a data-toggle="modal" data-target="#fixtureModal" href="#">Create/update project from fixture</a></li>
                             {% if request.session and 'masquerade' in request.session and request.session.masquerade == True %}
                                 <li><a href="{% url 'toggle_url' %}">View as admin</a></li>
                             {% else %}
