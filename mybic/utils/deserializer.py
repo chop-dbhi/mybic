@@ -5,6 +5,7 @@ import datetime
 import sys
 from django.db import transaction
 from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 
 class ProjectDeserializer():
     # [
@@ -76,12 +77,19 @@ class ProjectDeserializer():
                         # for some reason this deserializedobject calls save on the Model baseclass directly
                         if desobj.object.__class__.__name__ == 'Project':
                             print >> sys.stderr, 'project!'
+                            # does this project exist?
+                            try:
+                                projectslug = obj['fields']['slug']
+                                # lab id gets set above
+                                lab_id = obj['fields']['lab']
+                                old_project = Project.objects.get(lab=lab_id, slug=projectslug)
+                                old_project.delete()
+                            except ObjectDoesNotExist:
+                                pass
                             desobj.save()
                             createdProject = Project.objects.get(id=desobj.object.pk)
                             createdProject.save()
                         elif desobj.object.__class__.__name__ == 'ChildIndex':
-
-
                             print >> sys.stderr, 'desobj! {0}'.format(desobj.object.parent)
                             desobj.save()
                             createdIndex = ChildIndex.objects.get(id=desobj.object.pk)

@@ -83,10 +83,11 @@ class Project(models.Model):
     def json(self):
         # http://stackoverflow.com/questions/9436954/excluding-primary-key-in-django-dumpdata-with-natural-keys
         serialized = serializers.serialize('json', [self], use_natural_keys=True)
-        serialized = re.sub(r'"pk": [0-9]{1,5}', '"pk": null', serialized)
-        serialized = re.sub(r'"index": \[[^]]+\]', '"index": null', serialized)
-        serialized = re.sub(r'"modified": \"[A-Z0-9:.\-]+\"', '"modified": null', serialized)
-        serialized = re.sub(r'"created": \"[A-Z0-9:.\-]+\"', '"created": null', serialized)
+        serialized = re.sub(r'"pk": [0-9]{1,5},', '', serialized)
+        serialized = re.sub(r'"index": \[[^]]+\],', '', serialized)
+        serialized = re.sub(r'"modified": \"[A-Z0-9:.\-]+\",', '', serialized)
+        serialized = re.sub(r'"de_dir": \"\",', '', serialized)
+        #serialized = re.sub(r'"created": \"[A-Z0-9:.\-]+\"', '"created": null', serialized)
         # "owner": ["leipzigj"],
         serialized = re.sub('"owner": \[([^]]+)\]', '"owner": \\1', serialized)
 
@@ -128,9 +129,16 @@ class Project(models.Model):
         #bump modified date of parent lab
         self.lab.save()
 
+        #get an id
         super(Project, self).save(*args, **kwargs)
 
+        #requires an id
         self.index, created = ChildIndex.objects.get_or_create(parent=self,page=self.index_page)
+        if self.index is None:
+            raise Exception("index page not set! created: {0}".format(created))
+
+        #save the index setting
+        super(Project, self).save(*args, **kwargs)
 
         children = ChildIndex.objects.filter(parent=self)
         for child in children:
@@ -166,8 +174,8 @@ class ChildIndex(models.Model):
     def json(self):
         # http://stackoverflow.com/questions/9436954/excluding-primary-key-in-django-dumpdata-with-natural-keys
         serialized = serializers.serialize('json', [self], indent=2, use_natural_keys=True)
-        serialized = re.sub('"pk": [0-9]{1,5}', '"pk": null', serialized)
-        serialized = re.sub('"template": [0-9]{1,5}', '"template": null', serialized)
+        serialized = re.sub(r'"pk": [0-9]{1,5},', '', serialized)
+        serialized = re.sub('],\s+"template": [0-9]{1,5}', ']', serialized)
 
         print >> sys.stderr, 'serialized:\n{0}'.format(serialized)
 
