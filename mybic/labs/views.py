@@ -11,6 +11,7 @@ import sys
 import json
 import logging
 import urllib2
+from mybic.labs.forms import FixtureForm
 from mybic.labs.models import Project, ChildIndex, Lab, LabArticle
 from tracking.models import Pageview
 
@@ -223,11 +224,13 @@ def upload_project_fixture(request):
     print >> sys.stderr, 'fixtureview! {0}'.format(request)
     if hasattr(request, 'user') and request.user.is_authenticated() and request.user.is_staff:
         if request.method == 'POST':
-            fixture = request.POST['fixture']
-            site_content = urllib2.urlopen(fixture)
-            content = site_content.read()
-            my_deserializer = ProjectDeserializer()
-            (lab_slug, project_slug) = my_deserializer.jsonToProject(content)
-            return HttpResponseRedirect(reverse('my_project_url', args=[lab_slug,project_slug]))
+            form = FixtureForm(request.POST)
+            if form.is_valid():
+                fixture = form.cleaned_data['fixture']
+                site_content = urllib2.urlopen(fixture)
+                content = site_content.read()
+                my_deserializer = ProjectDeserializer()
+                (lab_slug, project_slug) = my_deserializer.jsonToProject(content)
+                return HttpResponseRedirect(reverse('my_project_url', args=[lab_slug,project_slug]))
     else:
         return HttpResponseRedirect(settings.FORCE_SCRIPT_NAME + '/login/')
