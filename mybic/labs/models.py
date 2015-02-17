@@ -106,8 +106,8 @@ class Project(models.Model):
         print >> sys.stderr, 'trying to save!'
         # http://stackoverflow.com/a/1737078/264696
         if not self.id:
-            self.created = datetime.datetime.today()
-            self.modified = datetime.datetime.today()
+            self.created = datetime.now()
+            self.modified = datetime.now()
 
         # create a symlink to the static directory on the isilon
         #call it _site/static/lab/project
