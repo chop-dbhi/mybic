@@ -16,8 +16,16 @@ class ProjectAdminForm(ModelForm):
     def clean(self):
         data = self.cleaned_data
         # data['index_page']
-        index_page = data['index_page'].replace(settings.ISILON_ROOT,'').strip("/")
-        static_dir = data['static_dir'].replace(settings.ISILON_ROOT,'').strip("/")
+        if data['index_page'].startswith(settings.ISILON_ROOT):
+            index_page = data['index_page'].replace(settings.ISILON_ROOT,'').strip("/")
+        else:
+            index_page = data['index_page']
+
+        if data['static_dir'].startswith(settings.ISILON_ROOT):
+            static_dir = data['static_dir'].replace(settings.ISILON_ROOT,'').strip("/")
+        else:
+            static_dir = data['static_dir']
+
         url_pattern = re.compile(r"^https?://.+")
 
         if url_pattern.match(index_page):
@@ -26,10 +34,10 @@ class ProjectAdminForm(ModelForm):
             except urllib2.HTTPError, e:
                 raise forms.ValidationError("The index page url {0} does not exist".format(index_page))
         else:
-            if not os.path.exists(os.path.join(settings.ISILON_ROOT,index_page)):
-                raise forms.ValidationError("The index page file {0} does not exist".format(os.path.join(settings.ISILON_ROOT,index_page)))
-        if not os.path.exists(os.path.join(settings.ISILON_ROOT,static_dir)):
-            raise forms.ValidationError("The static directory {0} does not exist".format(os.path.join(settings.ISILON_ROOT,static_dir)))
+            if not os.path.exists(index_page) and not os.path.exists(os.path.join(settings.ISILON_ROOT,index_page)):
+                raise forms.ValidationError("The index page file {0} (or {1}) does not exist".format(index_page, os.path.join(settings.ISILON_ROOT,index_page)))
+        if not os.path.exists(static_dir) and not os.path.exists(os.path.join(settings.ISILON_ROOT,static_dir)):
+            raise forms.ValidationError("The static directory {0} (or {1}) does not exist".format(static_dir, os.path.join(settings.ISILON_ROOT,static_dir)))
         # do something that validates your data
         return data
 

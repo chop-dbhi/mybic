@@ -122,7 +122,10 @@ class Project(models.Model):
             pass
         print >> sys.stderr, 'symlinking {0} to {1}'.format(os.path.join(settings.ISILON_ROOT,self.static_dir), project_static)
         try:
-            os.symlink(os.path.join(settings.ISILON_ROOT,self.static_dir), project_static)
+            if os.path.isabs(self.static_dir):
+                os.symlink(self.static_dir, project_static)
+            else:
+                os.symlink(os.path.join(settings.ISILON_ROOT,self.static_dir), project_static)
         except OSError, e:
             raise PermissionDenied()
 
@@ -133,7 +136,11 @@ class Project(models.Model):
         super(Project, self).save(*args, **kwargs)
 
         #requires an id
-        self.index, created = ChildIndex.objects.get_or_create(parent=self,page=self.index_page)
+        try:
+            ChildIndex.objects.get(parent=self,page=self.index_page)
+        except ChildIndex.DoesNotExist:
+            self.index, created = ChildIndex.objects.get_or_create(parent=self,page=self.index_page)
+
         if self.index is None:
             raise Exception("index page not set! created: {0}".format(created))
 
@@ -191,8 +198,12 @@ class ChildIndex(models.Model):
             response = urllib2.urlopen(self.page)
             pre_content = response.read()
         else:
-            print "trying to open {0} {1}".format(settings.ISILON_ROOT, os.path.join(settings.ISILON_ROOT,self.page))
-            file = open(os.path.join(settings.ISILON_ROOT,self.page),'rb')
+            if os.path.isabs(self.static_dir):
+                print "trying to open {0}".format(self.page)
+                file = open(self.page,'rb')
+            else:
+                print "trying to open {0} {1}".format(settings.ISILON_ROOT, os.path.join(settings.ISILON_ROOT,self.page))
+                file = open(os.path.join(settings.ISILON_ROOT,self.page),'rb')
             pre_content = file.read()
 
         if self.parent.autoflank == True:
@@ -237,7 +248,10 @@ class ChildIndex(models.Model):
             # web sources are always copied, files can be symlinked
             try:
                 if settings.INDEX_PAGE_HANDLING == 'symlink' and not url_pattern.match(self.page):
-                    os.symlink(os.path.join(settings.ISILON_ROOT,self.page), link_name)
+                    if os.path.isabs(self.page):
+                        os.symlink(self.page, link_name)
+                    else:
+                        os.symlink(os.path.join(settings.ISILON_ROOT,self.page), link_name)
                 else:
                     fh = open(link_name, "w")
                     fh.write(content)
