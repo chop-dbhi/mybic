@@ -198,7 +198,7 @@ class ChildIndex(models.Model):
             response = urllib2.urlopen(self.page)
             pre_content = response.read()
         else:
-            if os.path.isabs(self.static_dir):
+            if os.path.isabs(self.page):
                 print "trying to open {0}".format(self.page)
                 file = open(self.page,'rb')
             else:
