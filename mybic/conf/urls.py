@@ -23,11 +23,11 @@ urlpatterns = patterns(
     url(r'', include('chopauth.urls')),
 
 
-    url(r'^news/$', 'mybic.views.news', name='news'),
+    url(r'^news/{0,1}$', 'mybic.views.news', name='news'),
 
     url(r'^admin/', include(admin.site.urls)),
     url(r'^tracking/', include('tracking.urls')),
-    url(r'^toggle/', 'mybic.views.masquerade', name='toggle_url'),
+    url(r'^toggle/{0,1}$', 'mybic.views.masquerade', name='toggle_url'),
 
     url(r'^accounts/login/{0,1}$', 'mybic.views.dashboard', name='dashboard'),
     url(r'^dashboard/{0,1}$', 'mybic.views.dashboard', name='dashboard'),
@@ -35,23 +35,23 @@ urlpatterns = patterns(
 
     # Administrative components
 
-    url(r'^labs/$', 'mybic.views.dashboard', name='dashboard'),
-    url(r'^labs/([\w-]+)/$', 'mybic.labs.views.labview', name='my_lab_url'),
-    url(r'^labs/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.projectview', name='my_project_url'),
+    url(r'^labs/{0,1}$', 'mybic.views.dashboard', name='dashboard'),
+    url(r'^labs/([\w-]+)/{0,1}$', 'mybic.labs.views.labview', name='my_lab_url'),
+    url(r'^labs/([\w-]+)/([\w-]+)/{0,1}$', 'mybic.labs.views.projectview', name='my_project_url'),
     # Project Endpoint
-    url(r'^api/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.projectendpoint', name='project_endpoint'),
+    url(r'^api/([\w-]+)/([\w-]+)/{0,1}$', 'mybic.labs.views.projectendpoint', name='project_endpoint'),
 
-    url(r'^logs/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.project_logs', name='project_logs'),
+    url(r'^logs/([\w-]+)/([\w-]+)/{0,1}$', 'mybic.labs.views.project_logs', name='project_logs'),
 
 
-    url(r'^labs/([\w-]+)/([\w-]+)/(.+)$', 'mybic.labs.views.childview', name='my_child_url'),
+    url(r'^labs/([\w-]+)/([\w-]+)/(.+)/{0,1}$', 'mybic.labs.views.childview', name='my_child_url'),
     url(r'^labs/(.+)$', 'mybic.labs.views.childview', name='my_direct_child_url'),
 
-    url(r'^update/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.updateproject', name='update_project_url'),
+    url(r'^update/([\w-]+)/([\w-]+)/{0,1}$', 'mybic.labs.views.updateproject', name='update_project_url'),
 
     url(r'^new/{0,1}$', 'mybic.labs.views.upload_project_fixture', name='upload_project_fixture_url'),
 
-    url(r'^slink/(?P<lab>[\w-]+)/(?P<project>[\w-]+)/(?P<path>.+)$', 'mybic.views.protected_file', name='protected'),
+    url(r'^slink/(?P<lab>[\w-]+)/(?P<project>[\w-]+)/(?P<path>.+)/{0,1}$', 'mybic.views.protected_file', name='protected'),
 
 
     url(r'^search', SearchView(
