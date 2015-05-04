@@ -388,3 +388,6 @@ TRACK_REFERER = False
 TRACK_QUERY_STRING = True
 
 PAGEVIEW_LIMIT = 100
+
+#slashes to address jim's habit of writing ./child_page
+APPEND_SLASH = True

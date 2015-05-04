@@ -37,14 +37,15 @@ urlpatterns = patterns(
 
     url(r'^labs/{0,1}$', 'mybic.views.dashboard', name='dashboard'),
     url(r'^labs/([\w-]+)/{0,1}$', 'mybic.labs.views.labview', name='my_lab_url'),
-    url(r'^labs/([\w-]+)/([\w-]+)/{0,1}$', 'mybic.labs.views.projectview', name='my_project_url'),
+    url(r'^labs/([\w-]+)/([\w-]+)/$', 'mybic.labs.views.projectview', name='my_project_url'),
+
     # Project Endpoint
     url(r'^api/([\w-]+)/([\w-]+)/{0,1}$', 'mybic.labs.views.projectendpoint', name='project_endpoint'),
 
     url(r'^logs/([\w-]+)/([\w-]+)/{0,1}$', 'mybic.labs.views.project_logs', name='project_logs'),
 
 
-    url(r'^labs/([\w-]+)/([\w-]+)/(.+)/{0,1}$', 'mybic.labs.views.childview', name='my_child_url'),
+    url(r'^labs/([\w-]+)/([\w-]+)/(.+)$', 'mybic.labs.views.childview', name='my_child_url'),
     url(r'^labs/(.+)$', 'mybic.labs.views.childview', name='my_direct_child_url'),
 
     url(r'^update/([\w-]+)/([\w-]+)/{0,1}$', 'mybic.labs.views.updateproject', name='update_project_url'),
