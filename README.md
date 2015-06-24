@@ -16,6 +16,7 @@ yum install gcc
 ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared LDFLAGS="-Wl,-rpath /usr/local/lib"
 yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel
 emacs /etc/ld.so.conf
+#add /usr/local/lib
 make && make altinstall
 wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
 /usr/local/bin/python2.7 ez_setup.py
