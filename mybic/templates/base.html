@@ -40,9 +40,9 @@
     <script src="{{ STATIC_URL }}/scripts/javascript/src/mybic.js">
 
         <!-- here we apply the default bootstrap .table class to all tables -->
-        <script type="text/javascript">
+    <script type="text/javascript">
         $(function() {
-            $( "table" ).addClass( "table" );
+            $( "table" ).addClass( "table table-condensed" );
         });
     </script>
 
@@ -50,6 +50,16 @@
     <link rel="stylesheet" href="{{ CSS_URL }}/fa.css" >
 
     <link rel="stylesheet" href="{{ CSS_URL }}/sticky-footer-navbar.css">
+
+    <!-- knitr html output has this inline bootstrap css stylesheet which somehow disrupts the dropdown menus in myBiC. We need to disable this.-->
+	<script type="text/javascript">
+	for ( i=0; i<document.styleSheets.length; i++) {
+	    if(document.styleSheets.item(i).href && document.styleSheets.item(i).href.substring(0,30) === "data:text/css,%2F%2A%21%0A%20%2A%20Bootstrap"){
+	        void(document.styleSheets.item(i).disabled=true);
+	    }
+	}
+	</script>
+
     {% block styles %}{% endblock %}
 </head>
 
