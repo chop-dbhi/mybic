@@ -22,16 +22,16 @@
     <link href='http://fonts.googleapis.com/css?family=Lato:900' rel='stylesheet' type='text/css'>
 
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 
-    <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+   <!-- Latest compiled and minified CSS -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
 
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+   <!-- Optional theme -->
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+   <!-- Latest compiled and minified JavaScript -->
+   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 
 
@@ -53,11 +53,9 @@
 
     <!-- knitr html output has this inline bootstrap css stylesheet which somehow disrupts the dropdown menus in myBiC. We need to disable this.-->
 	<script type="text/javascript">
-	for ( i=0; i<document.styleSheets.length; i++) {
-	    if(document.styleSheets.item(i).href && document.styleSheets.item(i).href.substring(0,44) === "data:text/css,%2F%2A%21%0A%20%2A%20Bootstrap"){
-	        void(document.styleSheets.item(i).disabled=true);
-	    }
-	}
+		$(document).ready(function() {
+		 	$(".dropdown-toggle").dropdown();
+		});
 	</script>
 
     {% block styles %}{% endblock %}
@@ -86,13 +84,13 @@
                 {% load url from future %}
                 {% load current from navigation %}
                 {%  if my_lab %}
-                    <li class="active"><a href="{% url 'my_lab_url' my_lab.slug %}">{{ my_lab.name|slice:":20" }}</a>
+                    <li class="active"><a href="{% url 'my_lab_url' my_lab.slug %}">{{ my_lab.name|slice:":20" }}</a></li>
                 {% endif %}
                 {%  if my_project %}
-                    <li class="active"><a href="{% url 'my_project_url' my_lab.slug my_project.slug %}">{{ my_project.name|slice:":35" }}</a>
+                    <li class="active"><a href="{% url 'my_project_url' my_lab.slug my_project.slug %}">{{ my_project.name|slice:":35" }}</a></li>
                 {% endif %}
                 {%  if my_child %}
-                    <li class="active"><a href="{% url 'my_child_url' my_lab.slug my_project.slug my_child %}">{{ my_child|slice:":10" }}</a>
+                    <li class="active"><a href="{% url 'my_child_url' my_lab.slug my_project.slug my_child %}">{{ my_child|slice:":10" }}</a></li>
                 {% endif %}
             </ul>
 
@@ -101,7 +99,7 @@
                 <div class="col-sm-3 col-md-3 pull-right">
                     <form class="navbar-form" role="search" method="get" action="/search/">
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Search" name="q">
+                            <input type="text" class="form-control" placeholder="Search" name="q"/>
                             <div class="input-group-btn">
                                 <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
                             </div>
@@ -113,7 +111,7 @@
                 {% if request.user.is_staff %}
                     <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin<span class="caret"></span></a>
+                        <a id="admindropdown" href="#" class="dropdown-toggle" data-toggle="dropdown">Admin<span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             {%  if my_project %}
                                 <li><a id="ajax-this-link" href="{% url 'update_project_url' my_lab.slug my_project.slug %}">Refresh project</a></li>
