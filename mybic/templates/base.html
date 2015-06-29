@@ -13,47 +13,45 @@
     <meta name="viewport" content="width=device-width">
 
     <link rel="shortcut icon" href="{{STATIC_URL}}/favicon.ico"/>
-    <style>
-        body {
-            padding-top: 50px; /* 60px to make the container go all the way to the bottom of the topbar */
-        }
-    </style>
+	<style>
+	    body {
+	        padding-top: 50px; /* 60px to make the container go all the way to the bottom of the topbar */
+	    }
+	</style>
 
-    <link href='http://fonts.googleapis.com/css?family=Lato:900' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Lato:900' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="{{ CSS_URL }}/mybic.css" >
+	<link rel="stylesheet" href="{{ CSS_URL }}/fa.css" >
+
+	<link rel="stylesheet" href="{{ CSS_URL }}/sticky-footer-navbar.css">
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 
-   <!-- Latest compiled and minified CSS -->
-   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<script src="{{ STATIC_URL }}/scripts/javascript/src/kerning.js"></script>
 
-   <!-- Optional theme -->
-   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<script src="{{ STATIC_URL }}/scripts/javascript/src/mybic.js"></script>
 
-   <!-- Latest compiled and minified JavaScript -->
-   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-
-
-
-    <script src="{{ STATIC_URL }}/scripts/javascript/src/kerning.js"></script>
-
-    <script src="{{ STATIC_URL }}/scripts/javascript/src/mybic.js"></script>
-
-        <!-- here we apply the default bootstrap .table class to all tables -->
-    <script type="text/javascript">
-        $(function() {
-            $( "table" ).addClass( "table table-condensed" );
-        });
-    </script>
-
-    <link rel="stylesheet" href="{{ CSS_URL }}/mybic.css" >
-    <link rel="stylesheet" href="{{ CSS_URL }}/fa.css" >
-
-    <link rel="stylesheet" href="{{ CSS_URL }}/sticky-footer-navbar.css">
-
-    <!-- knitr html output has this inline bootstrap css stylesheet which somehow disrupts the dropdown menus in myBiC. We need to disable this.-->
+	    <!-- here we apply the default bootstrap .table class to all tables -->
 	<script type="text/javascript">
-		$(document).ready(function() {
+	    $(function() {
+	        $( "table" ).addClass( "table table-condensed" );
+	    });
+	</script>
+
+	<!-- knitr html output has this inline bootstrap css stylesheet which somehow disrupts the dropdown menus in myBiC. We need to disable this.-->
+	<script type="text/javascript">
+		$(function() {
 		 	$(".dropdown-toggle").dropdown();
 		});
 	</script>
