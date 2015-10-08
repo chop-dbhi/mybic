@@ -336,7 +336,7 @@ CSRF_COOKIE_NAME = 'mybic_csrftoken'
 # Sessions
 
 
-SESSION_COOKIE_AGE = 60 * 20
+SESSION_COOKIE_AGE = 1209600
 #SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_COOKIE_NAME = 'mybic_sessionid'
