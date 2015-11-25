@@ -12,13 +12,13 @@ class Command(BaseCommand):
              '   directory - get a list of groups, labs, and users\n'
             )
     def directory(self, *args):
-        for group in Group.objects.all():
+        for group in Group.objects.all().order_by('name'):
             print group
             print "\tLabs:"
-            for lab in Lab.objects.filter(group=group):
+            for lab in Lab.objects.filter(group=group).order_by('slug'):
                 print "\t\t{0} PI: {1} {2} ({3}) <{4}>".format(lab.name,lab.pi.first_name,lab.pi.last_name, lab.pi.username, lab.pi.email)
             print "\tPeople:"
-            for person in group.user_set.all():
+            for person in group.user_set.all().order_by('last_name'):
                 print "\t\t{0} {1} ({2}) <{3}>".format(person.first_name,person.last_name,person.username, person.email)
 
     def handle(self, *args, **options):
