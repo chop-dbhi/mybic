@@ -307,10 +307,6 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-REGISTRATION_BACKENDS = {
-    'default': 'chopauth.regbackends.DefaultBackend',
-}
-
 LDAP = {
     'DEBUG': False,
     'PREBINDDN': 'cn=Version Control,ou=AdminUsers,ou=Res,dc=research,dc=chop,dc=edu',
