@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Mybic : myBiC bioinformatics portal">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Mybic</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/chop-dbhi/mybic">View on GitHub</a>
+
+          <h1 id="project_title">Mybic</h1>
+          <h2 id="project_tagline">myBiC bioinformatics portal</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/chop-dbhi/mybic/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/chop-dbhi/mybic/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>myBiC is a web application for presenting analysis deliverables from the CHOP Bioinformatics Core to researchers. myBiC uses Django to handle Active Directory authentication and navigation.</p>
+
+<p>Most projects will consist of a single index page (<code>index.html</code> or <code>index.md</code>) and links to several <code>static</code> files. </p>
+
+<p>Static files are those that are not parsed by the Django template engine, such as data files, pdfs, images, and stylesheets.</p>
+
+<p>Both the index page and the static content should reside on the Isilon. There are management scripts within myBiC which manage symlinks to that content. The mount is read-only.</p>
+
+<h2>
+<a id="the-mybic-workflow" class="anchor" href="#the-mybic-workflow" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>The myBiC workflow</h2>
+
+<ol>
+<li>Create a repo in Github for your project</li>
+<li>Create a directory on the Isilon for your large project deliverables</li>
+<li>Create the index.md file in Github (recommended) or on the Isilon, can also be HTML if necessary</li>
+<li>Edit myBiC Users/Groups/Labs as needed</li>
+<li>Create a project in myBiC</li>
+</ol>
+
+<h2>
+<a id="understanding-the-authentication-system" class="anchor" href="#understanding-the-authentication-system" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Understanding the authentication system</h2>
+
+<p>myBiC uses dirt simple users/groups authentication system but it can accomodate private projects, public projects, and projects accessible by members of more than one lab.</p>
+
+<ul>
+<li>
+<code>Labs</code> belong to a single <code>Group</code>. Labs are generally created at the same time as Groups in the Group admin <a href="http://mybic.chop.edu/admin/auth/group/">http://mybic.chop.edu/admin/auth/group/</a>
+</li>
+<li>
+<code>Projects</code> belong to a single <code>Lab</code>.</li>
+<li> <code>Users</code> can belong to multiple <code>Groups</code>. </li>
+</ul>
+
+<p>Below is the Wallace group. Members of the Wallace group can see projects in both the Pei and Wallace labs.
+<img src="https://dl.dropboxusercontent.com/u/4055239/modify_a_group.png" alt="">
+If we wanted to create projects that only members of the Pei lab could see, we would have to create another <code>Lab</code> instance called, for example "Private Pei", and a new <code>Group</code> "Pei" to which "Private Pei" and those group members could belong.</p>
+
+<h3>
+<a id="masquerading-as-a-user" class="anchor" href="#masquerading-as-a-user" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Masquerading as a User</h3>
+
+<p>As an admin you will see all Groups, all Labs, all Projects. To debug authentication, it may be helpful to assign yourself to certain groups using the Admin interface and "masquerade" as a common user. The "View as" toggle in the Admin menu that allows you to view myBiC as a user or admin. This setting persists as a session.</p>
+
+<p><img src="https://dl.dropboxusercontent.com/u/4055239/admindropdown.png" alt=""></p>
+
+<h2>
+<a id="creating-a-group-and-lab" class="anchor" href="#creating-a-group-and-lab" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating a Group and Lab</h2>
+
+<p>Go to <a href="http://mybic.chop.edu/admin/auth/group/">http://mybic.chop.edu/admin/auth/group/</a></p>
+
+<p>Select "Add group". Fill in the Group name.</p>
+
+<p>Add Labs - the <code>name</code> can be quite fancy but the <code>slug</code> should consist of solely of letters, numbers, underscores or hyphens.</p>
+
+<h2>
+<a id="creating-users" class="anchor" href="#creating-users" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating Users</h2>
+
+<p><a href="http://mybic.chop.edu/admin/auth/user">http://mybic.chop.edu/admin/auth/user</a></p>
+
+<p>Select "Add user". Use the Active Directory username. The password field will not be used by myBiC.</p>
+
+<h2>
+<a id="starting-a-project" class="anchor" href="#starting-a-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Starting a project</h2>
+
+<p>Go to <a href="http://mybic.chop.edu/admin/labs/project/">http://mybic.chop.edu/admin/labs/project/</a></p>
+
+<p>Select "Add project". Follow the instructions. The directories you specify must exist and should be as specific (as far down the directory tree) as possible.
+On the myBiC server our Isilon mount is called <code>/mnt/variome</code>. On variome and raboso it is called <code>/nas/is1</code>. On respublica it is called <code>/mnt/isilon/cbmi/variome/</code>.</p>
+
+<p>By default, if you leave out the leading slash MyBiC will assume you mean <code>/mnt/variome/</code>, so <code>leipzig/err-rna-seq/</code> will be understood to mean `/mnt/variome/leipzig/err-rna-seq/'.</p>
+
+<p><img src="https://dl.dropboxusercontent.com/u/4055239/project_admin.png" alt=""></p>
+
+<h3>
+<a id="friends-of-big" class="anchor" href="#friends-of-big" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Friends of BiG</h3>
+
+<p>You should always use the full path for these mounts to BiG-affiliated labs.</p>
+
+<ul>
+<li>
+<code>/mnt/cbttc</code> - Resnick Lab</li>
+<li>
+<code>/mnt/NGS_data</code> - Spinner Lab</li>
+</ul>
+
+<h2>
+<a id="updating-a-project" class="anchor" href="#updating-a-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Updating a project</h2>
+
+<p><img src="https://dl.dropboxusercontent.com/u/4055239/admindropdown.png" alt=""></p>
+
+<p>The admin menu provides a shortcut to the project admin page.</p>
+
+<p>To reload index and child pages from with the project, use the "Refresh project" menu item</p>
+
+<h2>
+<a id="creating-an-index-page" class="anchor" href="#creating-an-index-page" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating an index page</h2>
+
+<p>Index pages can be files on the Isilon or simply web pages served by Github, and they can be HTML or Markdown (recommended).</p>
+
+<h2>
+<a id="autoflank" class="anchor" href="#autoflank" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Autoflank</h2>
+
+<p><code>autoflank</code> is a project option that automatically adds the correct template tags to your markdown or HTML document to ensure it displays correct on myBiC.
+<img src="https://dl.dropboxusercontent.com/u/4055239/autoflank.png" alt=""></p>
+
+<h2>
+<a id="django-template-tags" class="anchor" href="#django-template-tags" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Django Template tags</h2>
+
+<p>If you are not using "autoflank". The index page you point to will need the following tags at the top for navigation:</p>
+
+<pre><code>{% extends "base.html" %}
+
+{% block content %}
+</code></pre>
+
+<p>and this one at the bottom:</p>
+
+<pre><code>{% endblock %}
+</code></pre>
+
+<h2>
+<a id="using-markdown" class="anchor" href="#using-markdown" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using Markdown</h2>
+
+<p>Some or all of the index page can be written in <a href="daringfireball.net/projects/markdown/">Markdown</a>.
+If not using <code>autoflank</code>, you will need to load the Markdown library and template tag.</p>
+
+<pre><code>{% extends "base.html" %}
+{% load markdown_tags %}
+{% block content %}
+{% markdown %}
+</code></pre>
+
+<pre><code>{% endmarkdown %}
+{% endblock %}
+</code></pre>
+
+<p>HTML is valid within Markdown.</p>
+
+<h2>
+<a id="static-links" class="anchor" href="#static-links" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Static links</h2>
+
+<p>When you create a project you specify an absolute path on the Isilon to the static directory where all your deliverables should reside.</p>
+
+<p><img src="https://dl.dropboxusercontent.com/u/4055239/staticdir.png" alt=""></p>
+
+<p>This is assigned to the <code>SLINK</code> Django template variable which you can use in your index page.</p>
+
+<p>So to link to a static file <code>/mnt/variome/leipzig/liming_err_rnaseq/src/raw_counts.tab.txt</code> the static directory should be set to <code>/mnt/variome/leipzig/liming_err_rnaseq/src/</code> and the link will look like:</p>
+
+<pre><code>&lt;p&gt;&lt;a href="{{ SLINK }}/raw_counts.tab.txt"&gt;Raw HT-Seq Counts&lt;/a&gt;&lt;/p&gt;
+</code></pre>
+
+<h3>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h3>
+
+<p>A fully working example index.html is provided here:
+<a href="https://github.research.chop.edu/BiG/mybic/wiki/Example-index.html">index.html</a></p>
+
+<h3>
+<a id="implementation" class="anchor" href="#implementation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Implementation</h3>
+
+<p>When a project is created, one symlink is placed at <code>mybic/mybic/labs/templates/your_lab/your_project</code> that points to your index page and one is placed in <code>mybic/_site/static/your_lab/your_project</code> that points to static path your specify on the read-only Isilon mount.</p>
+
+<h3>
+<a id="using-github-for-serving-content" class="anchor" href="#using-github-for-serving-content" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using Github for Serving Content</h3>
+
+<p><a href="http://github.com">github.com</a>, or our internal <a href="https://github.research.chop.edu">github.research.chop.edu</a>, is a functional website and can be used as:</p>
+
+<ul>
+<li>The source from which index files are copied onto the myBiC site</li>
+<li>A place to put static files (under 50MB)</li>
+</ul>
+
+<h4>
+<a id="using-github-for-the-index-page" class="anchor" href="#using-github-for-the-index-page" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using Github for the index page</h4>
+
+<p>Simply specify the "raw" Github content (as opposed to "blob") hyperlink:
+<code>https://github.research.chop.edu/BiG/MD_vs_ATRT/raw/master/index.md</code></p>
+
+<p>in the "Index page" field:</p>
+
+<p><img src="https://dl.dropboxusercontent.com/u/4055239/hyperlink.png" alt="hyperlink"></p>
+
+<p>The content can be Markdown or HTML, but template tags are still required.</p>
+
+<p>When using a hyperlink as the source, myBiC copies the content over, so <em>you will need to re-save your project to update the index page in myBiC</em></p>
+
+<h3>
+<a id="child-index-pages" class="anchor" href="#child-index-pages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Child index pages</h3>
+
+<p>Often you may want to provide users with additional project detail pages that share the same navigation header as the main project index. Multiple "child index pages" can be created for any given project from the admin page. These use the same template tags as parents, and are provided an additional navigation layer within myBiC. </p>
+
+<h4>
+<a id="how-to-create-child-pages" class="anchor" href="#how-to-create-child-pages" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to create child pages</h4>
+
+<p>From the "Child Indices" section at the bottom of the project admin panel (Django administration), provide a disk or http link as you would for the parent index. Hit save.</p>
+
+<p>Within the parent index html or markdown, refer to these children using their basenames. For example, <code>https://github.research.chop.edu/zhangz/autism_microarrays/raw/master/Control_kid-vs-Patient_kid.md</code> is referred to <code>Control_kid-vs-Patient_kid.md</code> from the parent index. Do not use <code>index.html</code> or <code>index.md</code> as names.</p>
+
+<p>For every link in the parent index html or markdown to be treated as a child page, you need to add an index as above.</p>
+
+<p><img src="https://dl.dropboxusercontent.com/u/4055239/childindex.png" alt=""></p>
+
+<h4>
+<a id="using-github-for-the-static-content" class="anchor" href="#using-github-for-the-static-content" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Using Github for the static content</h4>
+
+<p>You can link out to static content that is stored in Github. The easiest way is to right click on the Github site to access the link, then replace "blob" with "raw":
+<code>https://github.research.chop.edu/sassona/Demicco_ImmGen_v_Parclip/blob/master/B_GC_Sp_w_HuR_targets_subset_data_comparison.xlsx</code></p>
+
+<p>becomes:</p>
+
+<p><code>https://github.research.chop.edu/sassona/Demicco_ImmGen_v_Parclip/raw/master/B_GC_Sp_w_HuR_targets_subset_data_comparison.xlsx</code></p>
+
+<h2>
+<a id="integration-with-knitr" class="anchor" href="#integration-with-knitr" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Integration with knitr</h2>
+
+<p>knitr with Rmarkdown syntax combined with the <code>DT</code> library is a preferable method of creating myBiC compatible output.</p>
+
+<p>Specify the <code>output: html_document</code></p>
+
+<pre><code>---
+title: "My knitr report"
+author: "Jeremy Leipzig"
+date: "May 28, 2015"
+output: html_document
+---
+</code></pre>
+
+<p>You should now see the knit icon in RStudio:
+<img src="https://dl.dropboxusercontent.com/u/4055239/knit.png" alt=""></p>
+
+<p>knitr blocks should specify <code>fig.path='{{SLINK}}/'</code>. This will create a directory called (unfortunately) <code>{{SLINK}}</code> for static content, and this variable as it is embedded in the HTML output will be evaluated to the static directory specified in your myBiC project configuration.</p>
+
+<p>Images produced by knitr are saved but also converted to an inline <a href="https://en.wikipedia.org/wiki/Data_URI_scheme">data URI scheme</a>, but you can still provide links to those images.</p>
+
+<pre><code>```{r setup, echo=TRUE, message=FALSE, cache=FALSE, fig.path='{{SLINK}}/'}
+</code></pre>
+
+<p>The datatables library will produce client-side sortable tables that can be embedded in your knitr document</p>
+
+<pre><code>library(DT)
+datatable(mtcars)
+</code></pre>
+
+<p>Ideally you should push the <code>.Rmd</code> and <code>.html</code> files to Github, and use the raw link in myBiC. Point your static directory to the <code>{{SLINK}}</code> directory in your project on the Isilon</p>
+
+<p><img src="https://dl.dropboxusercontent.com/u/4055239/staticslink.png" alt=""></p>
+
+<h2>
+<a id="news" class="anchor" href="#news" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>News</h2>
+
+<p>News can be at the site, lab, or project level. Markdown is accepted within the body.</p>
+
+<p><img src="https://dl.dropboxusercontent.com/u/4055239/site_article.png" alt=""></p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Mybic maintained by <a href="https://github.com/chop-dbhi">chop-dbhi</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
