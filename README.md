@@ -1,3 +1,3 @@
 ##myBiC - Bioinformatics Core Portal
 
-###[Documentation and Examples](../../wiki)
+###[Documentation](http://chop-dbhi.github.io/mybic/)
