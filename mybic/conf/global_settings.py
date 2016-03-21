@@ -34,19 +34,14 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sites',
-
     'dbtemplates',
-
     'mybic',
     'mybic.labs',
     'south',
     'news',
     'ldap',
-
     'chopauth',
-
     'haystack',
-
     'tracking'
 )
 
@@ -204,17 +199,10 @@ MIDDLEWARE_CLASSES = (
 
 # Email
 
-# SUPPORT_EMAIL = '"myBiC"<mybic@mybic.chop.edu>'
-# DEFAULT_FROM_EMAIL = '"myBiC"<mybic@mybic.chop.edu>'
-# EMAIL_SUBJECT_PREFIX = '[mybic] '
-#the middleware does this methinks
-#SEND_BROKEN_LINK_EMAILS = True
-# SERVER_EMAIL = '"myBiC"<nobody@mybic.chop.edu>'
-
-DEFAULT_FROM_EMAIL = 'webmaster@localhost'  # or webmaster@servername
-SERVER_EMAIL = 'root@localhost'  # or 'root@servername'
+DEFAULT_FROM_EMAIL = '"myBiC"<mybic@mybic.chop.edu>'  # or webmaster@servername
+SERVER_EMAIL = '"myBiC"<mybic@mybic.chop.edu>'  # or 'root@servername'
 EMAIL_HOST = 'localhost'  # or servername
-EMAIL_HOST_USER = ''  # or 'user@gmail.com'
+EMAIL_HOST_USER = '"myBiC"<mybic@mybic.chop.edu>'  # or 'user@gmail.com'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_PORT = 25  #587
 EMAIL_USE_TLS = True
@@ -289,16 +277,6 @@ CACHES = {
 #
 # AUTHENTICATION
 #
-
-# Two additional auth backends for email-based (rather than username)
-# and LDAP-based authentication. To use the LDAP authentication, the
-# rematining LDAP settings (see below) must be defined.
-#AUTHENTICATION_BACKENDS = (
-#    'pcgc.core.backends.EmailBackend',
-#    'pcgc.core.backends.LdapBackend',
-#    'django.contrib.auth.backends.ModelBackend',
-#)
-
 # LDAP Authentication Backend -- LDAP['PREBINDPW'] and LDAP['SERVER_URI']
 # must be defined in local_settings.py since they are sensitive settings.
 
@@ -338,20 +316,6 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 SESSION_COOKIE_NAME = 'mybic_sessionid'
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = False
-
-
-
-#Haystack
-# 'elasticsearch': {
-#     'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-#     'URL': 'http://127.0.0.1:9200/',
-#     'INDEX_NAME': 'haystack',
-# },
-# 'solr': {
-#     'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-#     'URL': 'http://127.0.0.1:8983/solr',
-#     'BATCH_SIZE': 1,
-# }
 
 
 HAYSTACK_CONNECTIONS = {
